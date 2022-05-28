@@ -12,3 +12,5 @@ https://raw.githubusercontent.com/gapalil001/FlatMadness/master/index.xml
 ```
 4. Find theme in **Extensions** -> **ReaPack** -> **Browse Packages** and install it
 5. From time to time please execute **Extensions** -> **ReaPack** -> **Synchronize Packages** to get new versions of theme.
+
+nmg,h.jhgfdsg`dfh,.µ˙,hgjdysdtghj,.gjhjfdgs
