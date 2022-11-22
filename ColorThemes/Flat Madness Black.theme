@@ -1,10 +1,12 @@
 @description Flat Madness Black
-@version 3.71
+@version 3.8
 @changelog
-  - TCP solid color layout changed again.
-  - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions
+ - new TCP behavior when FX or send lists are not visible
+ - longname 2 layout removed
+ - longname layout is fixed and fit new logic
+ - little design changes
 @provides Flat Madness Black.ReaperThemeZip
-@author Dmytry Hapochka
+@author Dmytro Hapochka
 @links
   Forum Thread https://forum.cockos.com/showthread.php?t=247086
 @screenshots
