@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="a4176939b05ca3d5c7c9bb17412f19e1123bf083">
+<index version="1" name="Flat Madness Theme" commit="62b6b6e6d11268aec01a13af2eba8ecdee97bc2d">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -17,6 +17,13 @@
         <changelog><![CDATA[- TCP solid color layout changed again.
 - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
+      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+- longname 2 layout removed
+- longname layout is fixed and fit new logic
+- little design changes]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
@@ -36,6 +43,13 @@
 - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+- longname 2 layout removed
+- longname layout is fixed and fit new logic
+- little design changes]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
       <metadata>
@@ -54,6 +68,13 @@
 - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+- longname 2 layout removed
+- longname layout is fixed and fit new logic
+- little design changes]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -71,6 +92,13 @@
         <changelog><![CDATA[- TCP solid color layout changed again.
 - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+- longname 2 layout removed
+- longname layout is fixed and fit new logic
+- little design changes]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
