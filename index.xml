@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="62b6b6e6d11268aec01a13af2eba8ecdee97bc2d">
+<index version="1" name="Flat Madness Theme" commit="2c56814485bd88538b2fc44c67cabd63139f6312">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -7,7 +7,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 description\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
 }
 ]]></description>
         <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
@@ -25,6 +25,17 @@
 - little design changes]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+ - improved meter and TCP elements behavior on collapsing
+- whole new envelope panel 
+- added TCP elements for triggering fixed lanes (_dev only)
+- TCP backgrounds becomes bit brighter
+- some re-factoring stuff
+- some bugs fixed
+- some bugs added]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -32,7 +43,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 description\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
 }
 ]]></description>
         <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
@@ -50,6 +61,16 @@
 - little design changes]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+ - improved meter and TCP elements behavior on collapsing
+- whole new envelope panel 
+- added TCP elements for triggering fixed lanes (_dev only)
+- some re-factoring stuff
+- some bugs fixed
+- some bugs added]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
       <metadata>
@@ -57,7 +78,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 description\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
 }
 ]]></description>
         <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
@@ -75,6 +96,17 @@
 - little design changes]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+ - improved meter and TCP elements behavior on collapsing
+- whole new envelope panel 
+- added TCP elements for triggering fixed lanes (_dev only)
+ - TCP backgrounds becomes bit brighter
+- some re-factoring stuff
+- some bugs fixed
+- some bugs added]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -82,7 +114,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 description\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
 }
 ]]></description>
         <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
@@ -99,6 +131,16 @@
 - longname layout is fixed and fit new logic
 - little design changes]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
+        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
+ - improved meter and TCP elements behavior on collapsing
+- whole new envelope panel 
+- added TCP elements for triggering fixed lanes (_dev only)
+- some re-factoring stuff
+- some bugs fixed
+- some bugs added]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
