@@ -1,13 +1,19 @@
 @description Flat Madness Grey
-@version 3.71
+@version 3.81
 @changelog
-  - TCP solid color layout changed again.
-  - some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions
+ - new TCP behavior when FX or send lists are not visible
+  - improved meter and TCP elements behavior on collapsing
+ - whole new envelope panel 
+ - added TCP elements for triggering fixed lanes (_dev only)
+ - some re-factoring stuff
+ - some bugs fixed
+ - some bugs added
 @provides Flat Madness Grey.ReaperThemeZip
-@author Dmytry Hapochka
+@author Dmytro Hapochka
 @links
   Forum Thread https://forum.cockos.com/showthread.php?t=247086
 @screenshots
   Overview https://stash.reaper.fm/44544/FM171D.png
 @about
-  description
+  Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" 
+  enjoy!
