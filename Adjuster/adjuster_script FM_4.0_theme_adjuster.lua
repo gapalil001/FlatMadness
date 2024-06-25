@@ -143,8 +143,8 @@ local adj = {
 		borderRad = 20,
 		colors = {
 			White = 0xffffffff,
-			Background = 0x929292ff,
-			SectionBackground = 0x7d7d7dff,
+			Background = 0x414141ff,
+			SectionBackground = 0x929292ff,
 			Header = 0x252525ff,
 			Subheader = 0xd4d4d4ff,
 			Selected = 0xf89202ff,
@@ -164,12 +164,13 @@ local adj = {
 			Checkbox = 3,
 			Range = 4,
 		},
-		windFlags = ImGui.WindowFlags_NoScrollbar() | ImGui.WindowFlags_NoScrollWithMouse()
+		windFlags = ImGui.WindowFlags_NoScrollbar() | ImGui.WindowFlags_NoScrollWithMouse(),
+		header = { image = nil, src = "images/header.png" }
 	}
 }
 
 adj.params = {
-	tcp_meter_position = {
+	meter_position = {
 		id = 1,
 		type = adj.config.param_types.Simple,
 		width = 400,
@@ -182,7 +183,7 @@ adj.params = {
 			{ name = "Almost Right", value = 4, image = "images/pref_tcp_meterrightedge.png", borderRad = 5 },
 		}
 	},
-	tcp_pan_type = {
+	pan_type = {
 		id = 2,
 		type = adj.config.param_types.Simple,
 		width = 400,
@@ -195,7 +196,7 @@ adj.params = {
 	min_fxlist = {
 		id = 3,
 	},
-	tcp_embed_position = {
+	embed_position = {
 		id = 4,
 		type = adj.config.param_types.Simple,
 		width = 400,
@@ -219,7 +220,7 @@ adj.params = {
 		height = 35,
 		values = { 1, 2 }
 	},
-	tcp_dbscales = {
+	dbscales = {
 		id = 7,
 		type = adj.config.param_types.Checkbox,
 		width = 195,
@@ -235,6 +236,14 @@ adj.params = {
 	},
 	trans_position = {
 		id = 9,
+		type = adj.config.param_types.Simple,
+		width = 400,
+		height = 182,
+		values = {
+			{ name = "Left", value = 1, image = "images/pref_trans_position_left.png" },
+			{ name = "Center", value = 2, image = "images/pref_trans_position_center.png" },
+			{ name = "Right", value = 3, image = "images/pref_trans_position_right.png" },
+		}
 	},
 	tcp_solid_color = {
 		id = 10,
@@ -256,7 +265,7 @@ adj.params = {
 			{ name = "Color", value = 1, image = "images/pref_mcp_colorbg.png" },
 		}
 	},
-	mcp_folderindent = {
+	mixer_folderindent = {
 		id = 12,
 		type = adj.config.param_types.Simple,
 		width = 400,
@@ -320,15 +329,37 @@ function adj.UpdateValues()
 	return true
 end
 
-function adj.DrawImage(src, settings)
+function adj.GetImage(src)
 	if adj.cached_images[src] == nil or not ImGui.ValidatePtr(adj.cached_images[src].obj, 'ImGui_Image*') then
 		local img = ImGui.CreateImage(src)
 		local w, h = ImGui.Image_GetSize(img)
 		adj.cached_images[src] = { obj = img, width = w, height = h }
 	end
 
-	local width = adj.cached_images[src].width
-	local height = adj.cached_images[src].height
+	return adj.cached_images[src]
+end
+
+function adj.DrawHeader()
+	local image = adj.GetImage(SCRIPT_PATH .. adj.config.header.src)
+	local width = image.width / 2
+	local height = image.height / 2
+
+	if ImGui.BeginChild(ctx, "header", 0, height, nil, adj.config.windFlags) then
+		local draw_list = ImGui.GetWindowDrawList(ctx)
+		local avail_w = ImGui.GetContentRegionAvail(ctx)
+		local p_min_x, p_min_y = ImGui.GetItemRectMin(ctx)
+
+		p_min_x = p_min_x + math.max(0, (avail_w - width) // 2)
+
+		ImGui.DrawList_AddImage(draw_list, image.obj, p_min_x, p_min_y, p_min_x + width, p_min_y + height, 0, 0, 1, 1, adj.config.colors.White)
+	 	ImGui.EndChild(ctx)
+	end
+end
+
+function adj.DrawImage(src, settings)
+	local image = adj.GetImage(src)
+	local width = image.width
+	local height = image.height
 
 	if settings then
 		if settings.width and not settings.height then
@@ -358,7 +389,7 @@ function adj.DrawImage(src, settings)
 		p_min_x = p_min_x + math.max(0, (avail_w - width) // 2)
 
 		ImGui.DrawList_AddRectFilled(draw_list, p_min_x - border, p_min_y, p_min_x + width + border, p_min_y + height + border, settings.borderBg or adj.config.colors.Header, borderRad + border)
-	 	ImGui.DrawList_AddImageRounded(draw_list, adj.cached_images[src].obj, p_min_x, p_min_y + border, p_min_x + width, p_min_y + height, 0, 0, 1, 1, adj.config.colors.White, borderRad)
+	 	ImGui.DrawList_AddImageRounded(draw_list, image.obj, p_min_x, p_min_y + border, p_min_x + width, p_min_y + height, 0, 0, 1, 1, adj.config.colors.White, borderRad)
 	 	--ImGui.Dummy(ctx, p_min_x, p_min_y)
 		ImGui.EndChild(ctx)
 	end
@@ -435,38 +466,6 @@ function adj.DrawSimpleInput(parameter)
 	end
 end
 
---function adj.DrawOneImageInput(parameter)
---	local values = parameter.values
---	local image
---
---	for _, param in pairs(values) do
---		if param.value == parameter.data.value then image = param.image end
---	end
---
---	ImGui.Spacing(ctx)
---	ImGui.Spacing(ctx)
---
---	adj.DrawImage(SCRIPT_PATH .. image, { borderBg = adj.config.colors.Header, borderRad = param.image.borderRad })
---
---	if ImGui.BeginTable(ctx, "table_sub_" .. parameter.id, #values) then
---		for _, param in pairs(values) do
---			 ImGui.TableNextColumn(ctx)
---
---			local selColor = param.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
---
---			adj.CenterText(param.name, selColor)
---
---			if ImGui.IsItemClicked(ctx) then
---				parameter.data.value = param.value
---				reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
---				reaper.ThemeLayout_RefreshAll()
---			end
---		end
---
---		 ImGui.EndTable(ctx)
---	end
---end
-
 function adj.DrawCheckboxInput(parameter)
 	ImGui.SameLine(ctx, 20)
 
@@ -485,34 +484,6 @@ function adj.DrawCheckboxInput(parameter)
 		end
 		ImGui.EndChild(ctx)
 	end
-
-
-
-	--if ImGui.BeginTable(ctx, "table_sub_" .. parameter.id, 2) then
-	--	ImGui.TableNextColumn(ctx)
-	--
-	--	if ImGui.BeginChild(ctx, "checkbox_" .. parameter.id, parameter.width - 100, 50, nil, ImGui.WindowFlags_NoScrollbar()) then
-	--		ImGui.Text(ctx, parameter.name)
-	--		ImGui.EndChild(ctx)
-	--	end
-	--
-	--	ImGui.TableNextColumn(ctx)
-	--
-	--	ImGui.SameLine(ctx)
-	--
-	--	if ImGui.BeginChild(ctx, "checkbox2_" .. parameter.id, 100, 50, nil, ImGui.WindowFlags_NoScrollbar()) then
-	--		ImGui.SameLine(ctx)
-	--		local _, newVal = ImGui.Checkbox(ctx, ' ', parameter.data.value == parameter.values[2])
-	--
-	--		local id = newVal and 2 or 1
-	--		if parameter.data.value ~= parameter.values[id] then
-	--			adj.SetValue(parameter, parameter.values[id])
-	--		end
-	--		ImGui.EndChild(ctx)
-	--	end
-	--
-	--	ImGui.EndTable(ctx)
-	--end
 end
 
 function adj.DrawRangeInput(parameter)
@@ -521,6 +492,9 @@ end
 
 function adj.ShowWindow()
 	adj.UpdateValues()
+
+	adj.DrawHeader()
+	ImGui.Spacing(ctx)
 
 	if not adj.opened_first_tab then
 		ImGui.SetNextItemOpen(ctx, true)
@@ -531,16 +505,16 @@ function adj.ShowWindow()
 	if ImGui.CollapsingHeader(ctx, 'TRACK CONTROL PANEL') then
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.tcp_pan_type)
+		adj.ShowParameter(adj.params.pan_type)
 		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.tcp_embed_position)
+		adj.ShowParameter(adj.params.embed_position)
 		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.tcp_meter_position)
+		adj.ShowParameter(adj.params.meter_position)
 		ImGui.Spacing(ctx)
 
 		adj.ShowParameter(adj.params.tcp_folder_recarms)
 		ImGui.SameLine(ctx)
-		adj.ShowParameter(adj.params.tcp_dbscales)
+		adj.ShowParameter(adj.params.dbscales)
 		ImGui.Spacing(ctx)
 
 		ImGui.Spacing(ctx)
@@ -564,12 +538,17 @@ function adj.ShowWindow()
     if ImGui.CollapsingHeader(ctx, 'MIXER PANEL') then
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.mcp_folderindent)
+		adj.ShowParameter(adj.params.mixer_folderindent)
 		ImGui.Spacing(ctx)
 
 		adj.ShowParameter(adj.params.mcp_folder_recarms)
 		ImGui.SameLine(ctx)
 		adj.ShowParameter(adj.params.mcp_dbscales)
+		ImGui.Spacing(ctx)
+	end
+
+	if ImGui.CollapsingHeader(ctx, 'COMMON') then
+		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
 	end
 
