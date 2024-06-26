@@ -135,6 +135,7 @@ local adj = {
 		height = 650,
 		font_name = 'Arial',
 		font_size = 14,
+		font_size_header = 18,
 		font_types = {
 			None = ImGui.FontFlags_None(),
 			Italic = ImGui.FontFlags_Italic(),
@@ -412,7 +413,15 @@ function adj.ShowParameter(parameter)
 		local draw_list = ImGui.GetWindowDrawList(ctx)
 		local p_min_x, p_min_y = ImGui.GetItemRectMin(ctx)
 
-		ImGui.DrawList_AddRectFilled(draw_list, p_min_x, p_min_y, p_min_x + parameter.width, p_min_y + parameter.height, adj.config.colors.SectionBackground, 20)
+		ImGui.DrawList_AddRectFilled(
+			draw_list,
+			p_min_x,
+			p_min_y,
+			p_min_x + parameter.width,
+			p_min_y + parameter.height,
+			adj.config.colors.SectionBackground,
+			adj.config.borderRad
+		)
 
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
@@ -490,10 +499,22 @@ function adj.DrawRangeInput(parameter)
 
 end
 
+function adj.DrawCollapsingHeader(header, innerContent)
+	ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size_header))
+
+	if ImGui.CollapsingHeader(ctx, header) then
+		ImGui.PopFont(ctx)
+		innerContent()
+	else
+		ImGui.PopFont(ctx)
+	end
+end
+
 function adj.ShowWindow()
 	adj.UpdateValues()
 
 	adj.DrawHeader()
+	ImGui.Spacing(ctx)
 	ImGui.Spacing(ctx)
 
 	if not adj.opened_first_tab then
@@ -502,7 +523,7 @@ function adj.ShowWindow()
 		adj.opened_first_tab = true
 	end
 
-	if ImGui.CollapsingHeader(ctx, 'TRACK CONTROL PANEL') then
+	adj.DrawCollapsingHeader('TRACK CONTROL PANEL', function()
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.pan_type)
@@ -522,20 +543,18 @@ function adj.ShowWindow()
 		ImGui.Spacing(ctx)
 
 		if ImGui.BeginChild(ctx, "tcp_notes", adj.config.width - 10, 80, nil, adj.config.windFlags) then
-			 ImGui.PushStyleColor(ctx, ImGui.Col_Text(), adj.config.colors.Label)
 			 ImGui.TextWrapped(ctx, "*in TCP, all pan/width controls are knobs technically, Even that it looks like slider, it works the same as knob")
 
 			 ImGui.Spacing(ctx)
 			 ImGui.Spacing(ctx)
 
 			 ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
-			 ImGui.PopStyleColor(ctx)
 
 			 ImGui.EndChild(ctx)
 		end
-	end
+	end)
 
-    if ImGui.CollapsingHeader(ctx, 'MIXER PANEL') then
+	adj.DrawCollapsingHeader('MIXER PANEL', function()
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.mixer_folderindent)
@@ -545,32 +564,37 @@ function adj.ShowWindow()
 		ImGui.SameLine(ctx)
 		adj.ShowParameter(adj.params.mcp_dbscales)
 		ImGui.Spacing(ctx)
-	end
+	end)
 
-	if ImGui.CollapsingHeader(ctx, 'COMMON') then
+    adj.DrawCollapsingHeader('COMMON', function()
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
-	end
+	end)
 
-	if ImGui.CollapsingHeader(ctx, 'ABOUT SCRIPT') then
-		 ImGui.Text(ctx, 'Hello, world!')
-
-		 ImGui.Text(ctx, "Meter Position:")
-	end
+	adj.DrawCollapsingHeader('ABOUT SCRIPT', function()
+		 ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
+	end)
 
 	return true
 end
 
-function adj.getFont(font_type)
-	return adj.cached_fonts[font_type]
+function adj.getFont(font_type, font_size)
+	if not font_size then font_size = adj.config.font_size end
+
+	return adj.cached_fonts[font_type][font_size]
 end
 
 function adj.init()
 	if not adj.UpdateValues() then return end
 
 	for _, flag in pairs(adj.config.font_types) do
-		adj.cached_fonts[flag] = ImGui.CreateFont(adj.config.font_name, adj.config.font_size, flag)
-		 ImGui.Attach(ctx, adj.cached_fonts[flag])
+		adj.cached_fonts[flag] = {}
+
+		adj.cached_fonts[flag][adj.config.font_size] = ImGui.CreateFont(adj.config.font_name, adj.config.font_size, flag)
+		ImGui.Attach(ctx, adj.cached_fonts[flag][adj.config.font_size])
+
+		adj.cached_fonts[flag][adj.config.font_size_header] = ImGui.CreateFont(adj.config.font_name, adj.config.font_size_header, flag)
+		ImGui.Attach(ctx, adj.cached_fonts[flag][adj.config.font_size_header])
 	end
 
 	ImGui.SetNextWindowSize(ctx, adj.config.width, adj.config.height)
@@ -595,7 +619,7 @@ function adj.loop()
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_CellPadding(), 0, 10)
 
 	window_visible, window_opened = ImGui.Begin(ctx, SCRIPT_NAME, true, ImGui.WindowFlags_NoCollapse() |
-			 ImGui.WindowFlags_NoResize() | ImGui.WindowFlags_TopMost())
+		 ImGui.WindowFlags_NoResize() | ImGui.WindowFlags_TopMost())
 
 	if window_visible then
 		adj.ShowWindow()
