@@ -108,44 +108,45 @@ end
 ---
 ---
 
-local ImGui = {}
+local ImGui
 local CONTEXT = ({reaper.get_action_context()})
 local SCRIPT_NAME = CONTEXT[2]:match("([^/\\]+)%.lua$")
 local SCRIPT_PATH = CONTEXT[2]:match("(.*[/\\])")
 
-if reaper.ImGui_GetVersion == nil or not pcall(function()
-	dofile(reaper.GetResourcePath() .. '/Scripts/ReaTeam Extensions/API/imgui.lua') '0.8'
+if reaper.ImGui_GetBuiltinPath == nil or not pcall(function()
+	package.path = reaper.ImGui_GetBuiltinPath() .. '/?.lua'
+	ImGui = require 'imgui' '0.9'
 end) then
 	reaper.MB('Please install "ReaImGui: ReaScript binding for Dear ImGui" (minimum v.0.8) library via ReaPack to customize theme. Also you can use default theme adjuster', SCRIPT_NAME, 0)
 	reaper.Main_OnCommand(reaper.NamedCommandLookup("_RS1cbf05b0c4f875518496f34a5ce45adefe05cb67"), 0) -- Options: Show theme adjuster
 	return
 end
 
-for name, func in pairs(reaper) do
-	name = name:match('^ImGui_(.+)$')
-	if name then ImGui[name] = func end
-end
-
 local adj = {
 	cached_images = {},
 	cached_fonts = {},
 	opened_first_tab = false,
+	cached_heights = {},
 	config = {
-		width = 428,
+		width = 453,
 		height = 650,
 		font_name = 'Arial',
 		font_size = 14,
 		font_size_header = 18,
 		font_types = {
-			None = ImGui.FontFlags_None(),
-			Italic = ImGui.FontFlags_Italic(),
-			Bold = ImGui.FontFlags_Bold(),
+			None = ImGui.FontFlags_None,
+			Italic = ImGui.FontFlags_Italic,
+			Bold = ImGui.FontFlags_Bold,
 		},
-		borderRad = 20,
+		borderRad = {
+			image = 20,
+			block = 15
+		},
 		colors = {
 			White = 0xffffffff,
 			Background = 0x414141ff,
 			SectionBackground = 0x929292ff,
+			ParameterBlockBackground = 0x7d7d7dff,
 			Header = 0x252525ff,
 			Subheader = 0xd4d4d4ff,
 			Selected = 0xf89202ff,
@@ -165,7 +166,9 @@ local adj = {
 			Checkbox = 3,
 			Range = 4,
 		},
-		windFlags = ImGui.WindowFlags_NoScrollbar() | ImGui.WindowFlags_NoScrollWithMouse(),
+		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
+		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
+		tableFlags = ImGui.TableFlags_BordersV | ImGui.TableFlags_BordersOuterH | ImGui.TableFlags_RowBg,
 		header = { image = nil, src = "images/header.png" }
 	}
 }
@@ -173,9 +176,10 @@ local adj = {
 adj.params = {
 	meter_position = {
 		id = 1,
+		name = 'Meter position',
 		type = adj.config.param_types.Simple,
 		width = 400,
-		height = 182,
+		height = 165,
 		colspan = 2,
 		values = {
 			{ name = "Left", value = 1, image = "images/pref_tcp_meterleft.png", borderRad = 5 },
@@ -186,9 +190,10 @@ adj.params = {
 	},
 	pan_type = {
 		id = 2,
+		name = 'Pan/Width Visualization',
 		type = adj.config.param_types.Simple,
 		width = 400,
-		height = 160,
+		height = 155,
 		values = {
 			{ name = "Knob", value = 2, image = "images/pref_tcp_knob.png" },
 			{ name = "Slider*", value = 1, image = "images/pref_tcp_slider.png" },
@@ -196,19 +201,23 @@ adj.params = {
 	},
 	min_fxlist = {
 		id = 3,
+		name = 'FX SLOT MINIMAL WIDTH',
 	},
 	embed_position = {
 		id = 4,
+		name = 'EMBEDDED UI POSITION',
 		type = adj.config.param_types.Simple,
-		width = 400,
-		height = 160,
+		width = 195,
+		height = 165,
+		colspan = 1,
 		values = {
-			{ name = "Beside FX", value = 2, image = "images/pref_tcp_embedright.png" },
-			{ name = "Instead FX**", value = 1, image = "images/pref_tcp_embedinstead.png" },
+			{ name = "Beside FX", value = 2, image = "images/pref_tcp_embedright.png", borderRad = 5 },
+			{ name = "Instead FX**", value = 1, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
 		}
 	},
 	tcp_folder_recarms = {
 		id = 5,
+		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
 		height = 35,
@@ -216,6 +225,7 @@ adj.params = {
 	},
 	mcp_folder_recarms = {
 		id = 6,
+		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
 		height = 35,
@@ -223,6 +233,7 @@ adj.params = {
 	},
 	dbscales = {
 		id = 7,
+		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
 		height = 35,
@@ -230,6 +241,7 @@ adj.params = {
 	},
 	mcp_dbscales = {
 		id = 8,
+		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
 		height = 35,
@@ -237,9 +249,11 @@ adj.params = {
 	},
 	trans_position = {
 		id = 9,
+		name = 'Transport orientation',
 		type = adj.config.param_types.Simple,
 		width = 400,
-		height = 182,
+		height = 95,
+		--colspan = 2,
 		values = {
 			{ name = "Left", value = 1, image = "images/pref_trans_position_left.png" },
 			{ name = "Center", value = 2, image = "images/pref_trans_position_center.png" },
@@ -248,6 +262,7 @@ adj.params = {
 	},
 	tcp_solid_color = {
 		id = 10,
+		name = 'Panel Background',
 		type = adj.config.param_types.Simple,
 		width = 400,
 		height = 160,
@@ -258,6 +273,7 @@ adj.params = {
 	},
 	mcp_solid_color = {
 		id = 11,
+		name = 'Panel Background',
 		type = adj.config.param_types.Simple,
 		width = 400,
 		height = 160,
@@ -268,6 +284,7 @@ adj.params = {
 	},
 	mixer_folderindent = {
 		id = 12,
+		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Simple,
 		width = 400,
 		height = 160,
@@ -378,8 +395,8 @@ function adj.DrawImage(src, settings)
 	width = width / 2
 	height = height / 2
 
-	local border = 2
-	local borderRad = settings.borderRad or adj.config.borderRad
+	local border = 3
+	local borderRad = settings.borderRad or adj.config.borderRad.image
 
 	if ImGui.BeginChild(ctx, "img_" .. src, 0, height + border, nil, adj.config.windFlags) then
 		local draw_list = ImGui.GetWindowDrawList(ctx)
@@ -403,64 +420,34 @@ function adj.CenterText(text, color)
 	ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) +
 	math.max(0, (avail_w - text_w) // 2))
 
-	if color then ImGui.PushStyleColor(ctx, ImGui.Col_Text(), color) end
+	if color then ImGui.PushStyleColor(ctx, ImGui.Col_Text, color) end
 		ImGui.TextWrapped(ctx, text)
 	if color then ImGui.PopStyleColor(ctx) end
-end
-
-function adj.ShowParameter(parameter)
-	if ImGui.BeginChild(ctx, "parameter_" .. parameter.id, parameter.width, parameter.height, nil, adj.config.windFlags) then
-		local draw_list = ImGui.GetWindowDrawList(ctx)
-		local p_min_x, p_min_y = ImGui.GetItemRectMin(ctx)
-
-		ImGui.DrawList_AddRectFilled(
-			draw_list,
-			p_min_x,
-			p_min_y,
-			p_min_x + parameter.width,
-			p_min_y + parameter.height,
-			adj.config.colors.SectionBackground,
-			adj.config.borderRad
-		)
-
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-
-		if parameter.type == adj.config.param_types.Simple then
-			adj.DrawSimpleInput(parameter)
-		elseif parameter.type == adj.config.param_types.Checkbox then
-			adj.DrawCheckboxInput(parameter)
-		elseif parameter.type == adj.config.param_types.Range then
-			adj.DrawRangenput(parameter)
-		end
-
-		ImGui.EndChild(ctx)
-	end
 end
 
 function adj.DrawSimpleInput(parameter)
 	local values = parameter.values
 
-	adj.CenterText(parameter.data.name, adj.config.colors.Subheader)
+	ImGui.Dummy(ctx, 0, 5)
+	adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
 	if ImGui.BeginTable(ctx, "table_sub_" .. parameter.id, parameter.colspan or #values) then
 		local curCol = 0
 
-		for _, param in pairs(values) do
+		for _, val in pairs(values) do
 			ImGui.TableNextColumn(ctx)
 
-			local selColor = param.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
-
-			adj.DrawImage(SCRIPT_PATH .. param.image, { borderBg = selColor, borderRad = param.borderRad })
+			local selColor = val.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
+			adj.DrawImage(SCRIPT_PATH .. val.image, { borderBg = selColor, borderRad = val.borderRad })
 
 			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, param.value)
+				adj.SetValue(parameter, val.value)
 			end
 
-			adj.CenterText(param.name, selColor)
+			adj.CenterText(val.name, selColor)
 
 			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, param.value)
+				adj.SetValue(parameter, val.value)
 			end
 
 			curCol = curCol + 1
@@ -471,43 +458,77 @@ function adj.DrawSimpleInput(parameter)
 			end
 		end
 
-		 ImGui.EndTable(ctx)
+		ImGui.EndTable(ctx)
 	end
 end
 
 function adj.DrawCheckboxInput(parameter)
-	ImGui.SameLine(ctx, 20)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
 
-	if ImGui.BeginChild(ctx, "checkbox_" .. parameter.id, -40, parameter.height, nil, adj.config.windFlags) then
-		adj.CenterText(parameter.data.name)
-		ImGui.EndChild(ctx)
-	end
+	if ImGui.BeginTable(ctx, "sep", 2, nil, parameter.width, parameter.height) then
+		ImGui.TableSetupColumn(ctx, 'Name', ImGui.TableColumnFlags_NoHide)
+      	ImGui.TableSetupColumn(ctx, 'Size', ImGui.TableColumnFlags_WidthFixed, 30)
 
-	ImGui.SameLine(ctx)
+		ImGui.TableNextColumn(ctx)
+		ImGui.Dummy(ctx, 0, 1)
+		adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
-	if ImGui.BeginChild(ctx, "checkbox2_" .. parameter.id, 20, parameter.height, nil, adj.config.windFlags) then
+		ImGui.TableNextColumn(ctx)
+		ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+		ImGui.Dummy(ctx, 0, 1)
 		local _, newVal = ImGui.Checkbox(ctx, ' ', parameter.data.value == parameter.values[2])
 		local id = newVal and 2 or 1
 		if parameter.data.value ~= parameter.values[id] then
 			adj.SetValue(parameter, parameter.values[id])
 		end
-		ImGui.EndChild(ctx)
+		ImGui.PopStyleVar(ctx, 1)
+
+		ImGui.EndTable(ctx)
 	end
+
+	ImGui.PopStyleVar(ctx)
 end
 
 function adj.DrawRangeInput(parameter)
 
 end
 
-function adj.DrawCollapsingHeader(header, innerContent)
-	ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size_header))
+function adj.ShowParameter(parameter)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
 
-	if ImGui.CollapsingHeader(ctx, header) then
-		ImGui.PopFont(ctx)
-		innerContent()
-	else
-		ImGui.PopFont(ctx)
+	if ImGui.BeginChild(ctx, "parameter_" .. parameter.id, parameter.width, parameter.height, nil, adj.config.windFlags) then
+		if parameter.type == adj.config.param_types.Simple then
+			adj.DrawSimpleInput(parameter)
+		elseif parameter.type == adj.config.param_types.Checkbox then
+			adj.DrawCheckboxInput(parameter)
+		elseif parameter.type == adj.config.param_types.Range then
+	--		adj.DrawRangenput(parameter)
+		end
+
+		ImGui.EndChild(ctx)
 	end
+
+	ImGui.Spacing(ctx)
+
+	ImGui.PopStyleColor(ctx, 1)
+end
+
+function adj.DrawCollapsingHeader(header, innerContent)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.SectionBackground)
+
+	if ImGui.BeginChild(ctx, 'collapsible_' .. header, 0, 0, adj.config.childFlags) then
+		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size_header))
+
+		if ImGui.CollapsingHeader(ctx, header) then
+			ImGui.PopFont(ctx)
+			innerContent()
+		else
+			ImGui.PopFont(ctx)
+		end
+		ImGui.EndChild(ctx)
+	end
+
+	ImGui.PopStyleColor(ctx, 1)
 end
 
 function adj.ShowWindow()
@@ -528,31 +549,35 @@ function adj.ShowWindow()
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.pan_type)
 		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.embed_position)
+
+		if ImGui.BeginTable(ctx, "sep", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.embed_position)
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.dbscales)
+			adj.ShowParameter(adj.params.tcp_folder_recarms)
+
+			ImGui.EndTable(ctx)
+		end
+
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.meter_position)
 		ImGui.Spacing(ctx)
 
-		adj.ShowParameter(adj.params.tcp_folder_recarms)
-		ImGui.SameLine(ctx)
-		adj.ShowParameter(adj.params.dbscales)
-		ImGui.Spacing(ctx)
-
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 
-		if ImGui.BeginChild(ctx, "tcp_notes", adj.config.width - 10, 80, nil, adj.config.windFlags) then
-			 ImGui.TextWrapped(ctx, "*in TCP, all pan/width controls are knobs technically, Even that it looks like slider, it works the same as knob")
+		ImGui.TextWrapped(ctx, "*in TCP, all pan/width controls are knobs technically, Even that it looks like slider, it works the same as knob")
 
-			 ImGui.Spacing(ctx)
-			 ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
 
-			 ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
-
-			 ImGui.EndChild(ctx)
-		end
+		ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
 	end)
+
+	ImGui.Spacing(ctx)
 
 	adj.DrawCollapsingHeader('MIXER PANEL', function()
 		adj.ShowParameter(adj.params.mcp_solid_color)
@@ -560,20 +585,32 @@ function adj.ShowWindow()
 		adj.ShowParameter(adj.params.mixer_folderindent)
 		ImGui.Spacing(ctx)
 
-		adj.ShowParameter(adj.params.mcp_folder_recarms)
-		ImGui.SameLine(ctx)
-		adj.ShowParameter(adj.params.mcp_dbscales)
+		if ImGui.BeginTable(ctx, "sep2", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.mcp_folder_recarms)
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.mcp_dbscales)
+
+			ImGui.EndTable(ctx)
+		end
+
 		ImGui.Spacing(ctx)
 	end)
+
+	ImGui.Spacing(ctx)
 
     adj.DrawCollapsingHeader('COMMON', function()
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
 	end)
 
+	ImGui.Spacing(ctx)
+
 	adj.DrawCollapsingHeader('ABOUT SCRIPT', function()
 		 ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
 	end)
+
 
 	return true
 end
@@ -603,38 +640,43 @@ function adj.init()
 end
 
 function adj.loop()
-	ImGui.SetConfigVar(ctx, ImGui.ConfigVar_ViewportsNoDecoration(), 0)
+	--ImGui.SetConfigVar(ctx, ImGui.ConfigVar_ViewportsNoDecoration(), 0)
 
 	ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold))
-	ImGui.PushStyleColor(ctx, ImGui.Col_WindowBg(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Separator(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Header(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderActive(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderHovered(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Text(), adj.config.colors.Subheader)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Border(), adj.config.colors.Background)
-	--ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg(), 0xffffffff)
 
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding(), 0, 0)
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_CellPadding(), 0, 10)
+	ImGui.PushStyleColor(ctx, ImGui.Col_WindowBg, adj.config.colors.Background)
+	ImGui.PushStyleColor(ctx, ImGui.Col_TitleBg, adj.config.colors.Background)
+	ImGui.PushStyleColor(ctx, ImGui.Col_TitleBgActive, adj.config.colors.Background)
+	ImGui.PushStyleColor(ctx, ImGui.Col_TitleBgCollapsed, adj.config.colors.Background)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Separator, adj.config.colors.Background)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Header, 0)
+	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderActive, 0)
+	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderHovered, 0)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Border, adj.config.colors.SectionBackground)
+	ImGui.PushStyleColor(ctx, ImGui.Col_TabHovered, adj.config.colors.White)
 
-	window_visible, window_opened = ImGui.Begin(ctx, SCRIPT_NAME, true, ImGui.WindowFlags_NoCollapse() |
-		 ImGui.WindowFlags_NoResize() | ImGui.WindowFlags_TopMost())
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_WindowBorderSize, 1);
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_CellPadding, 5, 5)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ChildRounding, adj.config.borderRad.block)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_WindowPadding, 10, 10)
+
+	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse |
+		 ImGui.WindowFlags_NoResize | ImGui.WindowFlags_TopMost)
 
 	if window_visible then
 		adj.ShowWindow()
 	end
 
-	ImGui.PopStyleVar(ctx, 2)
-	ImGui.PopStyleColor(ctx, 7)
+	ImGui.PopStyleVar(ctx, 5)
+	ImGui.PopStyleColor(ctx, 11)
 	ImGui.PopFont(ctx)
 
 	ImGui.End(ctx)
 
   	if window_opened then
     	reaper.defer(adj.loop)
-	else
-		reaper.ImGui_DestroyContext(ctx)
   	end
 end
 
