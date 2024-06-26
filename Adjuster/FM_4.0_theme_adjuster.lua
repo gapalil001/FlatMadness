@@ -611,7 +611,7 @@ function adj.loop()
 	ImGui.PushStyleColor(ctx, ImGui.Col_Header(), adj.config.colors.Background)
 	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderActive(), adj.config.colors.Background)
 	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderHovered(), adj.config.colors.Background)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Text(), adj.config.colors.Text)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Text(), adj.config.colors.Subheader)
 	ImGui.PushStyleColor(ctx, ImGui.Col_Border(), adj.config.colors.Background)
 	--ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg(), 0xffffffff)
 
