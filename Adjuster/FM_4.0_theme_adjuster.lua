@@ -505,10 +505,12 @@ function adj.DrawRangeInput(parameter)
 		--local FLT_MIN, FLT_MAX = ImGui.NumericLimits_Float()
 		ImGui.SetNextItemWidth(ctx, -10)
 		ImGui.Unindent(ctx, -10)
+		ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Subheader)
 		local _, newVal = ImGui.SliderInt(ctx, "##", parameter.data.value, parameter.data.min, parameter.data.max)
 		if newVal ~= parameter.data.value then
 			adj.SetValue(parameter, newVal)
 		end
+		ImGui.PopStyleColor(ctx, 1)
 
 		ImGui.EndTable(ctx)
 	end
@@ -677,22 +679,32 @@ function adj.loop()
 	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Header)
 	ImGui.PushStyleColor(ctx, ImGui.Col_Border, adj.config.colors.SectionBackground)
 	ImGui.PushStyleColor(ctx, ImGui.Col_TabHovered, adj.config.colors.White)
+	ImGui.PushStyleColor(ctx, ImGui.Col_CheckMark, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_SliderGrab, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_SliderGrabActive, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_FrameBg, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_FrameBgHovered, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_FrameBgActive, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Button, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ButtonHovered, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, adj.config.colors.Selected)
 
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_WindowBorderSize, 1);
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 2, 2)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_CellPadding, 5, 5)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ChildRounding, adj.config.borderRad.block)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_WindowPadding, 10, 10)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, adj.config.borderRad.block)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_GrabRounding, adj.config.borderRad.block)
 
-	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse |
-		 ImGui.WindowFlags_NoResize | ImGui.WindowFlags_TopMost)
+	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse | ImGui.WindowFlags_TopMost | ImGui.ChildFlags_ResizeY)
 
 	if window_visible then
 		adj.ShowWindow()
 	end
 
-	ImGui.PopStyleVar(ctx, 5)
-	ImGui.PopStyleColor(ctx, 11)
+	ImGui.PopStyleVar(ctx, 7)
+	ImGui.PopStyleColor(ctx, 20)
 	ImGui.PopFont(ctx)
 
 	ImGui.End(ctx)
