@@ -117,7 +117,7 @@ if reaper.ImGui_GetBuiltinPath == nil or not pcall(function()
 	package.path = reaper.ImGui_GetBuiltinPath() .. '/?.lua'
 	ImGui = require 'imgui' '0.9'
 end) then
-	reaper.MB('Please install "ReaImGui: ReaScript binding for Dear ImGui" (minimum v.0.8) library via ReaPack to customize theme. Also you can use default theme adjuster', SCRIPT_NAME, 0)
+	reaper.MB('Please install "ReaImGui: ReaScript binding for Dear ImGui" (minimum v.0.9) library via ReaPack to customize theme. Also you can use default theme adjuster', SCRIPT_NAME, 0)
 	reaper.Main_OnCommand(reaper.NamedCommandLookup("_RS1cbf05b0c4f875518496f34a5ce45adefe05cb67"), 0) -- Options: Show theme adjuster
 	return
 end
@@ -202,6 +202,9 @@ adj.params = {
 	min_fxlist = {
 		id = 3,
 		name = 'FX SLOT MINIMAL WIDTH',
+		type = adj.config.param_types.Range,
+		width = 195,
+		height = 65,
 	},
 	embed_position = {
 		id = 4,
@@ -220,7 +223,7 @@ adj.params = {
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
-		height = 35,
+		height = 41,
 		values = { 1, 2 }
 	},
 	mcp_folder_recarms = {
@@ -228,7 +231,7 @@ adj.params = {
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
-		height = 35,
+		height = 41,
 		values = { 1, 2 }
 	},
 	dbscales = {
@@ -236,7 +239,7 @@ adj.params = {
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
-		height = 35,
+		height = 41,
 		values = { 1, 2 }
 	},
 	mcp_dbscales = {
@@ -244,7 +247,7 @@ adj.params = {
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
 		width = 195,
-		height = 35,
+		height = 41,
 		values = { 1, 2 }
 	},
 	trans_position = {
@@ -302,7 +305,7 @@ local ctx = ImGui.CreateContext(SCRIPT_NAME)
 local window_visible = false
 local window_opened = false
 local start_time = 0
-local cooldown = 0.5
+local cooldown = 1
 local function NeedToUpdateValues()
 	local time = reaper.time_precise()
 	if time > start_time + cooldown then
@@ -470,12 +473,12 @@ function adj.DrawCheckboxInput(parameter)
       	ImGui.TableSetupColumn(ctx, 'Size', ImGui.TableColumnFlags_WidthFixed, 30)
 
 		ImGui.TableNextColumn(ctx)
-		ImGui.Dummy(ctx, 0, 1)
+		ImGui.Dummy(ctx, 0, 3)
 		adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
 		ImGui.TableNextColumn(ctx)
 		ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
-		ImGui.Dummy(ctx, 0, 1)
+		ImGui.Dummy(ctx, 0, 3)
 		local _, newVal = ImGui.Checkbox(ctx, ' ', parameter.data.value == parameter.values[2])
 		local id = newVal and 2 or 1
 		if parameter.data.value ~= parameter.values[id] then
@@ -490,7 +493,25 @@ function adj.DrawCheckboxInput(parameter)
 end
 
 function adj.DrawRangeInput(parameter)
+	if ImGui.BeginTable(ctx, "sep", 1, nil, parameter.width, parameter.height) then
+		ImGui.TableNextRow(ctx)
+		ImGui.TableSetColumnIndex(ctx, 0)
 
+		ImGui.Dummy(ctx, 0, 1)
+		adj.CenterText(parameter.name, adj.config.colors.Subheader)
+
+		ImGui.TableNextRow(ctx)
+		ImGui.TableSetColumnIndex(ctx, 0)
+		--local FLT_MIN, FLT_MAX = ImGui.NumericLimits_Float()
+		ImGui.SetNextItemWidth(ctx, -10)
+		ImGui.Unindent(ctx, -10)
+		local _, newVal = ImGui.SliderInt(ctx, "##", parameter.data.value, parameter.data.min, parameter.data.max)
+		if newVal ~= parameter.data.value then
+			adj.SetValue(parameter, newVal)
+		end
+
+		ImGui.EndTable(ctx)
+	end
 end
 
 function adj.ShowParameter(parameter)
@@ -502,7 +523,7 @@ function adj.ShowParameter(parameter)
 		elseif parameter.type == adj.config.param_types.Checkbox then
 			adj.DrawCheckboxInput(parameter)
 		elseif parameter.type == adj.config.param_types.Range then
-	--		adj.DrawRangenput(parameter)
+			adj.DrawRangeInput(parameter)
 		end
 
 		ImGui.EndChild(ctx)
@@ -544,7 +565,7 @@ function adj.ShowWindow()
 		adj.opened_first_tab = true
 	end
 
-	adj.DrawCollapsingHeader('TRACK CONTROL PANEL', function()
+	adj.DrawCollapsingHeader('                 TRACK CONTROL PANEL', function()
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.pan_type)
@@ -557,6 +578,7 @@ function adj.ShowWindow()
 			ImGui.TableNextColumn(ctx)
 			adj.ShowParameter(adj.params.dbscales)
 			adj.ShowParameter(adj.params.tcp_folder_recarms)
+			adj.ShowParameter(adj.params.min_fxlist)
 
 			ImGui.EndTable(ctx)
 		end
@@ -579,7 +601,7 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-	adj.DrawCollapsingHeader('MIXER PANEL', function()
+	adj.DrawCollapsingHeader('                           MIXER PANEL', function()
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.mixer_folderindent)
@@ -600,14 +622,14 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-    adj.DrawCollapsingHeader('COMMON', function()
+    adj.DrawCollapsingHeader('                              COMMON', function()
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
 	end)
 
 	ImGui.Spacing(ctx)
 
-	adj.DrawCollapsingHeader('ABOUT SCRIPT', function()
+	adj.DrawCollapsingHeader('                         ABOUT SCRIPT', function()
 		 ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
 	end)
 
