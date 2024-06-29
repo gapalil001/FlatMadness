@@ -1,112 +1,9 @@
-local Pickle = {
-	clone = function(t)
-		local nt = {}
-
-	  	for i, v in pairs(t) do
-			nt[i] = v
-	  	end
-
-	  	return nt
-  	end
-}
-
-function Pickle:pickle_(root)
-	if type(root) ~= "table" then error("can only pickle tables, not ".. type(root).."s") end
-
-	self._tableToRef = {}
-	self._refToTable = {}
-	local savecount = 0
-	self:ref_(root)
-	local s = ""
-
-	while #self._refToTable > savecount do
-		savecount = savecount + 1
-		local t = self._refToTable[savecount]
-		s = s.."{"
-
-		for i, v in pairs(t) do
-			s = string.format("%s[%s]=%s,", s, self:value_(i), self:value_(v))
-		end
-		s = s.."},"
-	end
-
-	return string.format("{%s}", s)
-end
-
-function Pickle:value_(v)
-	local vtype = type(v)
-
-	if vtype == "string" then return string.format("%q", v)
-	elseif vtype == "number" then return v
-	elseif vtype == "boolean" then return tostring(v)
-	elseif vtype == "table" then return "{"..self:ref_(v).."}"
-	elseif vtype == "function" then return "{function}"
-	else error("pickle a "..type(v).." is not supported") end
-end
-
-function Pickle:ref_(t)
-	local ref = self._tableToRef[t]
-
-	if not ref then
-		if t == self then error("can't pickle the pickle class") end
-
-		table.insert(self._refToTable, t)
-		ref = #self._refToTable
-		self._tableToRef[t] = ref
-	end
-
-	return ref
-end
-
-local ek_debug_levels = {
-	All = 0,
-	Notice = 1,
-	Warning = 2,
-	Important = 3,
-	Off = 4,
-	Debug = 5,
-}
-
-ek_log_levels = {
-	Notice = ek_debug_levels.Notice,
-	Warning = ek_debug_levels.Warning,
-	Important = ek_debug_levels.Important,
-	Debug = ek_debug_levels.Debug,
-}
-
-local ek_debug_level = ek_debug_levels.Off
-
-function serializeTable(t)
-	return Pickle:clone():pickle_(t)
-end
-
-function Log(msg, level, param)
-	if not level then level = ek_log_levels.Important end
-	if level < ek_debug_level then return end
-
-	if param ~= nil then
-		if type(param) == 'boolean' then param = param and 'true' or 'false' end
-		if type(param) == 'table' then param = serializeTable(param) end
-
-		msg = string.gsub(msg, "{param}", param)
-	else
-		if type(msg) == 'table' then msg = serializeTable(msg)
-		else msg = tostring(msg) end
-	end
-
-	if msg then
-		reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ")
-		reaper.ShowConsoleMsg(msg)
-		reaper.ShowConsoleMsg('\n')
-	end
-end
-
-----
-----
----
----
----
----
+-- @description FM_4.0_theme_adjuster
+-- @author Ed Kashinsky
+-- @about Theme adjuster for Flat Maddness theme
+-- @version 1.0.0
+-- @provides
+--   images/*.png
 
 local ImGui
 local CONTEXT = ({reaper.get_action_context()})
@@ -120,6 +17,17 @@ end) then
 	reaper.MB('Please install "ReaImGui: ReaScript binding for Dear ImGui" (minimum v.0.9) library via ReaPack to customize theme. Also you can use default theme adjuster', SCRIPT_NAME, 0)
 	reaper.Main_OnCommand(reaper.NamedCommandLookup("_RS1cbf05b0c4f875518496f34a5ce45adefe05cb67"), 0) -- Options: Show theme adjuster
 	return
+end
+
+-- Create entry point for default adjuster if needed
+local path = (reaper.GetResourcePath() .. '/Scripts/Cockos/FM_4.0_theme_adjuster.lua'):gsub('\\','/')
+if not reaper.file_exists(path) then
+	local file = io.open(path,"w+")
+	if file then
+		io.output(file)
+		io.write("reaper.Main_OnCommand(reaper.NamedCommandLookup(\"_RS41f817f7ffd55d2ee0d9e54d1d04fe978ac0450c\"), 0) -- FM_4.0_theme_adjuster \n")
+		io.close(file)
+	end
 end
 
 local adj = {
@@ -214,8 +122,8 @@ adj.params = {
 		height = 165,
 		colspan = 1,
 		values = {
-			{ name = "Beside FX", value = 2, image = "images/pref_tcp_embedright.png", borderRad = 5 },
-			{ name = "Instead FX**", value = 1, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
+			{ name = "Beside FX", value = 1, image = "images/pref_tcp_embedright.png", borderRad = 5 },
+			{ name = "Instead FX**", value = 2, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
 		}
 	},
 	tcp_folder_recarms = {
@@ -538,6 +446,7 @@ end
 
 function adj.DrawCollapsingHeader(header, innerContent)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.SectionBackground)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Header)
 
 	if ImGui.BeginChild(ctx, 'collapsible_' .. header, 0, 0, adj.config.childFlags) then
 		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size_header))
@@ -551,7 +460,7 @@ function adj.DrawCollapsingHeader(header, innerContent)
 		ImGui.EndChild(ctx)
 	end
 
-	ImGui.PopStyleColor(ctx, 1)
+	ImGui.PopStyleColor(ctx, 2)
 end
 
 function adj.ShowWindow()
@@ -676,7 +585,7 @@ function adj.loop()
 	ImGui.PushStyleColor(ctx, ImGui.Col_Header, 0)
 	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderActive, 0)
 	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderHovered, 0)
-	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.White)
 	ImGui.PushStyleColor(ctx, ImGui.Col_Border, adj.config.colors.SectionBackground)
 	ImGui.PushStyleColor(ctx, ImGui.Col_TabHovered, adj.config.colors.White)
 	ImGui.PushStyleColor(ctx, ImGui.Col_CheckMark, adj.config.colors.Selected)
