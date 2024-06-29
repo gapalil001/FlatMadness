@@ -210,6 +210,7 @@ adj.params = {
 }
 
 local ctx = ImGui.CreateContext(SCRIPT_NAME)
+local _, FLT_MAX = ImGui.NumericLimits_Float()
 local window_visible = false
 local window_opened = false
 local start_time = 0
@@ -228,6 +229,21 @@ function adj.SetValue(parameter, value)
 	parameter.data.value = value
 	reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
 	reaper.ThemeLayout_RefreshAll()
+end
+
+function adj.Link(text, url)
+	if not reaper.CF_ShellExecute then
+		ImGui.Text(ctx, text)
+		return
+	end
+
+	local color = ImGui.GetStyleColor(ctx, ImGui.Col_CheckMark)
+	ImGui.TextColored(ctx, color, text)
+	if ImGui.IsItemClicked(ctx) then
+		reaper.CF_ShellExecute(url)
+	elseif ImGui.IsItemHovered(ctx) then
+		ImGui.SetMouseCursor(ctx, ImGui.MouseCursor_Hand)
+	end
 end
 
 function adj.UpdateValues()
@@ -410,7 +426,6 @@ function adj.DrawRangeInput(parameter)
 
 		ImGui.TableNextRow(ctx)
 		ImGui.TableSetColumnIndex(ctx, 0)
-		--local FLT_MIN, FLT_MAX = ImGui.NumericLimits_Float()
 		ImGui.SetNextItemWidth(ctx, -10)
 		ImGui.Unindent(ctx, -10)
 		ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Subheader)
@@ -541,7 +556,10 @@ function adj.ShowWindow()
 	ImGui.Spacing(ctx)
 
 	adj.DrawCollapsingHeader('                         ABOUT SCRIPT', function()
-		 ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
+		ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by                        .')
+		--ImGui.SameLine(ctx, 300, 30)
+		ImGui.SetCursorPos(ctx, 308, 50)
+		adj.Link("Ed Kashinsky", "https://github.com/edkashinsky/reaper-reableton-scripts")
 	end)
 
 
@@ -575,6 +593,8 @@ end
 function adj.loop()
 	--ImGui.SetConfigVar(ctx, ImGui.ConfigVar_ViewportsNoDecoration(), 0)
 
+	ImGui.SetNextWindowSizeConstraints(ctx, -1, 0, -1, FLT_MAX)
+
 	ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold))
 
 	ImGui.PushStyleColor(ctx, ImGui.Col_WindowBg, adj.config.colors.Background)
@@ -597,6 +617,11 @@ function adj.loop()
 	ImGui.PushStyleColor(ctx, ImGui.Col_Button, adj.config.colors.Selected)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ButtonHovered, adj.config.colors.Selected)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ResizeGrip, adj.config.colors.Header)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ResizeGripHovered, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ResizeGripActive, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_SeparatorHovered, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_SeparatorActive, adj.config.colors.Selected)
 
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_WindowBorderSize, 1);
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 2, 2)
@@ -606,14 +631,14 @@ function adj.loop()
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, adj.config.borderRad.block)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_GrabRounding, adj.config.borderRad.block)
 
-	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse | ImGui.WindowFlags_TopMost | ImGui.ChildFlags_ResizeY)
+	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse | ImGui.WindowFlags_TopMost | ImGui.WindowFlags_NoDocking)
 
 	if window_visible then
 		adj.ShowWindow()
 	end
 
 	ImGui.PopStyleVar(ctx, 7)
-	ImGui.PopStyleColor(ctx, 20)
+	ImGui.PopStyleColor(ctx, 25)
 	ImGui.PopFont(ctx)
 
 	ImGui.End(ctx)
