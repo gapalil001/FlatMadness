@@ -1,7 +1,7 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Maddness theme
--- @version 1.0.1
+-- @version 1.0.2
 -- @provides
 --   [nomain] images/*.png
 
@@ -15,7 +15,7 @@ if reaper.ImGui_GetBuiltinPath == nil or not pcall(function()
 	ImGui = require 'imgui' '0.9'
 end) then
 	reaper.MB('Please install "ReaImGui: ReaScript binding for Dear ImGui" (minimum v.0.9) library via ReaPack to customize theme. Also you can use default theme adjuster', SCRIPT_NAME, 0)
-	reaper.Main_OnCommand(reaper.NamedCommandLookup("_RS9d0870d75a3269255f3cc43d51e1870c8d76ac70"), 0) -- Options: Show theme adjuster
+	reaper.Main_OnCommand(reaper.NamedCommandLookup("_RS1cbf05b0c4f875518496f34a5ce45adefe05cb67"), 0) -- Options: Show theme adjuster
 	return
 end
 
@@ -25,7 +25,7 @@ if not reaper.file_exists(path) then
 	local file = io.open(path,"w+")
 	if file then
 		io.output(file)
-		io.write("reaper.Main_OnCommand(reaper.NamedCommandLookup(\"_RS41f817f7ffd55d2ee0d9e54d1d04fe978ac0450c\"), 0) -- FM_4.0_theme_adjuster \n")
+		io.write("reaper.Main_OnCommand(reaper.NamedCommandLookup(\"_RS9d0870d75a3269255f3cc43d51e1870c8d76ac70\"), 0) -- FM_4.0_theme_adjuster \n")
 		io.close(file)
 	end
 end
