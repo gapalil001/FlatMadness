@@ -1,7 +1,7 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Maddness theme
--- @version 1.0.2
+-- @version 1.0.3
 -- @provides
 --   [nomain] images/*.png
 
@@ -276,10 +276,20 @@ function adj.UpdateValues()
 end
 
 function adj.GetImage(src)
-	if adj.cached_images[src] == nil or not ImGui.ValidatePtr(adj.cached_images[src].obj, 'ImGui_Image*') then
+	for id, image in pairs(adj.cached_images) do
+		if not ImGui.ValidatePtr(image.obj, 'ImGui_Image*') then
+			adj.cached_images[id] = nil
+		end
+	end
+
+	if adj.cached_images[src] == nil then
 		local img = ImGui.CreateImage(src)
 		local w, h = ImGui.Image_GetSize(img)
-		adj.cached_images[src] = { obj = img, width = w, height = h }
+		adj.cached_images[src] = {
+			obj = img,
+			width = w,
+			height = h
+		}
 	end
 
 	return adj.cached_images[src]
