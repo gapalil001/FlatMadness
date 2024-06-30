@@ -1,19 +1,22 @@
 @description Flat Madness Grey
-@version 3.81
+@version 4.0
 @changelog
- - new TCP behavior when FX or send lists are not visible
-  - improved meter and TCP elements behavior on collapsing
- - whole new envelope panel 
- - added TCP elements for triggering fixed lanes (_dev only)
- - some re-factoring stuff
- - some bugs fixed
- - some bugs added
+    - Advanced Tools For Fixed Lanes
+    - Toggle Mcp Folder Padding
+    - Availability To Set Color From Tcp And Mcp
+    - Redesigned Layouts
+    - Brand new custom theme adjuster
+    - Unmute/unsolo all from transport panel
+    - Fast access to theme adjuster from transport
+    - Fast switch between docked and floating transport
+    - Disabling folder State from MCP
+    - More smooth collapsing behavior
+    - 4 color schemes
 @provides Flat Madness Grey.ReaperThemeZip
 @author Dmytro Hapochka
-@links
-  Forum Thread https://forum.cockos.com/showthread.php?t=247086
-@screenshots
-  Overview https://stash.reaper.fm/44544/FM171D.png
+@donation https://buymeacoffee.com/flatmadness
+@link Forum Thread https://forum.cockos.com/showthread.php?t=247086
+@screenshot https://github.com/gapalil001/FlatMadness/raw/master/Assets/images/screenshot.png
 @about
   Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" 
   enjoy!
