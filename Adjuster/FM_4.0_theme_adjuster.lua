@@ -50,6 +50,7 @@ local adj = {
 			image = 20,
 			block = 15
 		},
+		border = 3,
 		colors = {
 			White = 0xffffffff,
 			Background = 0x414141ff,
@@ -322,8 +323,8 @@ function adj.DrawImage(src, settings)
 	width = width / 2
 	height = height / 2
 
-	local border = 3
-	local borderRad = settings.borderRad or adj.config.borderRad.image
+	local border = settings and settings.border or adj.config.border
+	local borderRad = settings and settings.borderRad or adj.config.borderRad.image
 
 	if ImGui.BeginChild(ctx, "img_" .. src, 0, height + border, nil, adj.config.windFlags) then
 		local draw_list = ImGui.GetWindowDrawList(ctx)
@@ -333,9 +334,9 @@ function adj.DrawImage(src, settings)
 
 		p_min_x = p_min_x + math.max(0, (avail_w - width) // 2)
 
-		ImGui.DrawList_AddRectFilled(draw_list, p_min_x - border, p_min_y, p_min_x + width + border, p_min_y + height + border, settings.borderBg or adj.config.colors.Header, borderRad + border)
+		ImGui.DrawList_AddRectFilled(draw_list, p_min_x - border, p_min_y, p_min_x + width + border, p_min_y + height + border, settings and settings.borderBg or adj.config.colors.Header, borderRad + border)
 	 	ImGui.DrawList_AddImageRounded(draw_list, image.obj, p_min_x, p_min_y + border, p_min_x + width, p_min_y + height, 0, 0, 1, 1, adj.config.colors.White, borderRad)
-	 	--ImGui.Dummy(ctx, p_min_x, p_min_y)
+	 	--ImGui.Dummy(ctx, width, height)
 		ImGui.EndChild(ctx)
 	end
 end
@@ -560,8 +561,25 @@ function adj.ShowWindow()
 		--ImGui.SameLine(ctx, 300, 30)
 		ImGui.SetCursorPos(ctx, 308, 50)
 		adj.Link("Ed Kashinsky", "https://github.com/edkashinsky/reaper-reableton-scripts")
-	end)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
 
+		if ImGui.BeginTable(ctx, "sep3", 2) then
+			ImGui.TableNextColumn(ctx)
+
+			adj.DrawImage(SCRIPT_PATH .. "/images/bmc_qr_hapochka.png", { width = 270, borderRad = 8, border = 2 })
+			ImGui.Dummy(ctx, 195, 0)
+			adj.CenterText("Support Dmytro Hapochka")
+
+			ImGui.TableNextColumn(ctx)
+
+			adj.DrawImage(SCRIPT_PATH .. "/images/bmc_qr_kashinsky.png", { width = 270, borderRad = 8, border = 2 })
+			ImGui.Dummy(ctx, 195, 0)
+			adj.CenterText("Support Ed Kashinsky")
+
+			ImGui.EndTable(ctx)
+		end
+	end)
 
 	return true
 end
