@@ -3,7 +3,7 @@
 -- @about Theme adjuster for Flat Maddness theme
 -- @version 1.0.0
 -- @provides
---   images/*.png
+--   [nomain] images/*.png
 
 local ImGui
 local CONTEXT = ({reaper.get_action_context()})
