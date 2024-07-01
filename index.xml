@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="8333f090f6f9fec49b3e13e2f6445d08d501c5d4">
+<index version="1" name="Flat Madness Theme" commit="2bc5d502b84c53d6dbb723050a3ee2298f41c14d">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -267,7 +267,7 @@
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
 \widowctrl\hyphauto
 
-{\pard \ql \f0 \sa180 \li0 \fi0 Theme adjuster for Flat Maddness theme\par}
+{\pard \ql \f0 \sa180 \li0 \fi0 Theme adjuster for Flat Madness theme\par}
 }
 ]]></description>
       </metadata>
