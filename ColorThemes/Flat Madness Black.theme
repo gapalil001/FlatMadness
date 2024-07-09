@@ -1,17 +1,7 @@
 @description Flat Madness Black
-@version 4.0.1
+@version 4.0.2
 @changelog
-    - Advanced Tools For Fixed Lanes
-    - Toggle Mcp Folder Padding
-    - Availability To Set Color From Tcp And Mcp
-    - Redesigned Layouts
-    - Brand new custom theme adjuster
-    - Unmute/unsolo all from transport panel
-    - Fast access to theme adjuster from transport
-    - Fast switch between docked and floating transport
-    - Disabling folder State from MCP
-    - More smooth collapsing behavior
-    - 4 color schemes
+    Fixed bug of wrong view when FX was disabled in TCP
 @provides Flat Madness Black.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
