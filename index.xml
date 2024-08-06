@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="3c700d1d03238600966e131856d9ccb00674fc14">
+<index version="1" name="Flat Madness Theme" commit="4d7defbdbc3fcaa203706d1f595a81dfdf943802">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -69,6 +69,16 @@
         <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
+        <changelog><![CDATA[- fixed small bugs in longname TCP layout
+- changed behavior for TCP folders when option “record stuff in folders” is enabled
+- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
+- darken meter background in MCP meterbridge layout
+- re-designed routing button in MCP meterbridge layout
+- added colored background for track name in MCP meterbridge layout, and letters become brighter.
+- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -136,6 +146,16 @@
       <version name="4.0.2" author="Dmytro Hapochka" time="2024-07-09T08:28:45Z">
         <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
+      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
+        <changelog><![CDATA[- fixed small bugs in longname TCP layout
+- changed behavior for TCP folders when option “record stuff in folders” is enabled
+- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
+- darken meter background in MCP meterbridge layout
+- re-designed routing button in MCP meterbridge layout
+- added colored background for track name in MCP meterbridge layout, and letters become brighter.
+- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -206,6 +226,16 @@
         <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
+        <changelog><![CDATA[- fixed small bugs in longname TCP layout
+- changed behavior for TCP folders when option “record stuff in folders” is enabled
+- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
+- darken meter background in MCP meterbridge layout
+- re-designed routing button in MCP meterbridge layout
+- added colored background for track name in MCP meterbridge layout, and letters become brighter.
+- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -273,6 +303,16 @@
       <version name="4.0.2" author="Dmytro Hapochka" time="2024-07-09T08:28:45Z">
         <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
+        <changelog><![CDATA[- fixed small bugs in longname TCP layout
+- changed behavior for TCP folders when option “record stuff in folders” is enabled
+- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
+- darken meter background in MCP meterbridge layout
+- re-designed routing button in MCP meterbridge layout
+- added colored background for track name in MCP meterbridge layout, and letters become brighter.
+- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
