@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="4d7defbdbc3fcaa203706d1f595a81dfdf943802">
+<index version="1" name="Flat Madness Theme" commit="8365a3fedd8eaff63c5d5ab673377c029d9bf3ab">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -79,6 +79,18 @@
 - MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
+        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
+- fixed wrong track name alignment in TCP "longname" layout
+- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
+- if there is not enough panel width to contain the FX list
+- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
+- new color scheme for items in arrange view (dark and black themes only)
+- new color scheme for TCP in dark and black themes
+- fixed some minor issues with everything
+- default MCP layout was a bit re-designed]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -156,6 +168,18 @@
 - added colored background for track name in MCP meterbridge layout, and letters become brighter.
 - MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
+      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
+        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
+- fixed wrong track name alignment in TCP "longname" layout
+- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
+- if there is not enough panel width to contain the FX list
+- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
+- new color scheme for items in arrange view (dark and black themes only)
+- new color scheme for TCP in dark and black themes
+- fixed some minor issues with everything
+- default MCP layout was a bit re-designed]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -236,6 +260,18 @@
 - MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
+        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
+- fixed wrong track name alignment in TCP "longname" layout
+- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
+- if there is not enough panel width to contain the FX list
+- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
+- new color scheme for items in arrange view (dark and black themes only)
+- new color scheme for TCP in dark and black themes
+- fixed some minor issues with everything
+- default MCP layout was a bit re-designed]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -313,6 +349,18 @@
 - added colored background for track name in MCP meterbridge layout, and letters become brighter.
 - MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
+        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
+- fixed wrong track name alignment in TCP "longname" layout
+- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
+- if there is not enough panel width to contain the FX list
+- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
+- new color scheme for items in arrange view (dark and black themes only)
+- new color scheme for TCP in dark and black themes
+- fixed some minor issues with everything
+- default MCP layout was a bit re-designed]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
