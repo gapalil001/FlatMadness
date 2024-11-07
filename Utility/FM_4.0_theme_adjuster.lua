@@ -1,7 +1,9 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.0.4
+-- @version 1.0.5
+-- @changelog
+--   Fixed bug: excessive creation of short-lived resources for images
 -- @provides
 --   [nomain] images/*.png
 
@@ -276,23 +278,30 @@ function adj.UpdateValues()
 end
 
 function adj.GetImage(src)
-	for id, image in pairs(adj.cached_images) do
-		if not ImGui.ValidatePtr(image.obj, 'ImGui_Image*') then
-			adj.cached_images[id] = nil
+	local img = adj.cached_images[src]
+	if not img then
+		img = {}
+		adj.cached_images[src] = img
+	end
+
+	if not ImGui.ValidatePtr(img.obj, 'ImGui_Image*') then
+		if img.obj then adj.cached_images[img.obj] = nil end
+
+		img.obj = ImGui.CreateImage(src)
+
+		--reaper.ShowConsoleMsg('create ' .. src .. '\n')
+
+		local prev = adj.cached_images[img.obj]
+		if prev and prev ~= img then
+			prev.obj = nil
 		end
+
+		adj.cached_images[img.obj] = img
 	end
 
-	if adj.cached_images[src] == nil then
-		local img = ImGui.CreateImage(src)
-		local w, h = ImGui.Image_GetSize(img)
-		adj.cached_images[src] = {
-			obj = img,
-			width = w,
-			height = h
-		}
-	end
+	img.width, img.height = ImGui.Image_GetSize(img.obj)
 
-	return adj.cached_images[src]
+	return img
 end
 
 function adj.DrawHeader()
