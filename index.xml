@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="cc030f7d38d1ad442f648b65666b2b91f014c9ee">
+<index version="1" name="Flat Madness Theme" commit="77ddb3b0eb2e54d709d17521b472d9894b92ca08">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -91,6 +91,12 @@
 - default MCP layout was a bit re-designed]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
+        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
+- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
+- fixed some small visual inconsistencies across TCP]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -180,6 +186,12 @@
 - fixed some minor issues with everything
 - default MCP layout was a bit re-designed]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
+      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
+        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
+- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
+- fixed some small visual inconsistencies across TCP]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -272,6 +284,12 @@
 - default MCP layout was a bit re-designed]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
+        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
+- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
+- fixed some small visual inconsistencies across TCP]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -361,6 +379,12 @@
 - fixed some minor issues with everything
 - default MCP layout was a bit re-designed]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
+        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
+- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
+- fixed some small visual inconsistencies across TCP]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
