@@ -1,15 +1,9 @@
 @description Flat Madness Black
-@version 4.1.0
+@version 4.1.1
 @changelog
-    - improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
-    - fixed wrong track name alignment in TCP "longname" layout
-    - improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
-    - if there is not enough panel width to contain the FX list
-    - when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
-    - new color scheme for items in arrange view (dark and black themes only)
-    - new color scheme for TCP in dark and black themes
-    - fixed some minor issues with everything
-    - default MCP layout was a bit re-designed
+    - improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
+    - when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
+    - fixed some small visual inconsistencies across TCP
 @provides Flat Madness Black.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
