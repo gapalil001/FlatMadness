@@ -255,7 +255,7 @@ adj.params = {
 		values = {
 			{ name = "Solid", value = 2, image = "images/pref_mcp_greybg.png", borderRad = 15 },
 			{ name = "Color", value = 1, image = "images/pref_mcp_colorbg.png", borderRad = 15 },
-			{ name = "Custom", value = 3, image = "images/pref_tcp_custom.png", borderRad = 15 },
+			{ name = "Custom", value = 3, image = "images/pref_mcp_custom.png", borderRad = 15 },
 		}
 	},
 	mixer_folderindent = {
@@ -328,7 +328,7 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 62,
-		values = { 1, 2 }
+		values = { 2, 1 }
 	},
 	longnamestate = {
 		id = 21,
@@ -345,7 +345,7 @@ adj.params = {
 		height = 62,
 	},
 	tcp_layout = {
-		name = 'Layout',
+		name = 'Global TCP Layout',
 		type = adj.config.param_types.Layout,
 		width = 420,
 		height = 155,
@@ -364,7 +364,7 @@ adj.params = {
 		end
 	},
 	mcp_layout = {
-		name = 'Layout',
+		name = 'Global MCP Layout',
 		type = adj.config.param_types.Layout,
 		width = 420,
 		height = 155,
@@ -1064,11 +1064,11 @@ function adj.ShowWindow()
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 
-		if adj.GetVersion() then
+		if adj.GetVersion() ~= nil then
 			ImGui.TextWrapped(ctx, 'Script version: ' .. adj.GetVersion())
 		end
 
-		if adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip") then
+		if adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip") ~= nil then
 			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip"))
 		end
 
