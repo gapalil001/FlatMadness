@@ -32,13 +32,48 @@ if not reaper.file_exists(path) then
 	end
 end
 
+local Pickle = { clone = function(t) local nt = {} for i, v in pairs(t) do nt[i] = v end return nt end}
+function Pickle:pickle_(root) if type(root) ~= "table" then error("can only pickle tables, not ".. type(root).."s") end self._tableToRef = {} self._refToTable = {} local savecount = 0 self:ref_(root) local s = "" while #self._refToTable > savecount do savecount = savecount + 1 local t = self._refToTable[savecount] s = s.."{" for i, v in pairs(t) do s = string.format("%s[%s]=%s,", s, self:value_(i), self:value_(v)) end s = s.."}," end return string.format("{%s}", s) end
+function Pickle:value_(v) local vtype = type(v) if vtype == "string" then return string.format("%q", v) elseif vtype == "number" then return v elseif vtype == "boolean" then return tostring(v) elseif vtype == "table" then return "{"..self:ref_(v).."}" elseif vtype == "function" then return "{function}" else error("pickle a "..type(v).." is not supported") end end
+function Pickle:ref_(t) local ref = self._tableToRef[t] if not ref then if t == self then error("can't pickle the pickle class") end table.insert(self._refToTable, t) ref = #self._refToTable self._tableToRef[t] = ref end return ref end
+
+local _, _, imGuiVersion = reaper.ImGui_GetVersion()
+local function serializeTable(t) return Pickle:clone():pickle_(t) end
+local function unserializeTable(s) if s == nil or s == '' then return end if type(s) ~= "string" then error("can't unpickle a "..type(s)..", only strings") end local gentables = load("return " .. s) if gentables then local tables = gentables() if tables then for tnum = 1, #tables do local t = tables[tnum] local tcopy = {} for i, v in pairs(t) do tcopy[i] = v end for i, v in pairs(tcopy) do local ni, nv if type(i) == "table" then ni = tables[i[1]] else ni = i end if type(v) == "table" then nv = tables[v[1]] else nv = v end t[i] = nil t[ni] = nv end end return tables[1] end else end end
+local function join(list, delimiter) if type(list) ~= 'table' or #list == 0 then return "" end local startNum = list[0] and 0 or 1 local string = list[startNum] for i = startNum + 1, #list do string = string .. delimiter .. list[i] end return string end
+local function in_array(tab, val) for _, value in ipairs(tab) do if value == val then return true end end return false end
+local function isEmpty(value) if value == nil then return true end if type(value) == 'boolean' and value == false then return true end if type(value) == 'table' and next(value) == nil then return true end if type(value) == 'number' and value == 0 then return true end if type(value) == 'string' and string.len(value) == 0 then return true end return false end
+local function round(number, decimals) if not decimals then decimals = 0 end local power = 10 ^ decimals return math.ceil(number * power) / power end
+
+local ek_log_levels = { Debug = 1 }
+local function Log(msg) if type(msg) == 'table' then msg = serializeTable(msg) else msg = tostring(msg) end if msg then reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ") reaper.ShowConsoleMsg(msg) reaper.ShowConsoleMsg('\n') end end
+
+local ctx = ImGui.CreateContext(SCRIPT_NAME)
+local _, FLT_MAX = ImGui.NumericLimits_Float()
+local window_visible = false
+local window_opened = false
+local start_time = 0
+local cooldown = 1
+local key_ext_prefix = "fm4_adjuster"
+local key_ext_prefix_resets = "presets"
+
+local function NeedToUpdateValues()
+	local time = reaper.time_precise()
+	if time > start_time + cooldown then
+		start_time = time
+		return true
+	else
+		return false
+	end
+end
+
 local adj = {
 	cached_images = {},
 	cached_fonts = {},
 	opened_first_tab = false,
 	cached_heights = {},
 	config = {
-		width = 453,
+		width = 472,
 		height = 650,
 		font_name = 'Arial',
 		font_size = 14,
@@ -76,20 +111,33 @@ local adj = {
 			OneImage = 2,
 			Checkbox = 3,
 			Range = 4,
+			PanelBackground = 5,
+			Layout = 6
 		},
 		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
 		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
 		tableFlags = ImGui.TableFlags_BordersV | ImGui.TableFlags_BordersOuterH | ImGui.TableFlags_RowBg,
 		header = { image = nil, src = "images/header.png" }
-	}
+	},
+	presets = {
+		current = nil,
+		default = {
+			{ name = "Like this preset", values = { meter_position = 1, pan_type = 1, min_fxlist = 1, embed_position = 1, tcp_folder_recarms = 1 } },
+			{ name = "My favorite one", values = { meter_position = 2, pan_type = 2, min_fxlist = 2, embed_position = 2, tcp_folder_recarms = 2 } },
+		}
+	},
+	currentPreset = nil,
 }
 
 adj.params = {
+	hideall = {
+		id = 0,
+	},
 	meter_position = {
 		id = 1,
 		name = 'Meter position',
 		type = adj.config.param_types.Simple,
-		width = 400,
+		width = 420,
 		height = 165,
 		colspan = 2,
 		values = {
@@ -103,7 +151,7 @@ adj.params = {
 		id = 2,
 		name = 'Pan/Width Visualization',
 		type = adj.config.param_types.Simple,
-		width = 400,
+		width = 420,
 		height = 155,
 		values = {
 			{ name = "Knob", value = 2, image = "images/pref_tcp_knob.png" },
@@ -114,14 +162,14 @@ adj.params = {
 		id = 3,
 		name = 'FX SLOT MINIMAL WIDTH',
 		type = adj.config.param_types.Range,
-		width = 195,
+		width = 205,
 		height = 65,
 	},
 	embed_position = {
 		id = 4,
 		name = 'EMBEDDED UI POSITION',
 		type = adj.config.param_types.Simple,
-		width = 195,
+		width = 205,
 		height = 165,
 		colspan = 1,
 		values = {
@@ -133,7 +181,7 @@ adj.params = {
 		id = 5,
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
-		width = 195,
+		width = 205,
 		height = 41,
 		values = { 1, 2 }
 	},
@@ -141,7 +189,7 @@ adj.params = {
 		id = 6,
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
-		width = 195,
+		width = 205,
 		height = 41,
 		values = { 1, 2 }
 	},
@@ -149,15 +197,15 @@ adj.params = {
 		id = 7,
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
-		width = 195,
+		width = 205,
 		height = 41,
 		values = { 1, 2 }
 	},
-	mcp_dbscales = {
+	mcpdbscales = {
 		id = 8,
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
-		width = 195,
+		width = 205,
 		height = 41,
 		values = { 1, 2 }
 	},
@@ -165,7 +213,7 @@ adj.params = {
 		id = 9,
 		name = 'Transport orientation',
 		type = adj.config.param_types.Simple,
-		width = 400,
+		width = 420,
 		height = 95,
 		--colspan = 2,
 		values = {
@@ -177,61 +225,201 @@ adj.params = {
 	tcp_solid_color = {
 		id = 10,
 		name = 'Panel Background',
-		type = adj.config.param_types.Simple,
-		width = 400,
-		height = 160,
+		type = adj.config.param_types.PanelBackground,
+		width = 420,
+		height = 130,
+		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident" },
+		apply = { title = "Apply to MCP", main_param = "mcp_solid_color", params = {
+			saturnc = "saturncmcp",
+			saturnalpha = "saturnalphamcp",
+			tcp_saturn_ident = "tcp_saturn_identmcp"
+		}},
 		values = {
-			{ name = "Solid", value = 2, image = "images/pref_tcp_greybg.png" },
-			{ name = "Color", value = 1, image = "images/pref_tcp_colorbg.png" },
+			{ name = "Solid", value = 2, image = "images/pref_tcp_greybg.png", borderRad = 15 },
+			{ name = "Color", value = 1, image = "images/pref_tcp_colorbg.png", borderRad = 15 },
+			{ name = "Custom", value = 3, image = "images/pref_tcp_custom.png", borderRad = 15 },
 		}
 	},
 	mcp_solid_color = {
 		id = 11,
 		name = 'Panel Background',
-		type = adj.config.param_types.Simple,
-		width = 400,
-		height = 160,
+		type = adj.config.param_types.PanelBackground,
+		width = 420,
+		height = 130,
+		custom = { "saturncmcp", "saturnalphamcp", "tcp_saturn_identmcp" },
+		apply = { title = "Apply to TCP", main_param = "tcp_solid_color", params = {
+			saturncmcp = "saturnc",
+			saturnalphamcp = "saturnalpha",
+			tcp_saturn_identmcp = "tcp_saturn_ident"
+		}},
 		values = {
-			{ name = "Solid", value = 2, image = "images/pref_mcp_greybg.png" },
-			{ name = "Color", value = 1, image = "images/pref_mcp_colorbg.png" },
+			{ name = "Solid", value = 2, image = "images/pref_mcp_greybg.png", borderRad = 15 },
+			{ name = "Color", value = 1, image = "images/pref_mcp_colorbg.png", borderRad = 15 },
+			{ name = "Custom", value = 3, image = "images/pref_tcp_custom.png", borderRad = 15 },
 		}
 	},
 	mixer_folderindent = {
 		id = 12,
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Simple,
-		width = 400,
+		width = 420,
 		height = 160,
 		values = {
 			{ name = "Padding Off", value = 1, image = "images/pref_mcp_paddingoff.png" },
 			{ name = "Padding On", value = 2, image = "images/pref_mcp_paddingon.png" },
 		}
 	},
-	hideall = {
+	saturnc = {
 		id = 13,
+		name = 'BRIGHTNESS',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 52,
+	},
+	saturnalpha = {
+		id = 14,
+		name = 'SATURATION',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		is_reverse = true,
+		width = 205,
+		height = 52,
+	},
+	tcp_saturn_ident = {
+		id = 15,
+		name = 'SELECTED TRACK HIGHLIGHT',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 52,
+	},
+	saturncmcp = {
+		id = 16,
+		name = 'BRIGHTNESS',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 52,
+	},
+	saturnalphamcp = {
+		id = 17,
+		name = 'SATURATION',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		is_reverse = true,
+		width = 205,
+		height = 52,
+	},
+	tcp_saturn_identmcp = {
+		id = 18,
+		name = 'SELECTED TRACK HIGHLIGHT',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 52,
+	},
+	gencoloring = {
+		id = 19,
+	},
+	foldermargin = {
+		id = 20,
+		name = "Folder Name \nleft orientation",
+		type = adj.config.param_types.Checkbox,
+		width = 205,
+		height = 62,
+		values = { 1, 2 }
+	},
+	longnamestate = {
+		id = 21,
+	},
+	envioswap = {
+		id = 22,
+	},
+	tcplabelbrightness = {
+		id = 23,
+		name = 'Track name brightness',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 62,
+	},
+	tcp_layout = {
+		name = 'Layout',
+		type = adj.config.param_types.Layout,
+		width = 420,
+		height = 155,
+		sizes = { "150", "200" },
+		section = "tcp",
+		values = {
+			{ name = "Default", value = "Default", image = "images/pref_tcp_layout_1.png", borderRad = 15 },
+			{ name = "Longname", value = "LONGNAME", image = "images/pref_tcp_layout_2.png", borderRad = 15 },
+		},
+		getValue = function()
+			local _, layout = reaper.ThemeLayout_GetLayout("tcp", -1)
+			return { value = not isEmpty(layout) and layout or "Default" }
+		end,
+		setValue = function(newVal)
+			reaper.ThemeLayout_SetLayout("tcp", newVal)
+		end
+	},
+	mcp_layout = {
+		name = 'Layout',
+		type = adj.config.param_types.Layout,
+		width = 420,
+		height = 155,
+		sizes = { "150", "200" },
+		section = "mcp",
+		values = {
+			{ name = "Default", value = "Default", image = "images/pref_mcp_layout_1.png", borderRad = 15 },
+			{ name = "Meterbridge", value = "METERBRIDGE", image = "images/pref_mcp_layout_2.png", borderRad = 15 },
+		},
+		getValue = function()
+			local _, layout = reaper.ThemeLayout_GetLayout("mcp", -1)
+			return { value = not isEmpty(layout) and layout or "Default" }
+		end,
+		setValue = function(newVal)
+			reaper.ThemeLayout_SetLayout("mcp", newVal)
+		end
 	}
 }
 
-local ctx = ImGui.CreateContext(SCRIPT_NAME)
-local _, FLT_MAX = ImGui.NumericLimits_Float()
-local window_visible = false
-local window_opened = false
-local start_time = 0
-local cooldown = 1
-local function NeedToUpdateValues()
-	local time = reaper.time_precise()
-	if time > start_time + cooldown then
-		start_time = time
-		return true
+function adj.SetValue(parameter, value)
+	parameter.data.value = value
+
+	if parameter.setValue then
+		parameter.setValue(value)
 	else
-		return false
+		reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
+		reaper.ThemeLayout_RefreshAll()
 	end
 end
 
-function adj.SetValue(parameter, value)
-	parameter.data.value = value
-	reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
-	reaper.ThemeLayout_RefreshAll()
+function adj.GetUserPresets()
+	local values = reaper.GetExtState(key_ext_prefix, key_ext_prefix_resets)
+
+	return values and unserializeTable(values) or {}
+end
+
+function adj.SaveUserPreset(name)
+	local presets = adj.GetUserPresets()
+	local new_preset_values = {}
+
+	for key, param in pairs(adj.params) do
+		new_preset_values[key] = param.data.value
+	end
+
+	presets[name] = new_preset_values
+
+	reaper.SetExtState(key_ext_prefix, key_ext_prefix_resets, serializeTable(presets), true)
+end
+
+function adj.DeleteUserPreset(name)
+	local presets = adj.GetUserPresets()
+
+	presets[name] = nil
+
+	reaper.SetExtState(key_ext_prefix, key_ext_prefix_resets, serializeTable(presets), true)
 end
 
 function adj.Link(text, url)
@@ -252,25 +440,21 @@ end
 function adj.UpdateValues()
 	if not NeedToUpdateValues() then return end
 
-	local i = 0
-	local ret = true
-	local name, value, defValue, minValue, maxValue
-	while ret do
-		ret, name, value, defValue, minValue, maxValue = reaper.ThemeLayout_GetParameter(i)
+	for id, param in pairs(adj.params) do
+		if param.getValue then
+			adj.params[id].data = param.getValue()
+		else
+			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
 
-		if ret then
-			for id, param in pairs(adj.params) do
-				if param.id == i then
-					adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
-				end
+			if ret then
+				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
 			end
 		end
-		i = i + 1
 	end
 
 	if adj.params.hideall.data == nil or not string.find(adj.params.hideall.data.name, "DOES FLAT MADNESS BEST THEME EVER?") then
 		window_opened = false
-		reaper.MB('Please install the Flat Madness theme to be able to customize it', SCRIPT_NAME, 0)
+		reaper.MB('Please install the lastest version of Flat Madness theme to be able to customize it', SCRIPT_NAME, 0)
 		return false
 	end
 
@@ -378,7 +562,7 @@ function adj.DrawSimpleInput(parameter)
 	ImGui.Dummy(ctx, 0, 5)
 	adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
-	if ImGui.BeginTable(ctx, "table_sub_" .. parameter.id, parameter.colspan or #values) then
+	if ImGui.BeginTable(ctx, "table_sub_" .. (parameter.id or "custom"), parameter.colspan or #values) then
 		local curCol = 0
 
 		for _, val in pairs(values) do
@@ -449,9 +633,38 @@ function adj.DrawRangeInput(parameter)
 		ImGui.SetNextItemWidth(ctx, -10)
 		ImGui.Unindent(ctx, -10)
 		ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Subheader)
-		local _, newVal = ImGui.SliderInt(ctx, "##", parameter.data.value, parameter.data.min, parameter.data.max)
-		if newVal ~= parameter.data.value then
-			adj.SetValue(parameter, newVal)
+
+		local min, max, val
+		if parameter.is_percentage and parameter.is_reverse then
+			min = 0
+			max = 100
+			val = (parameter.data.max - parameter.data.value) / (parameter.data.max - parameter.data.min)
+			val = round(val * 100)
+		elseif parameter.is_percentage then
+			min = 0
+			max = 100
+			val = (parameter.data.value - parameter.data.min) / (parameter.data.max - parameter.data.min)
+			val = round(val * 100)
+		else
+			min = parameter.data.min
+			max = parameter.data.max
+			val = parameter.data.value
+		end
+
+		local _, newVal = ImGui.SliderInt(ctx, "##", val, min, max, parameter.is_percentage and "%d%%" or nil)
+		if newVal ~= val then
+			local set
+			if parameter.is_percentage and parameter.is_reverse then
+				set = (newVal / 100) * (parameter.data.max - parameter.data.min)
+				set = round(parameter.data.max - set)
+			elseif parameter.is_percentage then
+				set = (newVal / 100) * (parameter.data.max - parameter.data.min)
+				set = round(parameter.data.min + set)
+			else
+				set = newVal
+			end
+
+			adj.SetValue(parameter, set)
 		end
 		ImGui.PopStyleColor(ctx, 1)
 
@@ -459,16 +672,140 @@ function adj.DrawRangeInput(parameter)
 	end
 end
 
+function adj.DrawPanelBackground(parameter)
+	local values = parameter.values
+
+	ImGui.Dummy(ctx, 0, 5)
+	adj.CenterText(parameter.name, adj.config.colors.Subheader)
+
+	if ImGui.BeginTable(ctx, "table_sub_" .. (parameter.id or "custom"), parameter.colspan or #values) then
+		local curCol = 0
+
+		for _, val in pairs(values) do
+			ImGui.TableNextColumn(ctx)
+
+			local selColor = val.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
+			adj.DrawImage(SCRIPT_PATH .. val.image, { borderBg = selColor, borderRad = val.borderRad })
+
+			if ImGui.IsItemClicked(ctx) then
+				adj.SetValue(parameter, val.value)
+			end
+
+			adj.CenterText(val.name, selColor)
+
+			if ImGui.IsItemClicked(ctx) then
+				adj.SetValue(parameter, val.value)
+			end
+
+			curCol = curCol + 1
+
+			if parameter.colspan ~= nil and curCol >= parameter.colspan then
+				curCol = 0
+				ImGui.TableNextRow(ctx)
+			end
+		end
+
+		ImGui.EndTable(ctx)
+	end
+
+	if not parameter.height_original then
+		parameter.height_original = parameter.height
+	end
+
+	if parameter.data.value == 3 then
+		parameter.height = 265
+
+		if ImGui.BeginTable(ctx, "sep", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params[parameter.custom[1]])
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params[parameter.custom[2]])
+
+			ImGui.TableNextRow(ctx)
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params[parameter.custom[3]])
+
+			ImGui.TableNextColumn(ctx)
+
+			ImGui.Dummy(ctx, 0, 20)
+			ImGui.Indent(ctx, 50)
+
+			ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 15, 5)
+			ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.White)
+			ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, adj.config.colors.Input.Background)
+			if ImGui.Button(ctx, parameter.apply.title) then
+				adj.SetValue(adj.params[parameter.apply.main_param], parameter.data.value)
+
+				for key, val in pairs(parameter.apply.params) do
+					adj.SetValue(adj.params[val], adj.params[key].data.value)
+				end
+			end
+			ImGui.PopStyleColor(ctx, 2)
+			ImGui.PopStyleVar(ctx)
+
+			ImGui.EndTable(ctx)
+		end
+	else
+		parameter.height = parameter.height_original
+	end
+end
+
+function adj.DrawLayoutBlock(parameter)
+	local values = parameter.values
+
+	ImGui.Dummy(ctx, 0, 5)
+	adj.CenterText(parameter.name, adj.config.colors.Subheader)
+
+	if ImGui.BeginTable(ctx, "table_sub_layout", parameter.colspan or #values) then
+		local curCol = 0
+
+		for _, val in pairs(values) do
+			ImGui.TableNextColumn(ctx)
+
+			local selColor = val.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
+			adj.DrawImage(SCRIPT_PATH .. val.image, { borderBg = selColor, borderRad = val.borderRad })
+
+			if ImGui.IsItemClicked(ctx) then
+				adj.SetValue(parameter, val.value)
+			end
+
+			adj.CenterText(val.name, selColor)
+
+			if ImGui.IsItemClicked(ctx) then
+				adj.SetValue(parameter, val.value)
+			end
+
+			curCol = curCol + 1
+
+			if parameter.colspan ~= nil and curCol >= parameter.colspan then
+				curCol = 0
+				ImGui.TableNextRow(ctx)
+			end
+		end
+
+		ImGui.EndTable(ctx)
+	end
+
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+
+	ImGui.PopStyleVar(ctx)
+end
+
 function adj.ShowParameter(parameter)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
 
-	if ImGui.BeginChild(ctx, "parameter_" .. parameter.id, parameter.width, parameter.height, nil, adj.config.windFlags) then
+	if ImGui.BeginChild(ctx, "parameter_" .. (parameter.id or "custom"), parameter.width, parameter.height, nil, adj.config.windFlags) then
 		if parameter.type == adj.config.param_types.Simple then
 			adj.DrawSimpleInput(parameter)
 		elseif parameter.type == adj.config.param_types.Checkbox then
 			adj.DrawCheckboxInput(parameter)
 		elseif parameter.type == adj.config.param_types.Range then
 			adj.DrawRangeInput(parameter)
+		elseif parameter.type == adj.config.param_types.PanelBackground then
+			adj.DrawPanelBackground(parameter)
+		elseif parameter.type == adj.config.param_types.Layout then
+			adj.DrawLayoutBlock(parameter)
 		end
 
 		ImGui.EndChild(ctx)
@@ -498,11 +835,118 @@ function adj.DrawCollapsingHeader(header, innerContent)
 	ImGui.PopStyleColor(ctx, 2)
 end
 
+function adj.DrawPresetsSelect()
+	local get_presets_list = function()
+		local presets = { "No preset" }
+
+		for i = 1, #adj.presets.default do table.insert(presets, adj.presets.default[i].name) end
+		for name, _ in pairs(adj.GetUserPresets()) do table.insert(presets, name) end
+
+		return presets
+	end
+
+	local presets = get_presets_list()
+
+	table.insert(presets, "Delete preset...")
+	table.insert(presets, "Save preset...")
+
+	ImGui.PushItemWidth(ctx, 439)
+	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderActive, adj.config.colors.Selected)
+	ImGui.PushStyleColor(ctx, ImGui.Col_HeaderHovered, adj.config.colors.Selected)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, 2)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 9, 2)
+	local _, newVal = ImGui.Combo(ctx, '##Presets', adj.presets.current, join(presets, "\0") .. "\0")
+	ImGui.PopStyleVar(ctx, 2)
+	ImGui.PopStyleColor(ctx, 2)
+	ImGui.PopItemWidth(ctx)
+
+	if newVal ~= adj.presets.current then
+		local name = presets[newVal + 1]
+		if name == "Save preset..." then
+			::preset_enter_name::
+
+			local preset_num = 1
+
+			while in_array(presets, "Preset " .. preset_num) do
+				preset_num = preset_num + 1
+			end
+
+			local is_done, result = reaper.GetUserInputs("Enter name of preset", 1, "Preset name", "Preset " .. preset_num)
+			if is_done then
+				if in_array({"Save preset...", "Delete preset..."}, result) or in_array(presets, result) and reaper.MB('Preset with this name is exists already. Are you sure you want to replace it?', "Saving preset...", 4) ~= 6 then
+					goto preset_enter_name
+				else
+					adj.SaveUserPreset(result)
+
+					presets = get_presets_list()
+					for i = 1, #presets do
+						if presets[i] == result then adj.presets.current = i - 1 end
+					end
+				end
+			end
+		elseif name == "Delete preset..." then
+			if adj.presets.current and reaper.MB('Are you sure to delete this preset "' .. presets[adj.presets.current + 1] .. '"?', "Delete preset...", 4) == 6 then
+				adj.DeleteUserPreset(presets[adj.presets.current + 1])
+				adj.presets.current = 0
+			end
+		elseif newVal > 0 then
+			local values = {}
+
+			for i = 1, #adj.presets.default do
+				if presets[newVal + 1] == adj.presets.default[i].name then
+					values = adj.presets.default[i].values
+				end
+			end
+
+			for p_name, p_vals in pairs(adj.GetUserPresets()) do
+				if presets[newVal + 1] == p_name then
+					values = p_vals
+				end
+			end
+
+			if values then
+				adj.presets.current = newVal
+
+				for key, value in pairs(values) do
+					adj.SetValue(adj.params[key], value)
+				end
+			end
+		end
+	end
+end
+
+function adj.GetVersion(scriptName)
+	if not adj.versions then adj.versions = {} end
+
+	scriptName = scriptName or ({reaper.get_action_context()})[2]
+
+	if adj.versions[scriptName] == true then
+		return nil
+	elseif not adj.versions[scriptName] then
+		local owner = reaper.ReaPack_GetOwner(scriptName)
+
+		if owner then
+			local _, _, _, _, _, _, ver, _, _, _ = reaper.ReaPack_GetEntryInfo(owner)
+			reaper.ReaPack_FreeEntry(owner)
+
+			adj.versions[scriptName] = ver
+			return ver
+		end
+	end
+
+	adj.versions[scriptName] = true
+
+	return nil
+end
+
 function adj.ShowWindow()
 	adj.UpdateValues()
 
 	adj.DrawHeader()
 	ImGui.Spacing(ctx)
+	ImGui.Spacing(ctx)
+
+	adj.DrawPresetsSelect()
 	ImGui.Spacing(ctx)
 
 	if not adj.opened_first_tab then
@@ -514,6 +958,16 @@ function adj.ShowWindow()
 	adj.DrawCollapsingHeader('                 TRACK CONTROL PANEL', function()
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
+
+		if ImGui.BeginTable(ctx, "sep", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.tcplabelbrightness)
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.foldermargin)
+			ImGui.EndTable(ctx)
+		end
+
 		adj.ShowParameter(adj.params.pan_type)
 		ImGui.Spacing(ctx)
 
@@ -531,6 +985,9 @@ function adj.ShowWindow()
 
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.meter_position)
+		ImGui.Spacing(ctx)
+
+		adj.ShowParameter(adj.params.tcp_layout)
 		ImGui.Spacing(ctx)
 
 		ImGui.Spacing(ctx)
@@ -558,11 +1015,14 @@ function adj.ShowWindow()
 			adj.ShowParameter(adj.params.mcp_folder_recarms)
 
 			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.mcp_dbscales)
+			adj.ShowParameter(adj.params.mcpdbscales)
 
 			ImGui.EndTable(ctx)
 		end
 
+		ImGui.Spacing(ctx)
+
+		adj.ShowParameter(adj.params.mcp_layout)
 		ImGui.Spacing(ctx)
 	end)
 
@@ -598,6 +1058,21 @@ function adj.ShowWindow()
 
 			ImGui.EndTable(ctx)
 		end
+
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+
+		if adj.GetVersion() then
+			ImGui.TextWrapped(ctx, 'Script version: ' .. adj.GetVersion())
+		end
+
+		if adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip") then
+			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip"))
+		end
+
+		ImGui.TextWrapped(ctx, "ReaImGui version: " .. imGuiVersion)
 	end)
 
 	return true
@@ -668,7 +1143,7 @@ function adj.loop()
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, adj.config.borderRad.block)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_GrabRounding, adj.config.borderRad.block)
 
-	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse | ImGui.WindowFlags_TopMost | ImGui.WindowFlags_NoDocking)
+	window_visible, window_opened = ImGui.Begin(ctx, " ", true, ImGui.WindowFlags_NoCollapse | ImGui.WindowFlags_NoDocking)
 
 	if window_visible then
 		adj.ShowWindow()
