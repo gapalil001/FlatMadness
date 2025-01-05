@@ -1,7 +1,7 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.1.0
+-- @version 1.1.1
 -- @changelog
 --   - added support of version 4.2.0
 --   - added presets
@@ -1076,12 +1076,14 @@ function adj.ShowWindow()
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 
-		if adj.GetVersion() ~= nil then
-			ImGui.TextWrapped(ctx, 'Script version: ' .. adj.GetVersion())
+        local scriptVersion = adj.GetVersion()
+		if scriptVersion then
+			ImGui.TextWrapped(ctx, 'Script version: ' .. scriptVersion)
 		end
 
-		if adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip") ~= nil then
-			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip"))
+        local themeVersion = adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip")
+		if themeVersion then
+			ImGui.TextWrapped(ctx, 'Theme version: ' .. themeVersion)
 		end
 
 		ImGui.TextWrapped(ctx, "ReaImGui version: " .. imGuiVersion)
