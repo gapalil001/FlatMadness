@@ -122,8 +122,17 @@ local adj = {
 	presets = {
 		current = nil,
 		default = {
-			{ name = "Like this preset", values = { meter_position = 1, pan_type = 1, min_fxlist = 1, embed_position = 1, tcp_folder_recarms = 1 } },
-			{ name = "My favorite one", values = { meter_position = 2, pan_type = 2, min_fxlist = 2, embed_position = 2, tcp_folder_recarms = 2 } },
+			{ name = "Bright Pale Ale", values = { mcpdbscales = 2, dbscales = 1, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 42, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 215, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, saturnc = 156, meter_position = 1, saturncmcp = 156, envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 0, saturnalphamcp = 215, mcp_layout = "Default", tcp_solid_color = 3, tcp_layout = "Default", mixer_folderindent = 2, } },
+			{ name = "Dark Night EUI", values = { mcpdbscales = 2, dbscales = 1, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 1, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 255, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, tcp_layout = "Default", mixer_folderindent = 2, tcp_saturn_identmcp = 0, saturncmcp = 80, longnamestate = 1, saturnc = 80, envioswap = 2, mcp_layout = "Default", tcp_solid_color = 3, saturnalphamcp = 255, meter_position = 1, } },
+			{ name = "Toxic", values = { mcpdbscales = 2, dbscales = 1, embed_position = 1, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 35, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 1, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 30, trans_position = 1, tcp_folder_recarms = 1, saturnc = 167, meter_position = 1, saturncmcp = 167, envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 30, saturnalphamcp = 1, mcp_layout = "Default", tcp_solid_color = 3, tcp_layout = "Default", mixer_folderindent = 2, } },
+			{ name = "Meter Freak", values = { mcpdbscales = 2, dbscales = 2, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 45, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 255, tcplabelbrightness = 180, hideall = 2, tcp_saturn_ident = 30, trans_position = 1, tcp_folder_recarms = 1, saturnc = 80, mixer_folderindent = 1, tcp_layout = "Default", envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 30, saturnalphamcp = 255, mcp_layout = "METERBRIDGE", tcp_solid_color = 3, saturncmcp = 80, meter_position = 2, } },
+			{ name = "Sweet candy", values = { mcpdbscales = 2, dbscales = 1, embed_position = 1, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 35, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 220, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, saturnc = 157, mixer_folderindent = 2, tcp_layout = "Default", envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 0, saturnalphamcp = 220, mcp_layout = "Default", tcp_solid_color = 3, saturncmcp = 157, meter_position = 1, } },
+			{ name = "Colorful Dark", values = { mcpdbscales = 2, dbscales = 1, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 1, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 136, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, tcp_layout = "Default", mixer_folderindent = 2, tcp_saturn_identmcp = 0, saturncmcp = 122, longnamestate = 1, saturnalphamcp = 136, envioswap = 2, mcp_layout = "Default", tcp_solid_color = 3, saturnc = 122, meter_position = 1, } },
+			{ name = "I Am Not Pro Tools", values = { mcpdbscales = 2, dbscales = 1, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 30, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 255, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, saturnc = 181, mixer_folderindent = 2, tcp_layout = "Default", envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 0, saturnalphamcp = 255, mcp_layout = "Default", tcp_solid_color = 3, saturncmcp = 181, meter_position = 4, } },
+			{ name = "Toxic meter", values = { mcpdbscales = 2, dbscales = 1, embed_position = 1, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 30, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 121, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, saturnc = 157, meter_position = 2, saturncmcp = 157, envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 0, saturnalphamcp = 121, mcp_layout = "METERBRIDGE", tcp_solid_color = 3, tcp_layout = "Default", mixer_folderindent = 2, } },
+			{ name = "almost  darkkk", values = { mcpdbscales = 2, dbscales = 1, embed_position = 1, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 25, mcp_folder_recarms = 1, foldermargin = 2, saturnalpha = 255, hideall = 2, tcp_saturn_ident = 30, trans_position = 1, tcp_folder_recarms = 1, saturnc = 80, longnamestate = 1, mixer_folderindent = 2, tcp_saturn_identmcp = 10, saturncmcp = 80, tcp_solid_color = 3, saturnalphamcp = 255, meter_position = 1, } },
+			{ name = "Pale Ale", values = { mcpdbscales = 2, dbscales = 1, embed_position = 2, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 39, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 228, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 30, trans_position = 1, tcp_folder_recarms = 1, saturnc = 80, meter_position = 1, saturncmcp = 80, envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 30, saturnalphamcp = 228, mcp_layout = "Default", tcp_solid_color = 3, tcp_layout = "Default", mixer_folderindent = 2, } },
+			{ name = "Dark Night", values = { mcpdbscales = 2, dbscales = 1, embed_position = 1, pan_type = 2, mcp_solid_color = 3, gencoloring = 2, min_fxlist = 34, mcp_folder_recarms = 1, foldermargin = 1, saturnalpha = 255, tcplabelbrightness = 147, hideall = 2, tcp_saturn_ident = 0, trans_position = 1, tcp_folder_recarms = 1, saturnc = 80, mixer_folderindent = 2, tcp_layout = "Default", envioswap = 2, longnamestate = 1, tcp_saturn_identmcp = 0, saturnalphamcp = 255, mcp_layout = "Default", tcp_solid_color = 3, saturncmcp = 80, meter_position = 1, } },
 		}
 	},
 	currentPreset = nil,
@@ -345,7 +354,7 @@ adj.params = {
 		height = 62,
 	},
 	tcp_layout = {
-		name = 'Global TCP Layout',
+		name = 'TCP Global Layout',
 		type = adj.config.param_types.Layout,
 		width = 420,
 		height = 155,
@@ -364,7 +373,7 @@ adj.params = {
 		end
 	},
 	mcp_layout = {
-		name = 'Global MCP Layout',
+		name = 'MCP Global Layout',
 		type = adj.config.param_types.Layout,
 		width = 420,
 		height = 155,
