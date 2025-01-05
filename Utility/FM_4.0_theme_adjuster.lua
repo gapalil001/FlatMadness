@@ -1,9 +1,12 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.0.5
+-- @version 1.1.0
 -- @changelog
---   Fixed bug: excessive creation of short-lived resources for images
+--   - added support of version 4.2.0
+--   - added presets
+--   - added support of layouts changing
+--   - added version details to about section
 -- @provides
 --   [nomain] images/*.png
 
