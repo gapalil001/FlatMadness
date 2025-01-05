@@ -1,7 +1,13 @@
 @description Flat Madness Grey
-@version 4.1.2
+@version 4.2.0
 @changelog
-    - fixed bug when FX List disappears in colored fader TCP layouts
+    - two additional color schemes
+    - adjustable backgrounds in TCP/MCP
+    - adjuster presets
+    - adjuster quick layout switch
+    - adjustable TCP label brightness
+    - clearly rounded items
+    - left orientation for TCP folder/longname states
 @provides Flat Madness Grey.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness

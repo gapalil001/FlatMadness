@@ -1,4 +1,4 @@
-@description Flat Madness Black
+@description Flat Madness Dark CI
 @version 4.2.0
 @changelog
     - two additional color schemes
@@ -8,7 +8,7 @@
     - adjustable TCP label brightness
     - clearly rounded items
     - left orientation for TCP folder/longname states
-@provides Flat Madness Black.ReaperThemeZip
+@provides Flat Madness Dark.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
 @link Forum Thread https://forum.cockos.com/showthread.php?t=247086
