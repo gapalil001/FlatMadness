@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="1a6359b3364b1886a5012156e3b064b0551c4f9f">
+<index version="1" name="Flat Madness Theme" commit="7ebe2bc27af21ddba5f13998fcd6412b2e563165">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
@@ -101,6 +101,16 @@
         <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -200,6 +210,16 @@
       <version name="4.1.2" author="Dmytro Hapochka" time="2024-11-25T14:18:29Z">
         <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -302,6 +322,16 @@
         <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -401,6 +431,16 @@
       <version name="4.1.2" author="Dmytro Hapochka" time="2024-11-25T14:18:29Z">
         <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
