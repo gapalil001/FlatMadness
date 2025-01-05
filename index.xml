@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="3c1a422b7a396d011693ea96a8e610e4bee75d3b">
+<index version="1" name="Flat Madness Theme" commit="512d38c93c7729bc3ab516ab210e05203c0c952a">
   <category name="ColorThemes">
+    <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
+}
+]]></description>
+        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
+        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
+        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
+      </metadata>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:32:33Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/512d38c93c7729bc3ab516ab210e05203c0c952a/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
+      </version>
+    </reapack>
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
@@ -220,6 +244,30 @@
 - clearly rounded items
 - left orientation for TCP folder/longname states]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
+    </reapack>
+    <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
+}
+]]></description>
+        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
+        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
+        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
+      </metadata>
+      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:32:33Z">
+        <changelog><![CDATA[- two additional color schemes
+- adjustable backgrounds in TCP/MCP
+- adjuster presets
+- adjuster quick layout switch
+- adjustable TCP label brightness
+- clearly rounded items
+- left orientation for TCP folder/longname states]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/512d38c93c7729bc3ab516ab210e05203c0c952a/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
