@@ -1,7 +1,7 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.1.1
+-- @version 1.1.2
 -- @changelog
 --   - added support of version 4.2.0
 --   - added presets
@@ -944,6 +944,8 @@ function adj.GetVersion(scriptName)
 			adj.versions[scriptName] = ver
 			return ver
 		end
+	else
+		return adj.versions[scriptName]
 	end
 
 	adj.versions[scriptName] = true
