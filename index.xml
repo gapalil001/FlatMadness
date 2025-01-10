@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="35a932b56e35044456b195c27ce6992e0f8deb9f">
+<index version="1" name="Flat Madness Theme" commit="5d984f5b9751718e2bc46fe34f64ecc5a724a6b4">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -23,6 +23,15 @@
 - clearly rounded items
 - left orientation for TCP folder/longname states]]></changelog>
         <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/512d38c93c7729bc3ab516ab210e05203c0c952a/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.1" author="Dmytro Hapochka" time="2025-01-10T22:36:51Z">
+        <changelog><![CDATA[- re-designed folders and longname layouts to be more consistant
+- fixed issues with colors for disabled sends and stretch markers
+- increased range for TCP label color (unselected)
+- improved behavior in longname layouts
+- added two color variations - solid item backgrounds for bright and grey themes (experimental)
+- some refactoring stuff]]></changelog>
+        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/5d984f5b9751718e2bc46fe34f64ecc5a724a6b4/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
@@ -268,6 +277,15 @@
 - clearly rounded items
 - left orientation for TCP folder/longname states]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/512d38c93c7729bc3ab516ab210e05203c0c952a/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.1" author="Dmytro Hapochka" time="2025-01-10T22:36:51Z">
+        <changelog><![CDATA[- re-designed folders and longname layouts to be more consistant
+- fixed issues with colors for disabled sends and stretch markers
+- increased range for TCP label color (unselected)
+- improved behavior in longname layouts
+- added two color variations - solid item backgrounds for bright and grey themes (experimental)
+- some refactoring stuff]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/5d984f5b9751718e2bc46fe34f64ecc5a724a6b4/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
