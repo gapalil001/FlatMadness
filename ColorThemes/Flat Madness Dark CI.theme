@@ -1,13 +1,12 @@
 @description Flat Madness Dark CI
-@version 4.2.0
+@version 4.2.1
 @changelog
-    - two additional color schemes
-    - adjustable backgrounds in TCP/MCP
-    - adjuster presets
-    - adjuster quick layout switch
-    - adjustable TCP label brightness
-    - clearly rounded items
-    - left orientation for TCP folder/longname states
+    - re-designed folders and longname layouts to be more consistant
+    - fixed issues with colors for disabled sends and stretch markers
+    - increased range for TCP label color (unselected)
+    - improved behavior in longname layouts
+    - added two color variations - solid item backgrounds for bright and grey themes (experimental)
+    - some refactoring stuff
 @provides Flat Madness Dark CI.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
