@@ -1,20 +1,23 @@
 import os
+import sys
 import zipfile
 import configparser
 import json
+import shutil
+import re
 
 from reaper_python import *
 
 root_path = "/Users/monolok/Developer/Reaper/FlatMadness/Development"
-resources_path = os.path.join(RPR_GetResourcePath(), "ColorThemes")
+master_theme = "Dark"
 rtconfig_path = 'rtconfig.txt'
 config_json_path = 'config.json'
+master_theme_name = "Flat Madness Ultimate.ReaperThemeZip"
+master_theme_config_name = "Flat Madness Ultimate.theme"
+version = 0
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
-
-def get_theme_path(prefix):
-    return os.path.join(resources_path, f"Flat Madness {prefix} Dev.ReaperThemeZip")
 
 with open(os.path.join(root_path, config_json_path), "r") as file:
     json_config = json.load(file)
@@ -22,50 +25,47 @@ with open(os.path.join(root_path, config_json_path), "r") as file:
 with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
     rtconfig_content = rtconfig_file.read()
 
-def should_create_zip(theme_file, data_path):
-    theme_name = os.path.splitext(theme_file)[0]
-    reaper_theme_path = get_theme_path(theme_name)
+if not rtconfig_content:
+    log("File rtconfig.txt is not found in " + root_path)
+    sys.exit()
 
-    if not os.path.exists(reaper_theme_path):
-        return True
+match = re.search(r"fmversion ([\d.]+)\n", rtconfig_content)
+if match:
+    version = match.group(1)
 
-    reaper_theme_creation_time = os.path.getmtime(reaper_theme_path)
+def create_master_theme(master_theme_path):
+    log("Creating master theme \"" + master_theme_name + "\" based on \"" + master_theme + "\"...")
+    shutil.copy2(master_theme_path, os.path.join(root_path, "..", "ColorThemes", master_theme_name))
 
-    if os.path.getmtime(os.path.join(root_path, 'rtconfig.txt')) > reaper_theme_creation_time:
-        return True
+    theme_config_path = os.path.join(root_path, "..", "ColorThemes", master_theme_config_name)
+    with open(theme_config_path, "r", encoding="utf-8") as theme_config_file:
+        content = theme_config_file.read()
 
-    if os.path.getmtime(os.path.join(root_path, "Themes", theme_file)) > reaper_theme_creation_time:
-        return True
+    content = re.sub(r'(@version\s+)[0-9.]+', r'\g<1>' + version, content)
 
-    for root, _, files in os.walk(os.path.join(root_path, "Data", data_path)):
-        for file in files:
-            file_path = os.path.join(root, file)
-            file_mod_time = os.path.getmtime(file_path)
-            if file_mod_time > reaper_theme_creation_time:
-                return True
-
-    return False
+    with open(theme_config_path, "w") as file:
+        file.write(content)
 
 def create_zip(theme_file, data_path):
     theme_name = os.path.splitext(theme_file)[0]
-    reaper_theme_path = get_theme_path(theme_name)
 
-    log(f"Compiling \"{os.path.basename(reaper_theme_path)}\"...")
+    log(f"Compiling production themes v." + version + " for \"" + theme_name + "\"...")
 
     rtconfig_content_local = rtconfig_content
 
     for key, value in json_config.items():
         if isinstance(value, list):
-            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}",
+            rtconfig_content_local = rtconfig_content.replace("{" + key + "}",
                                                         str(value[0] if "Bright" in data_path else value[1]))
         else:
-            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
+            rtconfig_content_local = rtconfig_content.replace("{" + key + "}", str(value))
 
     modified_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
     with open(modified_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
         modified_rtconfig_file.write(rtconfig_content_local)
 
-    with zipfile.ZipFile(reaper_theme_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    zip_file_path = os.path.join(root_path, "..", "Utility", "data", theme_name + ".zip")
+    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         zipf.write(os.path.join(root_path, "Themes", theme_file), arcname=theme_file)
 
         for root, _, files in os.walk(ui_img_path):
@@ -76,10 +76,10 @@ def create_zip(theme_file, data_path):
 
         zipf.write(modified_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
 
+    if theme_name == master_theme:
+        create_master_theme(zip_file_path)
+
     os.remove(modified_rtconfig_path)
-
-
-something_changed = False
 
 for theme_file in os.listdir(os.path.join(root_path, "Themes")):
     if theme_file.endswith(".ReaperTheme"):
@@ -97,11 +97,4 @@ for theme_file in os.listdir(os.path.join(root_path, "Themes")):
             log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
             continue
 
-        if should_create_zip(theme_file, ui_img_path):
-            create_zip(theme_file, ui_img_path)
-            something_changed = True
-
-if something_changed:
-    RPR_OpenColorThemeFile(RPR_GetLastColorThemeFile())
-else:
-    log(f"No any changes.")
+        create_zip(theme_file, ui_img_path)

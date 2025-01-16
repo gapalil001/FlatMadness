@@ -16,7 +16,7 @@ Flat Madness v5 theme
       version 7
 
 HEADER   
-      fmversion {p_version}
+      fmversion 4.2.0
       use_pngs 1
       use_overlays 1
       peaksedges 1
