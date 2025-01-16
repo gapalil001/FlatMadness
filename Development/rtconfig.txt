@@ -61,10 +61,10 @@ HEADER
       tcp_iconsize 100 
       mcp_min_height 300
       trans_showborders 0 
-      tinttcp {p_tinttcp}
+      tinttcp {fm_tinttcp}
       adjuster_script FM_4.0_theme_adjuster.lua
 
-      set bright {p_bright}
+      set bright {fm_bright}
 
 
 THEME ADJUSTER CONTROLS      
@@ -83,12 +83,12 @@ THEME ADJUSTER CONTROLS
       define_parameter mixer_folderindent   'enable folder indentification for mixer'      2 1 2
 
       --color adjustment TCP
-      define_parameter saturnc              'background brighness'                         {p_tcp_back_bright}
+      define_parameter saturnc              'background brighness'                         {fm_tcp_back_brightness}
       define_parameter saturnalpha          'background saturation'                        230 1 255
       define_parameter tcp_saturn_ident     'selected track brightness'                    10 0 30
 
       -- color adjustments MCP
-      define_parameter saturncmcp           'MCP background brighness'                     {p_mcp_back_bright}
+      define_parameter saturncmcp           'MCP background brighness'                     {fm_mcp_back_brightness}
       define_parameter saturnalphamcp       'MCP background saturation'                    230 1 255
       define_parameter tcp_saturn_identmcp  'MCP selected track brightness'                10 0 30
 

@@ -2,25 +2,20 @@ import os
 import sys
 import zipfile
 import configparser
-import json
 import shutil
 import re
 
 from reaper_python import *
 
 root_path = "/Users/monolok/Developer/Reaper/FlatMadness/Development"
-master_theme = "Dark"
+master_theme = "Dark SI"
 rtconfig_path = 'rtconfig.txt'
-config_json_path = 'config.json'
 master_theme_name = "Flat Madness Ultimate.ReaperThemeZip"
 master_theme_config_name = "Flat Madness Ultimate.theme"
 version = 0
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
-
-with open(os.path.join(root_path, config_json_path), "r") as file:
-    json_config = json.load(file)
 
 with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
     rtconfig_content = rtconfig_file.read()
@@ -46,19 +41,15 @@ def create_master_theme(master_theme_path):
     with open(theme_config_path, "w") as file:
         file.write(content)
 
-def create_zip(theme_file, data_path):
+def create_zip(theme_file, data_path, theme_fm_config):
     theme_name = os.path.splitext(theme_file)[0]
 
     log(f"Compiling production themes v." + version + " for \"" + theme_name + "\"...")
 
     rtconfig_content_local = rtconfig_content
 
-    for key, value in json_config.items():
-        if isinstance(value, list):
-            rtconfig_content_local = rtconfig_content.replace("{" + key + "}",
-                                                        str(value[0] if "Bright" in data_path else value[1]))
-        else:
-            rtconfig_content_local = rtconfig_content.replace("{" + key + "}", str(value))
+    for key, value in theme_fm_config.items():
+        rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
 
     modified_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
     with open(modified_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
@@ -97,4 +88,4 @@ for theme_file in os.listdir(os.path.join(root_path, "Themes")):
             log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
             continue
 
-        create_zip(theme_file, ui_img_path)
+        create_zip(theme_file, ui_img_path, config["FM"])

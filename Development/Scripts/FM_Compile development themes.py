@@ -8,16 +8,12 @@ from reaper_python import *
 root_path = "/Users/monolok/Developer/Reaper/FlatMadness/Development"
 resources_path = os.path.join(RPR_GetResourcePath(), "ColorThemes")
 rtconfig_path = 'rtconfig.txt'
-config_json_path = 'config.json'
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
 
 def get_theme_path(prefix):
-    return os.path.join(resources_path, f"Flat Madness {prefix} Dev.ReaperThemeZip")
-
-with open(os.path.join(root_path, config_json_path), "r") as file:
-    json_config = json.load(file)
+    return os.path.join(resources_path, f"[DEV] Flat Madness {prefix}.ReaperThemeZip")
 
 with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
     rtconfig_content = rtconfig_file.read()
@@ -46,7 +42,7 @@ def should_create_zip(theme_file, data_path):
 
     return False
 
-def create_zip(theme_file, data_path):
+def create_zip(theme_file, data_path, theme_fm_config):
     theme_name = os.path.splitext(theme_file)[0]
     reaper_theme_path = get_theme_path(theme_name)
 
@@ -54,12 +50,8 @@ def create_zip(theme_file, data_path):
 
     rtconfig_content_local = rtconfig_content
 
-    for key, value in json_config.items():
-        if isinstance(value, list):
-            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}",
-                                                        str(value[0] if "Bright" in data_path else value[1]))
-        else:
-            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
+    for key, value in theme_fm_config.items():
+        rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
 
     modified_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
     with open(modified_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
@@ -98,7 +90,7 @@ for theme_file in os.listdir(os.path.join(root_path, "Themes")):
             continue
 
         if should_create_zip(theme_file, ui_img_path):
-            create_zip(theme_file, ui_img_path)
+            create_zip(theme_file, ui_img_path, config["FM"])
             something_changed = True
 
 if something_changed:
