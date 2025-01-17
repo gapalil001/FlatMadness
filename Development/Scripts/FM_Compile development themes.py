@@ -1,22 +1,22 @@
 import os
 import zipfile
 import configparser
-import json
 
 from reaper_python import *
 
-root_path = "/Users/monolok/Developer/Reaper/FlatMadness/Development"
+root_path = RPR_GetExtState("fm4_adjuster", "py_root_path")
 resources_path = os.path.join(RPR_GetResourcePath(), "ColorThemes")
 rtconfig_path = 'rtconfig.txt'
+something_changed = False
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
 
+def is_correct_root_path(path):
+    return os.path.exists(os.path.join(path, "Scripts", "FM_Compile development themes.py"))
+
 def get_theme_path(prefix):
     return os.path.join(resources_path, f"[DEV] Flat Madness {prefix}.ReaperThemeZip")
-
-with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
-    rtconfig_content = rtconfig_file.read()
 
 def should_create_zip(theme_file, data_path):
     theme_name = os.path.splitext(theme_file)[0]
@@ -70,30 +70,54 @@ def create_zip(theme_file, data_path, theme_fm_config):
 
     os.remove(modified_rtconfig_path)
 
+def specify_root_path():
+    global root_path
 
-something_changed = False
+    path = root_path
 
-for theme_file in os.listdir(os.path.join(root_path, "Themes")):
-    if theme_file.endswith(".ReaperTheme"):
-        config = configparser.ConfigParser()
-        config.read(os.path.join(root_path, "Themes", theme_file), encoding="utf-8")
+    while not is_correct_root_path(path):
+        ret = RPR_GetUserInputs('Path to the \"Development\" directory', 1, 'Enter root path', '', 2000)
 
-        try:
-            ui_img_folder = config["REAPER"]["ui_img"]
-        except KeyError:
-            log(f"No ui_img parameter in {theme_file}")
-            continue
+        path = str(ret[4]).strip()
 
-        ui_img_path = os.path.join(root_path, "Data", ui_img_folder)
-        if not os.path.exists(ui_img_path):
-            log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
-            continue
+        if is_correct_root_path(path) or RPR_MB(path + "\n\nSpecified root path to 'Development' folder is not correct. Please correct path where folders 'Data', 'Scripts', 'Themes' are situated.", "Root path set", 5) != 4:
+            break
 
-        if should_create_zip(theme_file, ui_img_path):
-            create_zip(theme_file, ui_img_path, config["FM"])
-            something_changed = True
+    if is_correct_root_path(path):
+        RPR_SetExtState("fm4_adjuster", "py_root_path", path, True)
+        root_path = path
 
-if something_changed:
-    RPR_OpenColorThemeFile(RPR_GetLastColorThemeFile())
+
+if not is_correct_root_path(root_path):
+    specify_root_path()
+
+if is_correct_root_path(root_path):
+    with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
+        rtconfig_content = rtconfig_file.read()
+
+    for theme_file in os.listdir(os.path.join(root_path, "Themes")):
+        if theme_file.endswith(".ReaperTheme"):
+            config = configparser.ConfigParser()
+            config.read(os.path.join(root_path, "Themes", theme_file), encoding="utf-8")
+
+            try:
+                ui_img_folder = config["REAPER"]["ui_img"]
+            except KeyError:
+                log(f"No ui_img parameter in {theme_file}")
+                continue
+
+            ui_img_path = os.path.join(root_path, "Data", ui_img_folder)
+            if not os.path.exists(ui_img_path):
+                log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
+                continue
+
+            if should_create_zip(theme_file, ui_img_path):
+                create_zip(theme_file, ui_img_path, config["FM"])
+                something_changed = True
+
+    if something_changed:
+        RPR_OpenColorThemeFile(RPR_GetLastColorThemeFile())
+    else:
+        log(f"No any changes.")
 else:
-    log(f"No any changes.")
+    RPR_MB("Root path to Development folder is not set. Please execute script again and specify correct path.", "Root path set", 0)

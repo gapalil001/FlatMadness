@@ -7,7 +7,7 @@ import re
 
 from reaper_python import *
 
-root_path = "/Users/monolok/Developer/Reaper/FlatMadness/Development"
+root_path = RPR_GetExtState("fm4_adjuster", "py_root_path")
 master_theme = "Dark SI"
 rtconfig_path = 'rtconfig.txt'
 master_theme_name = "Flat Madness Ultimate.ReaperThemeZip"
@@ -17,16 +17,8 @@ version = 0
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
 
-with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
-    rtconfig_content = rtconfig_file.read()
-
-if not rtconfig_content:
-    log("File rtconfig.txt is not found in " + root_path)
-    sys.exit()
-
-match = re.search(r"fmversion ([\d.]+)\n", rtconfig_content)
-if match:
-    version = match.group(1)
+def is_correct_root_path(path):
+    return os.path.exists(os.path.join(path, "Scripts", "FM_Compile production themes.py"))
 
 def create_master_theme(master_theme_path):
     log("Creating master theme \"" + master_theme_name + "\" based on \"" + master_theme + "\"...")
@@ -72,20 +64,55 @@ def create_zip(theme_file, data_path, theme_fm_config):
 
     os.remove(modified_rtconfig_path)
 
-for theme_file in os.listdir(os.path.join(root_path, "Themes")):
-    if theme_file.endswith(".ReaperTheme"):
-        config = configparser.ConfigParser()
-        config.read(os.path.join(root_path, "Themes", theme_file), encoding="utf-8")
+def specify_root_path():
+    global root_path
 
-        try:
-            ui_img_folder = config["REAPER"]["ui_img"]
-        except KeyError:
-            log(f"No ui_img parameter in {theme_file}")
-            continue
+    path = root_path
 
-        ui_img_path = os.path.join(root_path, "Data", ui_img_folder)
-        if not os.path.exists(ui_img_path):
-            log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
-            continue
+    while not is_correct_root_path(path):
+        ret = RPR_GetUserInputs('Path to the \"Development\" directory', 1, 'Enter root path', '', 2000)
 
-        create_zip(theme_file, ui_img_path, config["FM"])
+        path = str(ret[4]).strip()
+
+        if is_correct_root_path(path) or RPR_MB(path + "\n\nSpecified root path to 'Development' folder is not correct. Please correct path where folders 'Data', 'Scripts', 'Themes' are situated.", "Root path set", 5) != 4:
+            break
+
+    if is_correct_root_path(path):
+        RPR_SetExtState("fm4_adjuster", "py_root_path", path, True)
+        root_path = path
+
+
+if not is_correct_root_path(root_path):
+    specify_root_path()
+
+if is_correct_root_path(root_path):
+    with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
+        rtconfig_content = rtconfig_file.read()
+
+    if not rtconfig_content:
+        log("File rtconfig.txt is not found in " + root_path)
+        sys.exit()
+
+    match = re.search(r"fmversion ([\d.]+)\n", rtconfig_content)
+    if match:
+        version = match.group(1)
+
+    for theme_file in os.listdir(os.path.join(root_path, "Themes")):
+        if theme_file.endswith(".ReaperTheme"):
+            config = configparser.ConfigParser()
+            config.read(os.path.join(root_path, "Themes", theme_file), encoding="utf-8")
+
+            try:
+                ui_img_folder = config["REAPER"]["ui_img"]
+            except KeyError:
+                log(f"No ui_img parameter in {theme_file}")
+                continue
+
+            ui_img_path = os.path.join(root_path, "Data", ui_img_folder)
+            if not os.path.exists(ui_img_path):
+                log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
+                continue
+
+            create_zip(theme_file, ui_img_path, config["FM"])
+else:
+    RPR_MB("Root path to Development folder is not set. Please execute script again and specify correct path.", "Root path set", 0)
