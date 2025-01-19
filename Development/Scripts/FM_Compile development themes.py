@@ -8,6 +8,7 @@ root_path = RPR_GetExtState("fm4_adjuster", "py_root_path")
 resources_path = os.path.join(RPR_GetResourcePath(), "ColorThemes")
 rtconfig_path = 'rtconfig.txt'
 something_changed = False
+rtconfig_content = None
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
@@ -42,20 +43,32 @@ def should_create_zip(theme_file, data_path):
 
     return False
 
-def create_zip(theme_file, data_path, theme_fm_config):
-    theme_name = os.path.splitext(theme_file)[0]
-    reaper_theme_path = get_theme_path(theme_name)
+def create_rtconfig_for_theme(theme_fm_config):
+    global rtconfig_content
 
-    log(f"Compiling \"{os.path.basename(reaper_theme_path)}\"...")
+    if not rtconfig_content:
+        with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
+            rtconfig_content = rtconfig_file.read()
 
     rtconfig_content_local = rtconfig_content
 
     for key, value in theme_fm_config.items():
         rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
 
-    modified_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
-    with open(modified_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
+        if "fm_version" in key:
+            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "_int}", str(value.replace(".", "")))
+
+    temp_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
+    with open(temp_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
         modified_rtconfig_file.write(rtconfig_content_local)
+
+    return temp_rtconfig_path
+
+def create_zip(theme_file, data_path, theme_rtconfig_path):
+    theme_name = os.path.splitext(theme_file)[0]
+    reaper_theme_path = get_theme_path(theme_name)
+
+    log(f"Compiling \"{os.path.basename(reaper_theme_path)}\"...")
 
     with zipfile.ZipFile(reaper_theme_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         zipf.write(os.path.join(root_path, "Themes", theme_file), arcname=theme_file)
@@ -66,9 +79,7 @@ def create_zip(theme_file, data_path, theme_fm_config):
                 arcname = os.path.relpath(file_path, start=data_path)
                 zipf.write(file_path, arcname=os.path.join(os.path.basename(data_path), arcname))
 
-        zipf.write(modified_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
-
-    os.remove(modified_rtconfig_path)
+        zipf.write(theme_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
 
 def specify_root_path():
     global root_path
@@ -92,9 +103,6 @@ if not is_correct_root_path(root_path):
     specify_root_path()
 
 if is_correct_root_path(root_path):
-    with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
-        rtconfig_content = rtconfig_file.read()
-
     for theme_file in os.listdir(os.path.join(root_path, "Themes")):
         if theme_file.endswith(".ReaperTheme"):
             config = configparser.ConfigParser()
@@ -112,8 +120,11 @@ if is_correct_root_path(root_path):
                 continue
 
             if should_create_zip(theme_file, ui_img_path):
-                create_zip(theme_file, ui_img_path, config["FM"])
+                modified_rtconfig_path = create_rtconfig_for_theme(config["FM"])
+                create_zip(theme_file, ui_img_path, modified_rtconfig_path)
                 something_changed = True
+
+                os.remove(modified_rtconfig_path)
 
     if something_changed:
         RPR_OpenColorThemeFile(RPR_GetLastColorThemeFile())

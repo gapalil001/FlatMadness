@@ -12,7 +12,7 @@ master_theme = "Dark SI"
 rtconfig_path = 'rtconfig.txt'
 master_theme_name = "Flat Madness Ultimate.ReaperThemeZip"
 master_theme_config_name = "Flat Madness Ultimate.theme"
-version = 0
+rtconfig_content = None
 
 def log(msg):
     RPR_ShowConsoleMsg(str(msg) + "\n")
@@ -20,7 +20,7 @@ def log(msg):
 def is_correct_root_path(path):
     return os.path.exists(os.path.join(path, "Scripts", "FM_Compile production themes.py"))
 
-def create_master_theme(master_theme_path):
+def create_master_theme(master_theme_path, version):
     log("Creating master theme \"" + master_theme_name + "\" based on \"" + master_theme + "\"...")
     shutil.copy2(master_theme_path, os.path.join(root_path, "..", "ColorThemes", master_theme_name))
 
@@ -33,19 +33,31 @@ def create_master_theme(master_theme_path):
     with open(theme_config_path, "w") as file:
         file.write(content)
 
-def create_zip(theme_file, data_path, theme_fm_config):
-    theme_name = os.path.splitext(theme_file)[0]
+def create_rtconfig_for_theme(theme_fm_config):
+    global rtconfig_content
 
-    log(f"Compiling production themes v." + version + " for \"" + theme_name + "\"...")
+    if not rtconfig_content:
+        with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
+            rtconfig_content = rtconfig_file.read()
 
     rtconfig_content_local = rtconfig_content
 
     for key, value in theme_fm_config.items():
         rtconfig_content_local = rtconfig_content_local.replace("{" + key + "}", str(value))
 
-    modified_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
-    with open(modified_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
+        if "fm_version" in key:
+            rtconfig_content_local = rtconfig_content_local.replace("{" + key + "_int}", str(value.replace(".", "")))
+
+    temp_rtconfig_path = os.path.join(root_path, "rtconfig_temp.txt")
+    with open(temp_rtconfig_path, "w", encoding="utf-8") as modified_rtconfig_file:
         modified_rtconfig_file.write(rtconfig_content_local)
+
+    return temp_rtconfig_path
+
+def create_zip(theme_file, data_path, theme_rtconfig_path, version):
+    theme_name = os.path.splitext(theme_file)[0]
+
+    log(f"Compiling production themes v." + version + " for \"" + theme_name + "\"...")
 
     zip_file_path = os.path.join(root_path, "..", "Utility", "data", theme_name + ".zip")
     with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -57,12 +69,10 @@ def create_zip(theme_file, data_path, theme_fm_config):
                 arcname = os.path.relpath(file_path, start=data_path)
                 zipf.write(file_path, arcname=os.path.join(os.path.basename(data_path), arcname))
 
-        zipf.write(modified_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
+        zipf.write(theme_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
 
     if theme_name == master_theme:
-        create_master_theme(zip_file_path)
-
-    os.remove(modified_rtconfig_path)
+        create_master_theme(zip_file_path, version)
 
 def specify_root_path():
     global root_path
@@ -86,17 +96,6 @@ if not is_correct_root_path(root_path):
     specify_root_path()
 
 if is_correct_root_path(root_path):
-    with open(os.path.join(root_path, rtconfig_path), "r", encoding="utf-8") as rtconfig_file:
-        rtconfig_content = rtconfig_file.read()
-
-    if not rtconfig_content:
-        log("File rtconfig.txt is not found in " + root_path)
-        sys.exit()
-
-    match = re.search(r"fmversion ([\d.]+)\n", rtconfig_content)
-    if match:
-        version = match.group(1)
-
     for theme_file in os.listdir(os.path.join(root_path, "Themes")):
         if theme_file.endswith(".ReaperTheme"):
             config = configparser.ConfigParser()
@@ -113,6 +112,9 @@ if is_correct_root_path(root_path):
                 log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
                 continue
 
-            create_zip(theme_file, ui_img_path, config["FM"])
+            modified_rtconfig_path = create_rtconfig_for_theme(config["FM"])
+            create_zip(theme_file, ui_img_path, modified_rtconfig_path, config["FM"]["fm_version"])
+
+            os.remove(modified_rtconfig_path)
 else:
     RPR_MB("Root path to Development folder is not set. Please execute script again and specify correct path.", "Root path set", 0)

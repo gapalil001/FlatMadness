@@ -16,7 +16,7 @@ Flat Madness v5 theme
       version 7
 
 HEADER   
-      fmversion 4.2.0
+      fmversion {fm_version}
       use_pngs 1
       use_overlays 1
       peaksedges 1
@@ -68,7 +68,9 @@ HEADER
 
 
 THEME ADJUSTER CONTROLS      
-      define_parameter hideall 'DOES FLAT MADNESS BEST THEME EVER? NO/YES' 2 1 2          df mn mx
+      -- define_parameter name 'description'                                              df mn mx
+      define_parameter hideall 'DOES FLAT MADNESS BEST THEME EVER? NO/YES' 2 1 2
+      define_parameter version 'Theme version'                                  {fm_version_int} 0 10000
       define_parameter meter_position       'TCP meter position'                           1 1 4 1
       define_parameter pan_type             'TCP pan/width Type '                          2 1 2 2
       define_parameter min_fxlist           'TCP FX SLOT minimal width'                    45 30 60 
@@ -92,12 +94,11 @@ THEME ADJUSTER CONTROLS
       define_parameter saturnalphamcp       'MCP background saturation'                    230 1 255
       define_parameter tcp_saturn_identmcp  'MCP selected track brightness'                10 0 30
 
-      define_parameter hideall 'DOES FLAT MADNESS BEST THEME EVER? NO/YES' 2 1 2
       define_parameter gencoloring          'tinttcp adjust'                               2 1 250
       define_parameter foldermargin         'folder label text margin'                     2 1 2
       define_parameter longnamestate        'test switching to longname for TCP'           1 1 2
       define_parameter envioswap            'swap send and envelope buttons'               2 1 2
-      define_parameter tcplabelbrightness   'tcp label brightness'                         160 120 200 
+      define_parameter tcplabelbrightness   'tcp label brightness'                         160 120 200
 
 
 

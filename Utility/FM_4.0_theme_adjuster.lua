@@ -14,6 +14,16 @@ local ImGui
 local CONTEXT = ({reaper.get_action_context()})
 local SCRIPT_NAME = CONTEXT[2]:match("([^/\\]+)%.lua$")
 local SCRIPT_PATH = CONTEXT[2]:match("(.*[/\\])")
+local IS_WINDOWS = reaper.GetOS() == "Win64" or reaper.GetOS() == "Win32"
+local THEME_VERSION = "4.3.0"
+local start_time = 0
+local cooldown = 1
+local proj = 0
+local key_ext_prefix = "fm4_adjuster"
+local key_ext_prefix_presets = "presets"
+local key_ext_prefix_theme = "theme"
+local key_ext_prefix_tinttcip = "items_color"
+local key_table_prefix = "__fm_t:"
 
 if reaper.ImGui_GetBuiltinPath == nil or not pcall(function()
 	package.path = reaper.ImGui_GetBuiltinPath() .. '/?.lua'
@@ -47,28 +57,138 @@ local function join(list, delimiter) if type(list) ~= 'table' or #list == 0 then
 local function in_array(tab, val) for _, value in ipairs(tab) do if value == val then return true end end return false end
 local function isEmpty(value) if value == nil then return true end if type(value) == 'boolean' and value == false then return true end if type(value) == 'table' and next(value) == nil then return true end if type(value) == 'number' and value == 0 then return true end if type(value) == 'string' and string.len(value) == 0 then return true end return false end
 local function round(number, decimals) if not decimals then decimals = 0 end local power = 10 ^ decimals return math.ceil(number * power) / power end
+local function NeedToUpdateValues() local time = reaper.time_precise() if time > start_time + cooldown then start_time = time return true else return false end end
+local function GetExtState(key, default, for_project)
+	local value
+
+	if for_project then
+		_, value = reaper.GetProjExtState(proj, key_ext_prefix, key)
+	else
+		value = reaper.GetExtState(key_ext_prefix, key)
+	end
+
+    if value == '' then return default end
+	if value == 'true' then value = true end
+	if value == 'false' then value = false end
+	if value == tostring(tonumber(value)) then value = tonumber(value) end
+	if type(value) == 'string' and value:sub(0, #key_table_prefix) == key_table_prefix then value = unserializeTable(value:sub(#key_table_prefix + 1)) end
+
+    return value
+end
+
+local function SetExtState(key, value, for_project, not_persist)
+	if not key then return end
+
+	if type(value) == 'boolean' then value = value and 'true' or 'false' end
+	if type(value) == 'table' then value = key_table_prefix .. serializeTable(value) end
+	if not value then value = "" end
+
+	if for_project then
+		reaper.SetProjExtState(proj, key_ext_prefix, key, value)
+	else
+		reaper.SetExtState(key_ext_prefix, key, value, not not_persist)
+	end
+end
 
 local ek_log_levels = { Debug = 1 }
 local function Log(msg) if type(msg) == 'table' then msg = serializeTable(msg) else msg = tostring(msg) end if msg then reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ") reaper.ShowConsoleMsg(msg) reaper.ShowConsoleMsg('\n') end end
+
+--local function exec(command) Log(command, ek_log_levels.Debug)
+--
+--	-- os.execute(command)
+--end
+
+--local function archive(from, to)
+--	local command = "cd " .. from .. "; zip -r " .. to .. " *"
+--
+--	if IS_WINDOWS then
+--		from = from:gsub("/", "\\")
+--		to = to:gsub("/", "\\")
+--
+--		command = 'cd "' .. from .. '" && ';
+--		command = command .. 'powershell.exe -Command "Compress-Archive -Path \'*\' -DestinationPath \'' .. to .. '\'" -CompressionLevel Fastest'
+--	end
+--
+--	exec(command)
+--end
+
+--local function unarchive(from, to)
+--	local command = "cd " .. from:match("(.*/)"):sub(0, -2) .. "; unzip -d " .. to .. " ."
+--
+--	if IS_WINDOWS then
+--		from = from:gsub("/", "\\")
+--		to = to:gsub("/", "\\")
+--
+--		command = 'cd "' .. from:match("(.*\\)"):sub(0, -2) .. '" && '
+--		command = command .. 'mkdir ' .. to .. ' && '
+--		command = command .. 'cd ' .. to .. ' && '
+--		command = command .. 'tar -xf "' .. from .. '"'
+--	end
+--
+--	exec(command)
+--end
+
+local function move(from, to)
+	if IS_WINDOWS then
+		from = from:gsub("/", "\\")
+		to = to:gsub("/", "\\")
+
+		os.execute('cmd.exe /C move "' .. from .. '" "' .. to .. '"')
+	else
+		local infile = io.open(from, "r")
+		local instr = infile:read("*a")
+		infile:close()
+
+		local outfile = io.open(to, "w")
+		outfile:write(instr)
+		outfile:close()
+	end
+end
+
+--local function removeDir(dirpath)
+--	exec(IS_WINDOWS and
+--		'powershell.exe -Command "Remove-Item -Path \'' .. dirpath:gsub("/", "\\") .. '\' -Recurse -Force"' or
+--		'rm -r ' .. dirpath
+--	)
+--end
+--
+--local function setParamRtconfig(filepath, param, value)
+--	local file = io.open(filepath, "rb") -- r read mode and b binary mode
+--    if not file then return end
+--
+--	local content = {}
+--	for line in file:lines() do
+--		if line:gsub("^%s*(.-)%s*$", "%1"):sub(0, 7) == param then
+--			line = param .. " " .. value
+--		end
+--
+--		table.insert(content, line)
+--	end
+--
+--	file:close()
+--
+--	file = io.open(filepath, "w")
+--	file:write("")
+--	for i = 1, #content do
+--		file:write(content[i], "\n")
+--	end
+--
+--	file:close()
+--end
+
+--local function getLastModifiedDate(filepath)
+--	local file = io.popen("stat -c %Y " .. filepath)
+--	local last_modified = file:read()
+--
+--	file:close()
+--
+--	return os.date("%c", last_modified)
+--end
 
 local ctx = ImGui.CreateContext(SCRIPT_NAME)
 local _, FLT_MAX = ImGui.NumericLimits_Float()
 local window_visible = false
 local window_opened = false
-local start_time = 0
-local cooldown = 1
-local key_ext_prefix = "fm4_adjuster"
-local key_ext_prefix_resets = "presets"
-
-local function NeedToUpdateValues()
-	local time = reaper.time_precise()
-	if time > start_time + cooldown then
-		start_time = time
-		return true
-	else
-		return false
-	end
-end
 
 local adj = {
 	cached_images = {},
@@ -115,7 +235,14 @@ local adj = {
 			Checkbox = 3,
 			Range = 4,
 			PanelBackground = 5,
-			Layout = 6
+			Layout = 6,
+			Select = 7
+		},
+		data_types = {
+			theme = 1,
+			layout = 2,
+			ext_state = 3,
+			custom = 4
 		},
 		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
 		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
@@ -145,8 +272,11 @@ adj.params = {
 	hideall = {
 		id = 0,
 	},
-	meter_position = {
+	version = {
 		id = 1,
+	},
+	meter_position = {
+		id = 2,
 		name = 'Meter position',
 		type = adj.config.param_types.Simple,
 		width = 420,
@@ -160,7 +290,7 @@ adj.params = {
 		}
 	},
 	pan_type = {
-		id = 2,
+		id = 3,
 		name = 'Pan/Width Visualization',
 		type = adj.config.param_types.Simple,
 		width = 420,
@@ -171,14 +301,14 @@ adj.params = {
 		}
 	},
 	min_fxlist = {
-		id = 3,
+		id = 4,
 		name = 'FX SLOT MINIMAL WIDTH',
 		type = adj.config.param_types.Range,
 		width = 205,
 		height = 65,
 	},
 	embed_position = {
-		id = 4,
+		id = 5,
 		name = 'EMBEDDED UI POSITION',
 		type = adj.config.param_types.Simple,
 		width = 205,
@@ -190,14 +320,6 @@ adj.params = {
 		}
 	},
 	tcp_folder_recarms = {
-		id = 5,
-		name = 'Record stuff in Folders',
-		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 41,
-		values = { 1, 2 }
-	},
-	mcp_folder_recarms = {
 		id = 6,
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
@@ -205,15 +327,15 @@ adj.params = {
 		height = 41,
 		values = { 1, 2 }
 	},
-	dbscales = {
+	mcp_folder_recarms = {
 		id = 7,
-		name = 'DB Scales',
+		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 41,
 		values = { 1, 2 }
 	},
-	mcpdbscales = {
+	dbscales = {
 		id = 8,
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
@@ -221,8 +343,16 @@ adj.params = {
 		height = 41,
 		values = { 1, 2 }
 	},
-	trans_position = {
+	mcpdbscales = {
 		id = 9,
+		name = 'DB Scales',
+		type = adj.config.param_types.Checkbox,
+		width = 205,
+		height = 41,
+		values = { 1, 2 }
+	},
+	trans_position = {
+		id = 10,
 		name = 'Transport orientation',
 		type = adj.config.param_types.Simple,
 		width = 420,
@@ -235,7 +365,7 @@ adj.params = {
 		}
 	},
 	tcp_solid_color = {
-		id = 10,
+		id = 11,
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
 		width = 420,
@@ -253,7 +383,7 @@ adj.params = {
 		}
 	},
 	mcp_solid_color = {
-		id = 11,
+		id = 12,
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
 		width = 420,
@@ -271,7 +401,7 @@ adj.params = {
 		}
 	},
 	mixer_folderindent = {
-		id = 12,
+		id = 13,
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Simple,
 		width = 420,
@@ -282,7 +412,7 @@ adj.params = {
 		}
 	},
 	saturnc = {
-		id = 13,
+		id = 14,
 		name = 'BRIGHTNESS',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -290,7 +420,7 @@ adj.params = {
 		height = 52,
 	},
 	saturnalpha = {
-		id = 14,
+		id = 15,
 		name = 'SATURATION',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -299,7 +429,7 @@ adj.params = {
 		height = 52,
 	},
 	tcp_saturn_ident = {
-		id = 15,
+		id = 16,
 		name = 'SELECTED TRACK HIGHLIGHT',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -307,7 +437,7 @@ adj.params = {
 		height = 52,
 	},
 	saturncmcp = {
-		id = 16,
+		id = 17,
 		name = 'BRIGHTNESS',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -315,7 +445,7 @@ adj.params = {
 		height = 52,
 	},
 	saturnalphamcp = {
-		id = 17,
+		id = 18,
 		name = 'SATURATION',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -324,7 +454,7 @@ adj.params = {
 		height = 52,
 	},
 	tcp_saturn_identmcp = {
-		id = 18,
+		id = 19,
 		name = 'SELECTED TRACK HIGHLIGHT',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -332,10 +462,10 @@ adj.params = {
 		height = 52,
 	},
 	gencoloring = {
-		id = 19,
+		id = 20,
 	},
 	foldermargin = {
-		id = 20,
+		id = 21,
 		name = "Folder Name \nleft orientation",
 		type = adj.config.param_types.Checkbox,
 		width = 205,
@@ -343,13 +473,13 @@ adj.params = {
 		values = { 2, 1 }
 	},
 	longnamestate = {
-		id = 21,
-	},
-	envioswap = {
 		id = 22,
 	},
-	tcplabelbrightness = {
+	envioswap = {
 		id = 23,
+	},
+	tcplabelbrightness = {
+		id = 24,
 		name = 'Track name brightness',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
@@ -358,7 +488,8 @@ adj.params = {
 	},
 	tcp_layout = {
 		name = 'TCP Global Layout',
-		type = adj.config.param_types.Layout,
+		type = adj.config.param_types.Simple,
+		data_type = adj.config.data_types.layout,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
@@ -366,18 +497,12 @@ adj.params = {
 		values = {
 			{ name = "Default", value = "Default", image = "images/pref_tcp_layout_1.png", borderRad = 15 },
 			{ name = "Longname", value = "LONGNAME", image = "images/pref_tcp_layout_2.png", borderRad = 15 },
-		},
-		getValue = function()
-			local _, layout = reaper.ThemeLayout_GetLayout("tcp", -1)
-			return { value = not isEmpty(layout) and layout or "Default" }
-		end,
-		setValue = function(newVal)
-			reaper.ThemeLayout_SetLayout("tcp", newVal)
-		end
+		}
 	},
 	mcp_layout = {
 		name = 'MCP Global Layout',
-		type = adj.config.param_types.Layout,
+		type = adj.config.param_types.Simple,
+		data_type = adj.config.data_types.layout,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
@@ -385,32 +510,91 @@ adj.params = {
 		values = {
 			{ name = "Default", value = "Default", image = "images/pref_mcp_layout_1.png", borderRad = 15 },
 			{ name = "Meterbridge", value = "METERBRIDGE", image = "images/pref_mcp_layout_2.png", borderRad = 15 },
+		}
+	},
+	theme = {
+		name = 'Theme',
+		type = adj.config.param_types.Simple,
+		data_type = adj.config.data_types.ext_state,
+		ext_key = key_ext_prefix_theme,
+		colspan = 2,
+		default = "Black",
+		width = 420,
+		height = 275,
+		values = {
+			{ name = "Black", value = "Black", image = "images/theme_color_black.png", borderRad = 15 },
+			{ name = "Bright", value = "Bright", image = "images/theme_color_bright.png", borderRad = 15 },
+			{ name = "Dark", value = "Dark", image = "images/theme_color_dark.png", borderRad = 15 },
+			{ name = "Grey", value = "Grey", image = "images/theme_color_gray.png", borderRad = 15 },
 		},
-		getValue = function()
-			local _, layout = reaper.ThemeLayout_GetLayout("mcp", -1)
-			return { value = not isEmpty(layout) and layout or "Default" }
-		end,
-		setValue = function(newVal)
-			reaper.ThemeLayout_SetLayout("mcp", newVal)
+		onChange = function()
+			adj.SetTheme()
 		end
-	}
+	},
+	tinttcp = {
+		name = 'Items colors',
+		type = adj.config.param_types.Simple,
+		data_type = adj.config.data_types.ext_state,
+		ext_key = key_ext_prefix_tinttcip,
+		default = "SI",
+		width = 420,
+		height = 155,
+		values = {
+			{ name = "Colored items", value = "CI", image = "images/theme_items_ci.png", borderRad = 15 },
+			{ name = "Solid items", value = "SI", image = "images/theme_items_si.png", borderRad = 15 },
+		},
+		onChange = function()
+			adj.SetTheme()
+		end
+	},
 }
 
 function adj.SetValue(parameter, value)
+	if value == parameter.data.value then return end
+
 	parameter.data.value = value
 
-	if parameter.setValue then
-		parameter.setValue(value)
-	else
+	if not parameter.data_type or parameter.data_type == adj.config.data_types.theme then
 		reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
 		reaper.ThemeLayout_RefreshAll()
+	elseif parameter.data_type == adj.config.data_types.layout then
+		reaper.ThemeLayout_SetLayout(parameter.section, parameter.data.value)
+	elseif parameter.data_type == adj.config.data_types.ext_state then
+		SetExtState(parameter.ext_key, parameter.data.value)
+	elseif parameter.data_type == adj.config.data_types.custom then
+		parameter.setValue(parameter.data.value)
+	end
+
+	if parameter.onChange then
+		parameter.onChange(parameter.data.value)
+	end
+end
+
+function adj.GetValue(parameter)
+	if not parameter.data_type or parameter.data_type == adj.config.data_types.theme then
+		local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(parameter.id)
+
+		if ret then
+			return { name = name, value = value, min = minValue, max = maxValue }
+		end
+	elseif parameter.data_type == adj.config.data_types.layout then
+		local _, layout = reaper.ThemeLayout_GetLayout(parameter.section, -1)
+		return { value = not isEmpty(layout) and layout or "Default" }
+	elseif parameter.data_type == adj.config.data_types.ext_state then
+		return { value = GetExtState(parameter.ext_key, parameter.default) }
+	elseif parameter.data_type == adj.config.data_types.custom then
+		return { value = parameter.getValue() }
 	end
 end
 
 function adj.GetUserPresets()
-	local values = reaper.GetExtState(key_ext_prefix, key_ext_prefix_resets)
+	local values = GetExtState(key_ext_prefix_presets, {})
 
-	return values and unserializeTable(values) or {}
+	if type(values) == 'string' and not isEmpty(values) then
+		values = unserializeTable(values)
+	end
+
+	return values
 end
 
 function adj.SaveUserPreset(name)
@@ -423,7 +607,7 @@ function adj.SaveUserPreset(name)
 
 	presets[name] = new_preset_values
 
-	reaper.SetExtState(key_ext_prefix, key_ext_prefix_resets, serializeTable(presets), true)
+	SetExtState(key_ext_prefix_presets, presets)
 end
 
 function adj.DeleteUserPreset(name)
@@ -431,7 +615,26 @@ function adj.DeleteUserPreset(name)
 
 	presets[name] = nil
 
-	reaper.SetExtState(key_ext_prefix, key_ext_prefix_resets, serializeTable(presets), true)
+	SetExtState(key_ext_prefix_presets, presets)
+end
+
+function adj.SetTheme()
+	local themeId = adj.GetValue(adj.params.theme)
+	local tinttcpId = adj.GetValue(adj.params.tinttcp)
+
+	if not themeId or not tinttcpId then return end
+	local themePath = SCRIPT_PATH .. "data/" ..  themeId.value .. " " .. tinttcpId.value .. ".zip"
+
+	if reaper.file_exists(themePath) then
+		local to = reaper.GetLastColorThemeFile()
+		if string.sub(to, -3) ~= "Zip" then
+			to = to .. "Zip"
+		end
+
+		move(themePath, to)
+
+		reaper.OpenColorThemeFile(to)
+	end
 end
 
 function adj.Link(text, url)
@@ -452,21 +655,12 @@ end
 function adj.UpdateValues()
 	if not NeedToUpdateValues() then return end
 
-	for id, param in pairs(adj.params) do
-		if param.getValue then
-			adj.params[id].data = param.getValue()
-		else
-			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
+	for id, param in pairs(adj.params) do adj.params[id].data = adj.GetValue(param) end
 
-			if ret then
-				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
-			end
-		end
-	end
-
-	if adj.params.hideall.data == nil or not string.find(adj.params.hideall.data.name, "DOES FLAT MADNESS BEST THEME EVER?") then
+	local ver = THEME_VERSION:gsub("%.", "")
+	if adj.params.version.data == nil or adj.params.version.data.value < tonumber(ver) then
 		window_opened = false
-		reaper.MB('Please install the lastest version of Flat Madness theme to be able to customize it', SCRIPT_NAME, 0)
+		reaper.MB('Please install Flat Madness theme version "' .. THEME_VERSION .. '" at least to be able to customize it', SCRIPT_NAME, 0)
 		return false
 	end
 
@@ -763,51 +957,31 @@ function adj.DrawPanelBackground(parameter)
 	end
 end
 
-function adj.DrawLayoutBlock(parameter)
-	local values = parameter.values
-
-	ImGui.Dummy(ctx, 0, 5)
-	adj.CenterText(parameter.name, adj.config.colors.Subheader)
-
-	if ImGui.BeginTable(ctx, "table_sub_layout", parameter.colspan or #values) then
-		local curCol = 0
-
-		for _, val in pairs(values) do
-			ImGui.TableNextColumn(ctx)
-
-			local selColor = val.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
-			adj.DrawImage(SCRIPT_PATH .. val.image, { borderBg = selColor, borderRad = val.borderRad })
-
-			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, val.value)
-			end
-
-			adj.CenterText(val.name, selColor)
-
-			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, val.value)
-			end
-
-			curCol = curCol + 1
-
-			if parameter.colspan ~= nil and curCol >= parameter.colspan then
-				curCol = 0
-				ImGui.TableNextRow(ctx)
-			end
-		end
-
-		ImGui.EndTable(ctx)
+function adj.DrawSelectBlock(parameter)
+	local values = {}
+	local value = tonumber(parameter.data.value)
+	for _, val in pairs(parameter.values) do
+		table.insert(values, val.name)
 	end
 
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+	--ImGui.PushItemWidth(ctx, 439)
+	ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.White)
+	--ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, 2)
+	--ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 9, 2)
+	local _, newVal = ImGui.Combo(ctx, parameter.name, value, join(values, "\0") .. "\0")
+	--ImGui.PopStyleVar(ctx, 2)
+	ImGui.PopStyleColor(ctx, 1)
+	--ImGui.PopItemWidth(ctx)
 
-	ImGui.PopStyleVar(ctx)
+	if newVal ~= value then
+		adj.SetValue(parameter, newVal)
+	end
 end
 
 function adj.ShowParameter(parameter)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
 
-	if ImGui.BeginChild(ctx, "parameter_" .. (parameter.id or "custom"), parameter.width, parameter.height, nil, adj.config.windFlags) then
+	if ImGui.BeginChild(ctx, "parameter_" .. (parameter.id or "custom_" .. parameter.name), parameter.width, parameter.height, nil, adj.config.windFlags) then
 		if parameter.type == adj.config.param_types.Simple then
 			adj.DrawSimpleInput(parameter)
 		elseif parameter.type == adj.config.param_types.Checkbox then
@@ -816,8 +990,8 @@ function adj.ShowParameter(parameter)
 			adj.DrawRangeInput(parameter)
 		elseif parameter.type == adj.config.param_types.PanelBackground then
 			adj.DrawPanelBackground(parameter)
-		elseif parameter.type == adj.config.param_types.Layout then
-			adj.DrawLayoutBlock(parameter)
+		elseif parameter.type == adj.config.param_types.Select then
+			adj.DrawSelectBlock(parameter)
 		end
 
 		ImGui.EndChild(ctx)
@@ -1043,6 +1217,10 @@ function adj.ShowWindow()
 	ImGui.Spacing(ctx)
 
     adj.DrawCollapsingHeader('                              COMMON', function()
+		adj.ShowParameter(adj.params.theme)
+		adj.ShowParameter(adj.params.tinttcp)
+		ImGui.Spacing(ctx)
+
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
 	end)
@@ -1086,6 +1264,8 @@ function adj.ShowWindow()
         local themeVersion = adj.GetVersion(reaper.GetLastColorThemeFile() .. "Zip")
 		if themeVersion then
 			ImGui.TextWrapped(ctx, 'Theme version: ' .. themeVersion)
+		else
+			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.params.version.data.value)
 		end
 
 		ImGui.TextWrapped(ctx, "ReaImGui version: " .. imGuiVersion)
