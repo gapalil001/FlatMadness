@@ -1,9 +1,9 @@
 import os
-import sys
 import zipfile
 import configparser
 import shutil
 import re
+from PIL import Image, ImageDraw, ImageFont
 
 from reaper_python import *
 
@@ -54,7 +54,7 @@ def create_rtconfig_for_theme(theme_fm_config):
 
     return temp_rtconfig_path
 
-def create_zip(theme_file, data_path, theme_rtconfig_path, version):
+def create_zip(theme_file, data_path, theme_rtconfig_path, theme_splash_path, version):
     theme_name = os.path.splitext(theme_file)[0]
 
     log(f"Compiling production themes v." + version + " for \"" + theme_name + "\"...")
@@ -70,9 +70,54 @@ def create_zip(theme_file, data_path, theme_rtconfig_path, version):
                 zipf.write(file_path, arcname=os.path.join(os.path.basename(data_path), arcname))
 
         zipf.write(theme_rtconfig_path, arcname=os.path.join(os.path.basename(data_path), rtconfig_path))
+        zipf.write(theme_splash_path, arcname=os.path.join(os.path.basename(data_path), 'splash.png'))
 
     if theme_name == master_theme:
         create_master_theme(zip_file_path, version)
+
+def draw_version_on_splash_image(path, version):
+    text = "Ver. " + version
+
+    image = Image.open(path).convert("RGBA")
+
+    font_path = "Tahoma.ttf"
+    font_size = 14
+    font = ImageFont.truetype(font_path, font_size)
+
+    overlay = Image.new("RGBA", image.size, (255, 255, 255, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+
+    padding = 7
+    box_width = text_width + 2 * padding
+    box_height = text_height + 2 * padding
+
+    image_width, image_height = image.size
+    box_x = image_width - box_width
+    box_y = image_height - box_height
+
+    box_color = (255, 255, 255, 150)
+
+    draw.rounded_rectangle(
+        [(box_x, box_y), (box_x + box_width, box_y + box_height)],
+        radius=2,
+        fill=box_color
+    )
+
+    text_x = box_x + padding
+    text_y = box_y + padding / 2
+    draw.text((text_x, text_y), text, font=font, fill=(255, 255, 255, 0))
+
+    combined = Image.alpha_composite(image, overlay)
+
+    output_path = os.path.join(root_path, "splash.png")
+
+    combined.save(output_path)
+
+    return output_path
 
 def specify_root_path():
     global root_path
@@ -112,9 +157,11 @@ if is_correct_root_path(root_path):
                 log(f"Folder {ui_img_folder} from {theme_file} does not exists in Data folder")
                 continue
 
+            modified_splash_path = draw_version_on_splash_image(os.path.join(ui_img_path, "splash.png"), config["FM"]["fm_version"])
             modified_rtconfig_path = create_rtconfig_for_theme(config["FM"])
-            create_zip(theme_file, ui_img_path, modified_rtconfig_path, config["FM"]["fm_version"])
+            create_zip(theme_file, ui_img_path, modified_rtconfig_path, modified_splash_path, config["FM"]["fm_version"])
 
             os.remove(modified_rtconfig_path)
+            os.remove(modified_splash_path)
 else:
     RPR_MB("Root path to Development folder is not set. Please execute script again and specify correct path.", "Root path set", 0)

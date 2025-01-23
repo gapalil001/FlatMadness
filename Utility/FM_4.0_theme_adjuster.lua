@@ -272,7 +272,7 @@ adj.params = {
 	hideall = {
 		id = 0,
 	},
-	version = {
+	fm_version = {
 		id = 1,
 	},
 	meter_position = {
@@ -658,7 +658,7 @@ function adj.UpdateValues()
 	for id, param in pairs(adj.params) do adj.params[id].data = adj.GetValue(param) end
 
 	local ver = THEME_VERSION:gsub("%.", "")
-	if adj.params.version.data == nil or adj.params.version.data.value < tonumber(ver) then
+	if adj.params.fm_version.data == nil or adj.params.fm_version.data.value < tonumber(ver) then
 		window_opened = false
 		reaper.MB('Please install Flat Madness theme version "' .. THEME_VERSION .. '" at least to be able to customize it', SCRIPT_NAME, 0)
 		return false
@@ -1265,7 +1265,7 @@ function adj.ShowWindow()
 		if themeVersion then
 			ImGui.TextWrapped(ctx, 'Theme version: ' .. themeVersion)
 		else
-			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.params.version.data.value)
+			ImGui.TextWrapped(ctx, 'Theme version: ' .. adj.params.fm_version.data.value)
 		end
 
 		ImGui.TextWrapped(ctx, "ReaImGui version: " .. imGuiVersion)

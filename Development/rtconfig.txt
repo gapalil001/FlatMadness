@@ -70,7 +70,7 @@ HEADER
 THEME ADJUSTER CONTROLS      
       -- define_parameter name 'description'                                              df mn mx
       define_parameter hideall 'DOES FLAT MADNESS BEST THEME EVER? NO/YES' 2 1 2
-      define_parameter version 'Theme version'                                  {fm_version_int} 0 10000
+      define_parameter fm_version           'FM Theme version'              {fm_version_int} {fm_version_int} {fm_version_int}
       define_parameter meter_position       'TCP meter position'                           1 1 4 1
       define_parameter pan_type             'TCP pan/width Type '                          2 1 2 2
       define_parameter min_fxlist           'TCP FX SLOT minimal width'                    45 30 60 
