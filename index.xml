@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="86b3cd20f23c629fa89f53f05cdc33a531419946">
+<index version="1" name="Flat Madness Theme" commit="f306f91db9e7747f61b5068f512ea6bc653c4655">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -32,6 +32,13 @@
 - added two color variations - solid item backgrounds for bright and grey themes (experimental)
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/5d984f5b9751718e2bc46fe34f64ecc5a724a6b4/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
@@ -153,6 +160,34 @@
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
+      </version>
+    </reapack>
+    <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Black CI">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
+}
+]]></description>
+        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
+        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
+        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
+      </metadata>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -272,6 +307,13 @@
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -304,6 +346,13 @@
 - added two color variations - solid item backgrounds for bright and grey themes (experimental)
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/5d984f5b9751718e2bc46fe34f64ecc5a724a6b4/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -425,6 +474,34 @@
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+    </reapack>
+    <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
+      <metadata>
+        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
+{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
+\widowctrl\hyphauto
+
+{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
+}
+]]></description>
+        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
+        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
+        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
+      </metadata>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Grey CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Grey%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
       <metadata>
@@ -543,6 +620,13 @@
 - added two color variations - solid item backgrounds for bright and grey themes (experimental)
 - some refactoring stuff]]></changelog>
         <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
+      </version>
+      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
+        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
+- small bug fixes
+- small changes in TCP meter behavior
+- hidden feature for geeks]]></changelog>
+        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
