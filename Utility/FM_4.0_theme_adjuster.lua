@@ -163,8 +163,8 @@ adj.params = {
 		width = 420,
 		height = 155,
 		values = {
-			{ name = "Knob", value = 1, image = "images/pref_tcp_knob.png" },
-			{ name = "Slider*", value = 0, image = "images/pref_tcp_slider.png" },
+			{ name = "Knob", value = 2, image = "images/pref_tcp_knob.png" },
+			{ name = "Slider*", value = 1, image = "images/pref_tcp_slider.png" },
 		}
 	},
 	min_fxlist = {
