@@ -1,12 +1,9 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.1.2
+-- @version 1.1.3
 -- @changelog
---   - added support of version 4.2.0
---   - added presets
---   - added support of layouts changing
---   - added version details to about section
+--   - added support of version 4.2.4
 -- @provides
 --   [nomain] images/*.png
 
@@ -166,8 +163,8 @@ adj.params = {
 		width = 420,
 		height = 155,
 		values = {
-			{ name = "Knob", value = 2, image = "images/pref_tcp_knob.png" },
-			{ name = "Slider*", value = 1, image = "images/pref_tcp_slider.png" },
+			{ name = "Knob", value = 1, image = "images/pref_tcp_knob.png" },
+			{ name = "Slider*", value = 0, image = "images/pref_tcp_slider.png" },
 		}
 	},
 	min_fxlist = {
@@ -185,8 +182,8 @@ adj.params = {
 		height = 165,
 		colspan = 1,
 		values = {
-			{ name = "Beside FX", value = 1, image = "images/pref_tcp_embedright.png", borderRad = 5 },
-			{ name = "Instead FX**", value = 2, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
+			{ name = "Beside FX", value = 0, image = "images/pref_tcp_embedright.png", borderRad = 5 },
+			{ name = "Instead FX**", value = 1, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
 		}
 	},
 	tcp_folder_recarms = {
@@ -195,7 +192,7 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 41,
-		values = { 1, 2 }
+		values = { 0, 1 }
 	},
 	mcp_folder_recarms = {
 		id = 6,
@@ -203,7 +200,7 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 41,
-		values = { 1, 2 }
+		values = { 0, 1 }
 	},
 	dbscales = {
 		id = 7,
@@ -211,7 +208,7 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 41,
-		values = { 1, 2 }
+		values = { 0, 1 }
 	},
 	mcpdbscales = {
 		id = 8,
@@ -219,7 +216,7 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 41,
-		values = { 1, 2 }
+		values = { 0, 1 }
 	},
 	trans_position = {
 		id = 9,
@@ -340,21 +337,63 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		width = 205,
 		height = 62,
-		values = { 2, 1 }
+		values = { 1, 0 }
 	},
 	longnamestate = {
-		id = 21,
+		id = 20,
 	},
 	envioswap = {
-		id = 22,
+		id = 21,
 	},
 	tcplabelbrightness = {
-		id = 23,
+		id = 22,
 		name = 'Track name brightness',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		width = 205,
 		height = 62,
+	},
+	trans_mixer = {
+		id = 24,
+		name = 'Mixer',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_navigator = {
+		id = 25,
+		name = 'Project Navigator',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_mediainfolder = {
+		id = 26,
+		name = 'Open selected file in Explorer',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_video = {
+		id = 27,
+		name = 'Video Window',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_regionman = {
+		id = 28,
+		name = 'Region/Marker Manager',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_folder = {
+		id = 29,
+		name = 'Open Project Path',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
+	},
+	trans_explorer = {
+		id = 30,
+		name = 'Media Explorer',
+		type = adj.config.param_types.Checkbox,
+		values = { 0, 1 }
 	},
 	tcp_layout = {
 		name = 'TCP Global Layout',
@@ -847,6 +886,53 @@ function adj.DrawCollapsingHeader(header, innerContent)
 	ImGui.PopStyleColor(ctx, 2)
 end
 
+function adj.DrawTransportButtonsPanel()
+	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
+
+	if ImGui.BeginChild(ctx, "transport_button_panel", 420, 150, nil, adj.config.windFlags) then
+		ImGui.Dummy(ctx, 0, 5)
+		adj.CenterText("Custom transport buttons", adj.config.colors.Subheader)
+
+		local columns = 2
+		local parameters = {
+			adj.params.trans_mixer,
+			adj.params.trans_navigator,
+			adj.params.trans_mediainfolder,
+			adj.params.trans_video,
+			adj.params.trans_regionman,
+			adj.params.trans_folder,
+			adj.params.trans_explorer,
+		}
+
+		ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) + 15)
+
+		if ImGui.BeginTable(ctx, "transport_button_panel_table", columns, nil, 400) then
+			for i, parameter in pairs(parameters) do
+				ImGui.TableNextColumn(ctx)
+
+				local _, newVal = ImGui.Checkbox(ctx, parameter.name, parameter.data.value == parameter.values[2])
+				local id = newVal and 2 or 1
+
+				if parameter.data.value ~= parameter.values[id] then
+					adj.SetValue(parameter, parameter.values[id])
+				end
+
+				if i % columns == 0 then
+					ImGui.TableNextRow(ctx)
+				end
+			end
+
+			ImGui.EndTable(ctx)
+		end
+
+		ImGui.EndChild(ctx)
+	end
+
+	ImGui.Spacing(ctx)
+
+	ImGui.PopStyleColor(ctx, 1)
+end
+
 function adj.DrawPresetsSelect()
 	local get_presets_list = function()
 		local presets = { "No preset" }
@@ -1042,9 +1128,10 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-    adj.DrawCollapsingHeader('                              COMMON', function()
+    adj.DrawCollapsingHeader('                              TRANSPORT', function()
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
+		adj.DrawTransportButtonsPanel()
 	end)
 
 	ImGui.Spacing(ctx)

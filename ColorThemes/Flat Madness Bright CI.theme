@@ -1,10 +1,15 @@
 @description Flat Madness Black CI
-@version 4.2.3
+@version 4.2.4
 @changelog
-    - overall improvements for TCP collapsing behavior
-    - small bug fixes
-    - small changes in TCP meter behavior
-    - hidden feature for geeks
+    - upgraded envelope panel
+    - track color strip with color picker
+    - envelope type indicator (basic/FX parameter)
+    - Transport improvements
+    - revealed dock/undock button
+    - adjuster button placed below dock button to be more compact
+    - introduced quick tools for transport panel
+    - changed behavior in floating state
+    - center position is really centered now for any screen size
 @provides Flat Madness Bright CI.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
