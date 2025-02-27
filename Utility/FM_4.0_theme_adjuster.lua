@@ -1,7 +1,7 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.1.3
+-- @version 1.1.4
 -- @changelog
 --   - added support of version 4.2.4
 -- @provides
