@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="32bc1a2351094d7b57d2b22047ce4aba8cda603b">
+<index version="1" name="Flat Madness Theme" commit="21e99b199df96cc8bc347bb605e6ecb22488ef8c">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -245,6 +245,23 @@
 - center position is really centered now for any screen size]]></changelog>
         <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
       </version>
+      <version name="5.0.0" author="Dmytro Hapochka" time="2025-12-15T23:06:07Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -390,6 +407,23 @@
 - center position is really centered now for any screen size]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="5.0.0" author="Dmytro Hapochka" time="2025-12-15T23:06:07Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -448,6 +482,23 @@
 - changed behavior in floating state
 - center position is really centered now for any screen size]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.0" author="Dmytro Hapochka" time="2025-12-15T23:06:07Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -594,6 +645,23 @@
 - changed behavior in floating state
 - center position is really centered now for any screen size]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.0" author="Dmytro Hapochka" time="2025-12-15T23:06:07Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
@@ -1123,6 +1191,39 @@
         <source file="images/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/32bc1a2351094d7b57d2b22047ce4aba8cda603b/Utility/images/pref_trans_position_left.png</source>
         <source file="images/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/32bc1a2351094d7b57d2b22047ce4aba8cda603b/Utility/images/pref_trans_position_right.png</source>
         <source file="images/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/32bc1a2351094d7b57d2b22047ce4aba8cda603b/Utility/images/screenshot.png</source>
+      </version>
+      <version name="5.0.0" author="Ed Kashinsky" time="2025-12-15T23:06:07Z">
+        <changelog><![CDATA[- added support of version 5.0.0]]></changelog>
+        <source main="main">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/FM_4.0_theme_adjuster.lua</source>
+        <source file="images/bmc_qr_hapochka.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/bmc_qr_hapochka.png</source>
+        <source file="images/bmc_qr_kashinsky.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/bmc_qr_kashinsky.png</source>
+        <source file="images/header.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/header.png</source>
+        <source file="images/pref_mcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_colorbg.png</source>
+        <source file="images/pref_mcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_custom.png</source>
+        <source file="images/pref_mcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_greybg.png</source>
+        <source file="images/pref_mcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_layout_1.png</source>
+        <source file="images/pref_mcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_layout_2.png</source>
+        <source file="images/pref_mcp_paddingoff.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_paddingoff.png</source>
+        <source file="images/pref_mcp_paddingon.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_mcp_paddingon.png</source>
+        <source file="images/pref_tcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_colorbg.png</source>
+        <source file="images/pref_tcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_custom.png</source>
+        <source file="images/pref_tcp_embedinstead.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_embedinstead.png</source>
+        <source file="images/pref_tcp_embedright.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_embedright.png</source>
+        <source file="images/pref_tcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_greybg.png</source>
+        <source file="images/pref_tcp_knob.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_knob.png</source>
+        <source file="images/pref_tcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_layout_1.png</source>
+        <source file="images/pref_tcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_layout_2.png</source>
+        <source file="images/pref_tcp_meterbridge.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_meterbridge.png</source>
+        <source file="images/pref_tcp_meterleft.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_meterleft.png</source>
+        <source file="images/pref_tcp_meterright.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_meterright.png</source>
+        <source file="images/pref_tcp_meterrightedge.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_meterrightedge.png</source>
+        <source file="images/pref_tcp_norecarms.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_norecarms.png</source>
+        <source file="images/pref_tcp_recarms.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_recarms.png</source>
+        <source file="images/pref_tcp_slider.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_tcp_slider.png</source>
+        <source file="images/pref_trans_position_center.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_trans_position_center.png</source>
+        <source file="images/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_trans_position_left.png</source>
+        <source file="images/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/pref_trans_position_right.png</source>
+        <source file="images/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/Utility/images/screenshot.png</source>
       </version>
     </reapack>
   </category>
