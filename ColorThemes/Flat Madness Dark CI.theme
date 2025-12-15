@@ -1,15 +1,20 @@
 @description Flat Madness Dark CI
-@version 4.2.4
+@version 5.0.0
 @changelog
-    - upgraded envelope panel
-    - track color strip with color picker
-    - envelope type indicator (basic/FX parameter)
-    - Transport improvements
-    - revealed dock/undock button
-    - adjuster button placed below dock button to be more compact
-    - introduced quick tools for transport panel
-    - changed behavior in floating state
-    - center position is really centered now for any screen size
+   * 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+   * some bugs fixed
+   * some bugs added
+   * reduced grey and black color schemes
+   * dark theme became darken
+   * re-designed knobs and buttons
+   * folder track color saturation can be adjusted separately
+   * on tiny height you can choose between 3 schemes
+   * in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+   * longname layout became mode
+   * pan slider mode became layout
+   * light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+   * centered position in transport now works almost perfect that even i started using it
+   * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all
 @provides Flat Madness Dark CI.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness

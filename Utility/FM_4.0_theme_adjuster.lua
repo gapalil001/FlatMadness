@@ -1,9 +1,9 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 1.1.4
+-- @version 5.0.0
 -- @changelog
---   - added support of version 4.2.4
+--   - added support of version 5.0.0
 -- @provides
 --   [nomain] images/*.png
 
@@ -91,8 +91,8 @@ local adj = {
 		colors = {
 			White = 0xffffffff,
 			Background = 0x414141ff,
-			SectionBackground = 0x929292ff,
-			ParameterBlockBackground = 0x7d7d7dff,
+			SectionBackground = 0x656565ff,
+			ParameterBlockBackground = 0x555555ff,
 			Header = 0x252525ff,
 			Subheader = 0xd4d4d4ff,
 			Selected = 0xf89202ff,
@@ -156,15 +156,15 @@ adj.params = {
 			{ name = "Almost Right", value = 4, image = "images/pref_tcp_meterrightedge.png", borderRad = 5 },
 		}
 	},
-	pan_type = {
+	lnstatemd = {
 		id = 2,
-		name = 'Pan/Width Visualization',
+		name = 'Track Label Scheme',
 		type = adj.config.param_types.Simple,
 		width = 420,
 		height = 155,
 		values = {
-			{ name = "Knob", value = 2, image = "images/pref_tcp_knob.png" },
-			{ name = "Slider*", value = 1, image = "images/pref_tcp_slider.png" },
+			{ name = "Default", value = 2, image = "images/pref_tcp_layout_1.png" },
+			{ name = "Longname", value = 1, image = "images/pref_tcp_layout_2.png" },
 		}
 	},
 	min_fxlist = {
@@ -237,11 +237,12 @@ adj.params = {
 		type = adj.config.param_types.PanelBackground,
 		width = 420,
 		height = 130,
-		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident" },
+		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident", "saturnfolder" },
 		apply = { title = "Apply to MCP", main_param = "mcp_solid_color", params = {
 			saturnc = "saturncmcp",
 			saturnalpha = "saturnalphamcp",
-			tcp_saturn_ident = "tcp_saturn_identmcp"
+			tcp_saturn_ident = "tcp_saturn_identmcp",
+			saturnfolder = "mcpsaturnfolder"
 		}},
 		values = {
 			{ name = "Solid", value = 2, image = "images/pref_tcp_greybg.png", borderRad = 15 },
@@ -255,11 +256,12 @@ adj.params = {
 		type = adj.config.param_types.PanelBackground,
 		width = 420,
 		height = 130,
-		custom = { "saturncmcp", "saturnalphamcp", "tcp_saturn_identmcp" },
+		custom = { "saturncmcp", "saturnalphamcp", "tcp_saturn_identmcp", "mcpsaturnfolder" },
 		apply = { title = "Apply to TCP", main_param = "tcp_solid_color", params = {
 			saturncmcp = "saturnc",
 			saturnalphamcp = "saturnalpha",
-			tcp_saturn_identmcp = "tcp_saturn_ident"
+			tcp_saturn_identmcp = "tcp_saturn_ident",
+			mcpsaturnfolder = "saturnfolder"
 		}},
 		values = {
 			{ name = "Solid", value = 2, image = "images/pref_mcp_greybg.png", borderRad = 15 },
@@ -280,53 +282,53 @@ adj.params = {
 	},
 	saturnc = {
 		id = 13,
-		name = 'BRIGHTNESS',
+		name = 'Brightness',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	saturnalpha = {
 		id = 14,
-		name = 'SATURATION',
+		name = 'Saturation',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		is_reverse = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	tcp_saturn_ident = {
 		id = 15,
-		name = 'SELECTED TRACK HIGHLIGHT',
+		name = 'Sel Track Highlight',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	saturncmcp = {
 		id = 16,
-		name = 'BRIGHTNESS',
+		name = 'Brightness',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	saturnalphamcp = {
 		id = 17,
-		name = 'SATURATION',
+		name = 'Saturation',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		is_reverse = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	tcp_saturn_identmcp = {
 		id = 18,
-		name = 'SELECTED TRACK HIGHLIGHT',
+		name = 'Sel Track Highlight',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
 		width = 205,
-		height = 52,
+		height = 57,
 	},
 	gencoloring = {
 		id = 19,
@@ -395,16 +397,64 @@ adj.params = {
 		type = adj.config.param_types.Checkbox,
 		values = { 0, 1 }
 	},
+	saturnfolder = {
+		id = 32,
+		name = 'Folder Saturation',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 57,
+	},
+	fxsidead = {
+		id = 33,
+		name = "FX List Position \n(not works with longname and meterbridge)",
+		type = adj.config.param_types.Simple,
+		width = 420,
+		height = 160,
+		values = {
+			{ name = "Center", value = 0, image = "images/pref_tcp_fxcenter.png" },
+			{ name = "Right", value = 1, image = "images/pref_tcp_fxside.png" },
+		}
+	},
+	gloss = {
+		id = 34,
+		name = 'Gloss effect',
+		type = adj.config.param_types.Checkbox,
+		width = 420,
+		height = 50,
+		values = { 0, 1 }
+	},
+	tinymode = {
+		id = 35,
+		name = 'Scheme for small track height',
+		type = adj.config.param_types.Simple,
+		width = 420,
+		height = 210,
+		colspan = 1,
+		values = {
+			{ name = "Effects", value = 1, image = "images/pref_tcp_tiny1.png", borderRad = 2 },
+			{ name = "Meterbridge", value = 2, image = "images/pref_tcp_tiny2.png", borderRad = 2 },
+			{ name = "Longname", value = 3, image = "images/pref_tcp_tiny3.png", borderRad = 2 },
+		}
+	},
+	mcpsaturnfolder = {
+		id = 36,
+		name = 'Folder Saturation',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 57,
+	},
 	tcp_layout = {
-		name = 'TCP Global Layout',
+		name = 'TCP Pan/Width mode',
 		type = adj.config.param_types.Layout,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
 		section = "tcp",
 		values = {
-			{ name = "Default", value = "Default", image = "images/pref_tcp_layout_1.png", borderRad = 15 },
-			{ name = "Longname", value = "LONGNAME", image = "images/pref_tcp_layout_2.png", borderRad = 15 },
+			{ name = "Knob", value = "Default", image = "images/pref_tcp_knob.png", borderRad = 15 },
+			{ name = "Slider", value = "PAN_SLIDER", image = "images/pref_tcp_slider.png", borderRad = 15 },
 		},
 		getValue = function()
 			local _, layout = reaper.ThemeLayout_GetLayout("tcp", -1)
@@ -764,7 +814,7 @@ function adj.DrawPanelBackground(parameter)
 	end
 
 	if parameter.data.value == 3 then
-		parameter.height = 265
+		parameter.height = 325
 
 		if ImGui.BeginTable(ctx, "sep", 2) then
 			ImGui.TableNextColumn(ctx)
@@ -778,9 +828,16 @@ function adj.DrawPanelBackground(parameter)
 			adj.ShowParameter(adj.params[parameter.custom[3]])
 
 			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params[parameter.custom[4]])
 
-			ImGui.Dummy(ctx, 0, 20)
-			ImGui.Indent(ctx, 50)
+			ImGui.EndTable(ctx)
+
+			ImGui.Dummy(ctx, 0, 5)
+
+			local avail_w = ImGui.GetContentRegionAvail(ctx)
+			local text_w  = ImGui.CalcTextSize(ctx, parameter.apply.title)
+
+			ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) + math.max(0, (avail_w - text_w) // 2))
 
 			ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 15, 5)
 			ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.White)
@@ -795,7 +852,6 @@ function adj.DrawPanelBackground(parameter)
 			ImGui.PopStyleColor(ctx, 2)
 			ImGui.PopStyleVar(ctx)
 
-			ImGui.EndTable(ctx)
 		end
 	else
 		parameter.height = parameter.height_original
@@ -1055,7 +1111,7 @@ function adj.ShowWindow()
 		adj.opened_first_tab = true
 	end
 
-	adj.DrawCollapsingHeader('                 TRACK CONTROL PANEL', function()
+	adj.DrawCollapsingHeader('              TRACK CONTROL PANEL', function()
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
 
@@ -1068,7 +1124,13 @@ function adj.ShowWindow()
 			ImGui.EndTable(ctx)
 		end
 
-		adj.ShowParameter(adj.params.pan_type)
+		adj.ShowParameter(adj.params.lnstatemd)
+		ImGui.Spacing(ctx)
+
+		adj.ShowParameter(adj.params.fxsidead)
+		ImGui.Spacing(ctx)
+
+		adj.ShowParameter(adj.params.tcp_layout)
 		ImGui.Spacing(ctx)
 
 		if ImGui.BeginTable(ctx, "sep", 2) then
@@ -1087,7 +1149,8 @@ function adj.ShowWindow()
 		adj.ShowParameter(adj.params.meter_position)
 		ImGui.Spacing(ctx)
 
-		adj.ShowParameter(adj.params.tcp_layout)
+		ImGui.Spacing(ctx)
+		adj.ShowParameter(adj.params.tinymode)
 		ImGui.Spacing(ctx)
 
 		ImGui.Spacing(ctx)
@@ -1104,7 +1167,7 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-	adj.DrawCollapsingHeader('                           MIXER PANEL', function()
+	adj.DrawCollapsingHeader('                         MIXER PANEL', function()
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.mixer_folderindent)
@@ -1128,7 +1191,7 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-    adj.DrawCollapsingHeader('                              TRANSPORT', function()
+    adj.DrawCollapsingHeader('                         TRANSPORT', function()
 		adj.ShowParameter(adj.params.trans_position)
 		ImGui.Spacing(ctx)
 		adj.DrawTransportButtonsPanel()
@@ -1136,11 +1199,22 @@ function adj.ShowWindow()
 
 	ImGui.Spacing(ctx)
 
-	adj.DrawCollapsingHeader('                         ABOUT SCRIPT', function()
-		ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by                        .')
-		--ImGui.SameLine(ctx, 300, 30)
-		ImGui.SetCursorPos(ctx, 308, 50)
-		adj.Link("Ed Kashinsky", "https://github.com/edkashinsky/reaper-reableton-scripts")
+	adj.DrawCollapsingHeader('                       ABOUT SCRIPT', function()
+		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
+		ImGui.Text(ctx, "Cheat Sheet:")
+		ImGui.PopFont(ctx)
+
+		adj.ShowParameter(adj.params.gloss)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+
+		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
+		ImGui.Text(ctx, "Credits:")
+		ImGui.PopFont(ctx)
+
+		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.None, adj.config.font_size))
+		ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 
@@ -1159,6 +1233,8 @@ function adj.ShowWindow()
 
 			ImGui.EndTable(ctx)
 		end
+
+		ImGui.PopFont(ctx)
 
 		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
