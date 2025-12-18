@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="52ea5808f6ee4a7782db473fa8d6c2c99c3eff05">
+<index version="1" name="Flat Madness Theme" commit="2ea193cb16a9357fa1fad45578d68a2fe76c0171">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -206,7 +206,7 @@
         <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
       </version>
     </reapack>
-    <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Black CI">
+    <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Bright CI">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
 {\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
