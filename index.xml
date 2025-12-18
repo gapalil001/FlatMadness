@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="2ea193cb16a9357fa1fad45578d68a2fe76c0171">
+<index version="1" name="Flat Madness Theme" commit="b713b8ebd5b9b9ed330cd022c8876d2534f79745">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -262,6 +262,23 @@
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
       </version>
+      <version name="5.0.1" author="Dmytro Hapochka" time="2025-12-18T15:50:36Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -424,6 +441,23 @@
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="5.0.1" author="Dmytro Hapochka" time="2025-12-18T15:50:36Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -499,6 +533,23 @@
 * centered position in transport now works almost perfect that even i started using it
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.1" author="Dmytro Hapochka" time="2025-12-18T15:50:36Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -662,6 +713,23 @@
 * centered position in transport now works almost perfect that even i started using it
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/21e99b199df96cc8bc347bb605e6ecb22488ef8c/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.1" author="Dmytro Hapochka" time="2025-12-18T15:50:36Z">
+        <changelog><![CDATA[* 69% more powerful sh!tcode impact - powered by luck and fastened by snot
+* some bugs fixed
+* some bugs added
+* reduced grey and black color schemes
+* dark theme became darken
+* re-designed knobs and buttons
+* folder track color saturation can be adjusted separately
+* on tiny height you can choose between 3 schemes
+* in TCP, Fxlist placed by default in right column and stays strechable as well as Embedded UI, does not works in some modes (longname, meterbridge ets)
+* longname layout became mode
+* pan slider mode became layout
+* light glossy effect added, can be disabled via default 7 theme adjuster. You can turn FM5 to simply M5 like a BMW
+* centered position in transport now works almost perfect that even i started using it
+* please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
