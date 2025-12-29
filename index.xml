@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="b713b8ebd5b9b9ed330cd022c8876d2534f79745">
+<index version="1" name="Flat Madness Theme" commit="aa199612e642c54a9e6081a70e40948bf347bb8b">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -279,6 +279,12 @@
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
       </version>
+      <version name="5.0.2" author="Dmytro Hapochka" time="2025-12-29T16:04:37Z">
+        <changelog><![CDATA[* added adjustable TCP divider line between tracks (tweak it via Default 7 Theme Adjuster, disable by default) 
+* fixed pan/width knob bug when it's not really centered on center position
+* Colored TCP faders now also cool]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/aa199612e642c54a9e6081a70e40948bf347bb8b/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -458,6 +464,12 @@
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="5.0.2" author="Dmytro Hapochka" time="2025-12-29T16:04:37Z">
+        <changelog><![CDATA[* added adjustable TCP divider line between tracks (tweak it via Default 7 Theme Adjuster, disable by default) 
+* fixed pan/width knob bug when it's not really centered on center position
+* Colored TCP faders now also cool]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/aa199612e642c54a9e6081a70e40948bf347bb8b/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -550,6 +562,12 @@
 * centered position in transport now works almost perfect that even i started using it
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.2" author="Dmytro Hapochka" time="2025-12-29T16:04:37Z">
+        <changelog><![CDATA[* added adjustable TCP divider line between tracks (tweak it via Default 7 Theme Adjuster, disable by default) 
+* fixed pan/width knob bug when it's not really centered on center position
+* Colored TCP faders now also cool]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/aa199612e642c54a9e6081a70e40948bf347bb8b/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -730,6 +748,12 @@
 * centered position in transport now works almost perfect that even i started using it
 * please do not asking me why some things are not working good - i am still surprised that the theme works somehow at all]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/b713b8ebd5b9b9ed330cd022c8876d2534f79745/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+      <version name="5.0.2" author="Dmytro Hapochka" time="2025-12-29T16:04:37Z">
+        <changelog><![CDATA[* added adjustable TCP divider line between tracks (tweak it via Default 7 Theme Adjuster, disable by default) 
+* fixed pan/width knob bug when it's not really centered on center position
+* Colored TCP faders now also cool]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/aa199612e642c54a9e6081a70e40948bf347bb8b/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
