@@ -1,9 +1,9 @@
 -- @description FM_4.0_theme_adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.0.1
+-- @version 5.0.2
 -- @changelog
---   - added support of version 5.0.0
+--   - small improvements
 -- @provides
 --   [nomain] images/*.png
 
@@ -1095,6 +1095,19 @@ function adj.GetVersion(scriptName)
 	return nil
 end
 
+function adj.ExportParameters()
+	local debug = "{ "
+
+	for id, param in pairs(adj.params) do
+		if param.id then
+			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
+			debug = debug .. id .. " = " .. value .. ", "
+		end
+	end
+
+	return debug .. " }"
+end
+
 function adj.ShowWindow()
 	adj.UpdateValues()
 
@@ -1211,6 +1224,9 @@ function adj.ShowWindow()
 
 		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
 		ImGui.Text(ctx, "Credits:")
+		if ImGui.IsItemClicked(ctx) then
+			reaper.ShowConsoleMsg(adj.ExportParameters() .. "\n")
+		end
 		ImGui.PopFont(ctx)
 
 		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.None, adj.config.font_size))
