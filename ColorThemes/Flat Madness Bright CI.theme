@@ -1,9 +1,8 @@
 @description Flat Madness Bright CI
-@version 5.0.2
+@version 5.0.3
 @changelog
-   * added adjustable TCP divider line between tracks (tweak it via Default 7 Theme Adjuster, disable by default) 
-   * fixed pan/width knob bug when it's not really centered on center position
-   * Colored TCP faders now also cool
+   * fixed issue with presets in adjuster
+   * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks
 @provides Flat Madness Bright CI.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
