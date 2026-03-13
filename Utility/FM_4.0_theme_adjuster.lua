@@ -56,8 +56,14 @@ local start_time = 0
 local cooldown = 1
 local key_ext_prefix = "fm4_adjuster"
 local key_ext_prefix_resets = "presets"
+local need_to_update_values = false
 
 local function NeedToUpdateValues()
+	if need_to_update_values then
+		need_to_update_values = false
+		return true
+	end
+
 	local time = reaper.time_precise()
 	if time > start_time + cooldown then
 		start_time = time
@@ -114,10 +120,19 @@ local adj = {
 			PanelBackground = 5,
 			Layout = 6
 		},
+		value_types = {
+			Theme = 1,
+			ThemeLayout = 2,
+			Layout = 3,
+		},
 		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
 		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
 		tableFlags = ImGui.TableFlags_BordersV | ImGui.TableFlags_BordersOuterH | ImGui.TableFlags_RowBg,
-		header = { image = nil, src = "images/header.png" }
+		header = { image = nil, src = "images/header.png" },
+		layouts = {
+			tcp = { id = "tcp", value = 1, values = { "A", "B", "C" } },
+			mcp = { id = "mcp", value = 1, values = { "A", "B", "C" } }
+		}
 	},
 	presets = {
 		current = nil,
@@ -229,11 +244,13 @@ adj.params = {
 		}
 	},
 	tcp_solid_color = {
-		id = 10,
+		id = { 10, 54, 90 },
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
+		value_type = adj.config.value_types.ThemeLayout,
 		width = 420,
 		height = 130,
+		section = "tcp",
 		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident", "saturnfolder" },
 		apply = { title = "Apply to MCP", main_param = "mcp_solid_color", params = {
 			saturnc = "saturncmcp",
@@ -248,11 +265,13 @@ adj.params = {
 		}
 	},
 	mcp_solid_color = {
-		id = 11,
+		id = { 11, 55, 91 },
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
+		value_type = adj.config.value_types.ThemeLayout,
 		width = 420,
 		height = 130,
+		section = "mcp",
 		custom = { "saturncmcp", "saturnalphamcp", "tcp_saturn_identmcp", "mcpsaturnfolder" },
 		apply = { title = "Apply to TCP", main_param = "tcp_solid_color", params = {
 			saturncmcp = "saturnc",
@@ -445,6 +464,7 @@ adj.params = {
 	tcp_layout = {
 		name = 'TCP Pan/Width mode',
 		type = adj.config.param_types.Layout,
+		value_type = adj.config.value_types.Layout,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
@@ -464,6 +484,7 @@ adj.params = {
 	mcp_layout = {
 		name = 'MCP Global Layout',
 		type = adj.config.param_types.Layout,
+		value_type = adj.config.value_types.Layout,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
@@ -485,8 +506,12 @@ adj.params = {
 function adj.SetValue(parameter, value)
 	parameter.data.value = value
 
-	if parameter.setValue then
-		parameter.setValue(value)
+	if parameter.value_type == adj.config.value_types.Layout then
+		reaper.ThemeLayout_SetLayout("mcp", parameter.data.value)
+	elseif parameter.value_type == adj.config.value_types.ThemeLayout then
+		local id = adj.config.layouts[parameter.section].value
+		reaper.ThemeLayout_SetParameter(parameter.id[id], parameter.data.value, true)
+		reaper.ThemeLayout_RefreshAll()
 	else
 		reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
 		reaper.ThemeLayout_RefreshAll()
@@ -539,8 +564,16 @@ function adj.UpdateValues()
 	if not NeedToUpdateValues() then return end
 
 	for id, param in pairs(adj.params) do
-		if param.getValue then
-			adj.params[id].data = param.getValue()
+		if param.value_type == adj.config.value_types.Layout then
+			local _, layout = reaper.ThemeLayout_GetLayout("mcp", -1)
+			adj.params[id].data = { value = not isEmpty(layout) and layout or "Default" }
+		elseif param.value_type == adj.config.value_types.ThemeLayout then
+			local lid = adj.config.layouts[param.section].value
+			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[lid])
+
+			if ret then
+				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
+			end
 		else
 			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
 
@@ -660,7 +693,7 @@ function adj.DrawSimpleInput(parameter)
 	ImGui.Dummy(ctx, 0, 5)
 	adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
-	if ImGui.BeginTable(ctx, "table_sub_" .. (parameter.id or "custom"), parameter.colspan or #values) then
+	if ImGui.BeginTable(ctx, "table_sub_" .. (tostring(parameter.name) or "custom"), parameter.colspan or #values) then
 		local curCol = 0
 
 		for _, val in pairs(values) do
@@ -776,7 +809,7 @@ function adj.DrawPanelBackground(parameter)
 	ImGui.Dummy(ctx, 0, 5)
 	adj.CenterText(parameter.name, adj.config.colors.Subheader)
 
-	if ImGui.BeginTable(ctx, "table_sub_" .. (parameter.id or "custom"), parameter.colspan or #values) then
+	if ImGui.BeginTable(ctx, "table_sub_" .. (tostring(parameter.name) or "custom"), parameter.colspan or #values) then
 		local curCol = 0
 
 		for _, val in pairs(values) do
@@ -899,7 +932,7 @@ end
 function adj.ShowParameter(parameter)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
 
-	if ImGui.BeginChild(ctx, "parameter_" .. (parameter.id or "custom"), parameter.width, parameter.height, nil, adj.config.windFlags) then
+	if ImGui.BeginChild(ctx, "parameter_" .. (tostring(parameter.name) or "custom"), parameter.width, parameter.height, nil, adj.config.windFlags) then
 		if parameter.type == adj.config.param_types.Simple then
 			adj.DrawSimpleInput(parameter)
 		elseif parameter.type == adj.config.param_types.Checkbox then
@@ -984,6 +1017,53 @@ function adj.DrawTransportButtonsPanel()
 	ImGui.Spacing(ctx)
 
 	ImGui.PopStyleColor(ctx, 1)
+end
+
+function adj.DrawLayoutsButtons(panel)
+	if not panel or not panel.values or #panel.values == 0 then
+		return
+	end
+
+	local vertical_margin = 4
+	local button_width = 28
+	local button_height = 28
+	local button_spacing = 6
+	local total_width = (#panel.values * button_width) + ((#panel.values - 1) * button_spacing)
+	local avail_w = ImGui.GetContentRegionAvail(ctx)
+
+	ImGui.Dummy(ctx, 0, vertical_margin)
+	ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) + math.max(0, (avail_w - total_width) / 2))
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 1)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, 7)
+
+	for i = 1, #panel.values do
+		local is_active = panel.value == i
+		local button_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Background
+		local hover_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Hover
+
+		ImGui.PushStyleColor(ctx, ImGui.Col_Button, button_color)
+		ImGui.PushStyleColor(ctx, ImGui.Col_ButtonHovered, hover_color)
+		ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, button_color)
+		ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Text)
+
+		if ImGui.Button(ctx, panel.values[i] .. "##layout_" .. i, button_width, button_height) then
+			panel.value = i
+			need_to_update_values = true
+		end
+
+		if ImGui.IsItemHovered(ctx) then
+			ImGui.SetMouseCursor(ctx, ImGui.MouseCursor_Hand)
+		end
+
+		ImGui.PopStyleColor(ctx, 4)
+
+		if i < #panel.values then
+			ImGui.SameLine(ctx, 0, button_spacing)
+		end
+	end
+
+	ImGui.PopStyleVar(ctx, 2)
+	ImGui.Dummy(ctx, 0, vertical_margin)
 end
 
 function adj.DrawPresetsSelect()
@@ -1122,6 +1202,8 @@ function adj.ShowWindow()
 	end
 
 	adj.DrawCollapsingHeader('              TRACK CONTROL PANEL', function()
+		adj.DrawLayoutsButtons(adj.config.layouts.tcp)
+
 		adj.ShowParameter(adj.params.tcp_solid_color)
 		ImGui.Spacing(ctx)
 
@@ -1178,6 +1260,8 @@ function adj.ShowWindow()
 	ImGui.Spacing(ctx)
 
 	adj.DrawCollapsingHeader('                         MIXER PANEL', function()
+		adj.DrawLayoutsButtons(adj.config.layouts.mcp)
+
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.mixer_folderindent)
