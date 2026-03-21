@@ -155,9 +155,11 @@ adj.params = {
 		id = 0,
 	},
 	meter_position = {
-		id = 1,
+		id = { 1, 45, 81 },
 		name = 'Meter position',
 		type = adj.config.param_types.Simple,
+		value_type = adj.config.value_types.ThemeLayout,
+		section = "tcp",
 		width = 420,
 		height = 165,
 		colspan = 2,
@@ -169,9 +171,11 @@ adj.params = {
 		}
 	},
 	lnstatemd = {
-		id = 2,
+		id = { 2, 46, 82 },
 		name = 'Track Label Scheme',
 		type = adj.config.param_types.Simple,
+		value_type = adj.config.value_types.ThemeLayout,
+		section = "tcp",
 		width = 420,
 		height = 155,
 		values = {
@@ -181,7 +185,7 @@ adj.params = {
 	},
 	min_fxlist = {
 		id = 3,
-		name = 'FX SLOT MINIMAL WIDTH',
+		name = 'FX/SEND SLOT MIN WIDTH',
 		type = adj.config.param_types.Range,
 		width = 205,
 		height = 65,
@@ -248,9 +252,9 @@ adj.params = {
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
 		value_type = adj.config.value_types.ThemeLayout,
+		section = "tcp",
 		width = 420,
 		height = 130,
-		section = "tcp",
 		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident", "saturnfolder" },
 		apply = { title = "Apply to MCP", main_param = "mcp_solid_color", params = {
 			saturnc = "saturncmcp",
@@ -461,6 +465,47 @@ adj.params = {
 		width = 205,
 		height = 57,
 	},
+	dividercolor = {
+		id = 37,
+		name = 'track divider intensity',
+		type = adj.config.param_types.Range,
+		is_percentage = true,
+		width = 205,
+		height = 65,
+	},
+    sendlist = {
+		id = 38,
+		name = 'Separate Sendlist***',
+		type = adj.config.param_types.Checkbox,
+		width = 205,
+		height = 65,
+		values = { 0, 1 }
+	},
+		min_fxlist_sep = {
+		id = 39,
+		name = 'FX LIST MINIMAL WIDTH',
+		type = adj.config.param_types.Range,
+		width = 205,
+		height = 65,
+	},
+	    mcppanslider = {
+		id = 40,
+		name = 'PAN TYPE',
+		type = adj.config.param_types.Simple,
+		width = 420,
+		height = 160,
+		values = {
+			{ name = "KNOB", value = 0, image = "images/pref_tcp_knob.png" },
+			{ name = "SLIDER", value = 1, image = "images/pref_tcp_slider.png" },
+		}
+	},
+	fxheight = {
+		id = 41,
+		name = 'FX LIST SLOT HEIGHT',
+		type = adj.config.param_types.Range,
+		width = 205,
+		height = 65,
+	},
 	tcp_layout = {
 		name = 'TCP Pan/Width mode',
 		type = adj.config.param_types.Layout,
@@ -473,13 +518,6 @@ adj.params = {
 			{ name = "Knob", value = "Default", image = "images/pref_tcp_knob.png", borderRad = 15 },
 			{ name = "Slider", value = "PAN_SLIDER", image = "images/pref_tcp_slider.png", borderRad = 15 },
 		},
-		getValue = function()
-			local _, layout = reaper.ThemeLayout_GetLayout("tcp", -1)
-			return { value = not isEmpty(layout) and layout or "Default" }
-		end,
-		setValue = function(newVal)
-			reaper.ThemeLayout_SetLayout("tcp", newVal)
-		end
 	},
 	mcp_layout = {
 		name = 'MCP Global Layout',
@@ -491,15 +529,8 @@ adj.params = {
 		section = "mcp",
 		values = {
 			{ name = "Default", value = "Default", image = "images/pref_mcp_layout_1.png", borderRad = 15 },
-			{ name = "Meterbridge", value = "METERBRIDGE", image = "images/pref_mcp_layout_2.png", borderRad = 15 },
+			{ name = "Meterbridge", value = "METERBRIDGE A", image = "images/pref_mcp_layout_2.png", borderRad = 15 },
 		},
-		getValue = function()
-			local _, layout = reaper.ThemeLayout_GetLayout("mcp", -1)
-			return { value = not isEmpty(layout) and layout or "Default" }
-		end,
-		setValue = function(newVal)
-			reaper.ThemeLayout_SetLayout("mcp", newVal)
-		end
 	}
 }
 
@@ -602,9 +633,9 @@ function adj.GetImage(src)
 	if not ImGui.ValidatePtr(img.obj, 'ImGui_Image*') then
 		if img.obj then adj.cached_images[img.obj] = nil end
 
-		img.obj = ImGui.CreateImage(src)
+        --reaper.ShowConsoleMsg('create ' .. src .. '\n')
 
-		--reaper.ShowConsoleMsg('create ' .. src .. '\n')
+		img.obj = ImGui.CreateImage(src)
 
 		local prev = adj.cached_images[img.obj]
 		if prev and prev ~= img then
@@ -1237,6 +1268,26 @@ function adj.ShowWindow()
 			ImGui.EndTable(ctx)
 		end
 
+		if ImGui.BeginTable(ctx, "sep", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.sendlist)
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.min_fxlist_sep)
+
+			ImGui.EndTable(ctx)
+		end
+
+		if ImGui.BeginTable(ctx, "sep", 2) then
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.dividercolor)
+
+			ImGui.TableNextColumn(ctx)
+			adj.ShowParameter(adj.params.fxheight)
+
+			ImGui.EndTable(ctx)
+		end
+
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.meter_position)
 		ImGui.Spacing(ctx)
@@ -1255,6 +1306,11 @@ function adj.ShowWindow()
 		ImGui.Spacing(ctx)
 
 		ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
+
+		ImGui.Spacing(ctx)
+		ImGui.Spacing(ctx)
+
+		ImGui.TextWrapped(ctx, "***if separated, Sendlist will appear after creating any send")
 	end)
 
 	ImGui.Spacing(ctx)
@@ -1265,6 +1321,9 @@ function adj.ShowWindow()
 		adj.ShowParameter(adj.params.mcp_solid_color)
 		ImGui.Spacing(ctx)
 		adj.ShowParameter(adj.params.mixer_folderindent)
+		ImGui.Spacing(ctx)
+
+		adj.ShowParameter(adj.params.mcppanslider)
 		ImGui.Spacing(ctx)
 
 		if ImGui.BeginTable(ctx, "sep2", 2) then
