@@ -1,10 +1,11 @@
--- @description FM_4.0_theme_adjuster
+-- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.0.3
+-- @version 5.2.0
 -- @changelog
 --   - Updated presets list
 -- @provides
+--   [main] theme/*.lua
 --   [nomain] images/*.png
 
 local ImGui
@@ -44,6 +45,8 @@ local function join(list, delimiter) if type(list) ~= 'table' or #list == 0 then
 local function in_array(tab, val) for _, value in ipairs(tab) do if value == val then return true end end return false end
 local function isEmpty(value) if value == nil then return true end if type(value) == 'boolean' and value == false then return true end if type(value) == 'table' and next(value) == nil then return true end if type(value) == 'number' and value == 0 then return true end if type(value) == 'string' and string.len(value) == 0 then return true end return false end
 local function round(number, decimals) if not decimals then decimals = 0 end local power = 10 ^ decimals return math.ceil(number * power) / power end
+local function clamp(value, min, max) return math.max(tonumber(min) or 0, math.min(tonumber(value) or 0, tonumber(max) or 0)) end
+local function ThemeLayoutSetParameter(id, val, param) reaper.ThemeLayout_SetParameter(id, clamp(val, param.data.min, param.data.max), true) end
 
 local ek_log_levels = { Debug = 1 }
 local function Log(msg) if type(msg) == 'table' then msg = serializeTable(msg) else msg = tostring(msg) end if msg then reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ") reaper.ShowConsoleMsg(msg) reaper.ShowConsoleMsg('\n') end end
@@ -118,20 +121,21 @@ local adj = {
 			Checkbox = 3,
 			Range = 4,
 			PanelBackground = 5,
-			Layout = 6
+			Layout = 6,
+			ColorPicker = 7
 		},
 		value_types = {
 			Theme = 1,
 			ThemeLayout = 2,
 			Layout = 3,
+			ColorFader = 4,
 		},
 		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
 		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
 		tableFlags = ImGui.TableFlags_BordersV | ImGui.TableFlags_BordersOuterH | ImGui.TableFlags_RowBg,
 		header = { image = nil, src = "images/header.png" },
 		layouts = {
-			tcp = { id = "tcp", value = 1, values = { "A", "B", "C" } },
-			mcp = { id = "mcp", value = 1, values = { "A", "B", "C" } }
+			value = 1, values = { "A", "B", "C" },
 		}
 	},
 	presets = {
@@ -155,11 +159,10 @@ adj.params = {
 		id = 0,
 	},
 	meter_position = {
-		id = { 1, 45, 81 },
+		id = { 1, 47, 79 },
 		name = 'Meter position',
 		type = adj.config.param_types.Simple,
 		value_type = adj.config.value_types.ThemeLayout,
-		section = "tcp",
 		width = 420,
 		height = 165,
 		colspan = 2,
@@ -171,31 +174,29 @@ adj.params = {
 		}
 	},
 	lnstatemd = {
-		id = { 2, 46, 82 },
+		id = { 2, 48, 80 },
 		name = 'Track Label Scheme',
 		type = adj.config.param_types.Simple,
 		value_type = adj.config.value_types.ThemeLayout,
-		section = "tcp",
-		width = 420,
-		height = 155,
+		width = 420, height = 155,
 		values = {
 			{ name = "Default", value = 2, image = "images/pref_tcp_layout_1.png" },
 			{ name = "Longname", value = 1, image = "images/pref_tcp_layout_2.png" },
 		}
 	},
 	min_fxlist = {
-		id = 3,
+		id = { 3, 49, 81 },
 		name = 'FX/SEND SLOT MIN WIDTH',
 		type = adj.config.param_types.Range,
-		width = 205,
-		height = 65,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 65,
 	},
 	embed_position = {
-		id = 4,
+		id = { 4, 50, 82 },
 		name = 'EMBEDDED UI POSITION',
 		type = adj.config.param_types.Simple,
-		width = 205,
-		height = 165,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 165,
 		colspan = 1,
 		values = {
 			{ name = "Beside FX", value = 0, image = "images/pref_tcp_embedright.png", borderRad = 5 },
@@ -203,35 +204,35 @@ adj.params = {
 		}
 	},
 	tcp_folder_recarms = {
-		id = 5,
+		id = { 5, 51, 83 },
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 41,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 41,
 		values = { 0, 1 }
 	},
 	mcp_folder_recarms = {
-		id = 6,
+		id = { 6, 52, 84 },
 		name = 'Record stuff in Folders',
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 41,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 41,
 		values = { 0, 1 }
 	},
 	dbscales = {
-		id = 7,
+		id = { 7, 53, 85 },
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 41,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 41,
 		values = { 0, 1 }
 	},
 	mcpdbscales = {
-		id = 8,
+		id = { 8, 54, 86 },
 		name = 'DB Scales',
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 41,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 41,
 		values = { 0, 1 }
 	},
 	trans_position = {
@@ -248,11 +249,10 @@ adj.params = {
 		}
 	},
 	tcp_solid_color = {
-		id = { 10, 54, 90 },
+		id = { 10, 55, 87 },
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
 		value_type = adj.config.value_types.ThemeLayout,
-		section = "tcp",
 		width = 420,
 		height = 130,
 		custom = { "saturnc", "saturnalpha", "tcp_saturn_ident", "saturnfolder" },
@@ -275,7 +275,6 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420,
 		height = 130,
-		section = "mcp",
 		custom = { "saturncmcp", "saturnalphamcp", "tcp_saturn_identmcp", "mcpsaturnfolder" },
 		apply = { title = "Apply to TCP", main_param = "tcp_solid_color", params = {
 			saturncmcp = "saturnc",
@@ -291,7 +290,7 @@ adj.params = {
 	},
 	mixer_folderindent = {
 		id = 12,
-		name = 'Record stuff in Folders',
+		name = 'Folder padding (all layouts)',
 		type = adj.config.param_types.Simple,
 		width = 420,
 		height = 160,
@@ -301,79 +300,76 @@ adj.params = {
 		}
 	},
 	saturnc = {
-		id = 13,
+		id = { 13, 57, 89 },
 		name = 'Brightness',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	saturnalpha = {
-		id = 14,
+		id = { 14, 58, 90 },
 		name = 'Saturation',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
 		is_reverse = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	tcp_saturn_ident = {
-		id = 15,
+		id = { 15, 59, 91 },
 		name = 'Sel Track Highlight',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	saturncmcp = {
-		id = 16,
+		id = { 16, 60, 92 },
 		name = 'Brightness',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	saturnalphamcp = {
-		id = 17,
+		id = { 17, 61, 93 },
 		name = 'Saturation',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
 		is_reverse = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	tcp_saturn_identmcp = {
-		id = 18,
+		id = { 18, 62, 94 },
 		name = 'Sel Track Highlight',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	gencoloring = {
 		id = 19,
 	},
 	foldermargin = {
-		id = 20,
+		id = { 20, 63, 95 },
 		name = "Folder Name \nleft orientation",
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 62,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 62,
 		values = { 1, 0 }
-	},
-	longnamestate = {
-		id = 20,
 	},
 	envioswap = {
 		id = 21,
 	},
-	tcplabelbrightness = {
-		id = 22,
+    tcplabelbrightness = {
+		id = { 22, 64, 96 },
 		name = 'Track name brightness',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 62,
+		width = 205, height = 62,
 	},
 	trans_mixer = {
 		id = 24,
@@ -426,11 +422,11 @@ adj.params = {
 		height = 57,
 	},
 	fxsidead = {
-		id = 33,
-		name = "FX List Position \n(not works with longname and meterbridge)",
+		id = { 33, 67, 99 },
+		name = "FX List Position",
 		type = adj.config.param_types.Simple,
-		width = 420,
-		height = 160,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 420, height = 160,
 		values = {
 			{ name = "Center", value = 0, image = "images/pref_tcp_fxcenter.png" },
 			{ name = "Right", value = 1, image = "images/pref_tcp_fxside.png" },
@@ -440,16 +436,16 @@ adj.params = {
 		id = 34,
 		name = 'Gloss effect',
 		type = adj.config.param_types.Checkbox,
-		width = 420,
-		height = 50,
+		width = 205,
+		height = 43,
 		values = { 0, 1 }
 	},
 	tinymode = {
-		id = 35,
+		id = { 35, 68, 100 },
 		name = 'Scheme for small track height',
 		type = adj.config.param_types.Simple,
-		width = 420,
-		height = 210,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 420, height = 210,
 		colspan = 1,
 		values = {
 			{ name = "Effects", value = 1, image = "images/pref_tcp_tiny1.png", borderRad = 2 },
@@ -458,12 +454,12 @@ adj.params = {
 		}
 	},
 	mcpsaturnfolder = {
-		id = 36,
+		id = { 36, 69, 101 },
 		name = 'Folder Saturation',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
-		width = 205,
-		height = 57,
+		width = 205, height = 57,
 	},
 	dividercolor = {
 		id = 37,
@@ -473,78 +469,151 @@ adj.params = {
 		width = 205,
 		height = 65,
 	},
-    sendlist = {
-		id = 38,
+	sendlist = {
+		id = { 38, 70, 102 },
 		name = 'Separate Sendlist***',
 		type = adj.config.param_types.Checkbox,
-		width = 205,
-		height = 65,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 65,
 		values = { 0, 1 }
 	},
-		min_fxlist_sep = {
-		id = 39,
+	min_fxlist_sep = {
+		id = { 39, 71, 103 },
 		name = 'FX LIST MINIMAL WIDTH',
 		type = adj.config.param_types.Range,
-		width = 205,
-		height = 65,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 65,
 	},
-	    mcppanslider = {
-		id = 40,
+	mcppanslider = {
+		id = { 40, 72, 104 },
 		name = 'PAN TYPE',
 		type = adj.config.param_types.Simple,
-		width = 420,
-		height = 160,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 420, height = 160,
 		values = {
 			{ name = "KNOB", value = 0, image = "images/pref_tcp_knob.png" },
 			{ name = "SLIDER", value = 1, image = "images/pref_tcp_slider.png" },
 		}
 	},
 	fxheight = {
-		id = 41,
+		id = { 41, 73, 105 },
 		name = 'FX LIST SLOT HEIGHT',
 		type = adj.config.param_types.Range,
-		width = 205,
-		height = 65,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 65,
+	},
+	volumeadj = {
+		id = { 46, 78, 110 },
+		name = 'show volume buttons +-0.1db*',
+		type = adj.config.param_types.Checkbox,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 420, height = 41,
+		values = { 0, 1 }
 	},
 	tcp_layout = {
 		name = 'TCP Pan/Width mode',
 		type = adj.config.param_types.Layout,
 		value_type = adj.config.value_types.Layout,
+		is_global = false,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
 		section = "tcp",
+		track_section = "P_TCP_LAYOUT",
 		values = {
-			{ name = "Knob", value = "Default", image = "images/pref_tcp_knob.png", borderRad = 15 },
-			{ name = "Slider", value = "PAN_SLIDER", image = "images/pref_tcp_slider.png", borderRad = 15 },
+			{ name = "Knob", value = { "A", "B", "C" }, image = "images/pref_tcp_knob.png", borderRad = 15 },
+			{ name = "Slider", value = { "PAN_SLIDER A", "PAN_SLIDER B", "PAN_SLIDER C" }, image = "images/pref_tcp_slider.png", borderRad = 15, is_layout = true },
 		},
 	},
 	mcp_layout = {
 		name = 'MCP Global Layout',
 		type = adj.config.param_types.Layout,
 		value_type = adj.config.value_types.Layout,
+		is_global = false,
 		width = 420,
 		height = 155,
 		sizes = { "150", "200" },
 		section = "mcp",
+		track_section = "P_MCP_LAYOUT",
 		values = {
-			{ name = "Default", value = "Default", image = "images/pref_mcp_layout_1.png", borderRad = 15 },
-			{ name = "Meterbridge", value = "METERBRIDGE A", image = "images/pref_mcp_layout_2.png", borderRad = 15 },
+			{ name = "Default", value = { "A", "B", "C" }, image = "images/pref_mcp_layout_1.png", borderRad = 15 },
+			{ name = "Meterbridge", value = { "METERBRIDGE A", "METERBRIDGE B", "METERBRIDGE C" }, image = "images/pref_mcp_layout_2.png", borderRad = 15, is_layout = true },
 		},
-	}
+	},
+	fader_color_a = {
+		id = { 42, 43, 44, 45 },
+		name = 'FADER A',
+		type = adj.config.param_types.ColorPicker,
+		value_type = adj.config.value_types.ColorFader,
+		width = 80,
+		height = 22,
+		default_palette = { 0xFF0000FF, 0x00FF00FF, 0x0000FFFF, 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFFFF, 0x444444FF, 0x000000FF }
+	},
+	fader_color_b = {
+		id = { 74, 75, 76, 77 },
+		name = 'FADER B',
+		type = adj.config.param_types.ColorPicker,
+		value_type = adj.config.value_types.ColorFader,
+		width = 80,
+		height = 22,
+		default_palette = { 0xFF0000FF, 0x00FF00FF, 0x0000FFFF, 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFFFF, 0x444444FF, 0x000000FF }
+	},
+	fader_color_c = {
+		id = { 106, 107, 108, 109 },
+		name = 'FADER C',
+		type = adj.config.param_types.ColorPicker,
+		value_type = adj.config.value_types.ColorFader,
+		width = 80,
+		height = 22,
+		default_palette = { 0xFF0000FF, 0x00FF00FF, 0x0000FFFF, 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFFFF, 0x444444FF, 0x000000FF }
+	},
 }
 
-function adj.SetValue(parameter, value)
-	parameter.data.value = value
+function adj.SetValue(param, value)
+	param.data.value = value
 
-	if parameter.value_type == adj.config.value_types.Layout then
-		reaper.ThemeLayout_SetLayout("mcp", parameter.data.value)
-	elseif parameter.value_type == adj.config.value_types.ThemeLayout then
-		local id = adj.config.layouts[parameter.section].value
-		reaper.ThemeLayout_SetParameter(parameter.id[id], parameter.data.value, true)
+	if param.value_type == adj.config.value_types.Layout then
+		local layout = adj.config.layouts.value
+		local layoutValue = param.values[param.data.value].value[layout]
+
+		if param.is_global then
+			reaper.ThemeLayout_SetLayout(param.section, layoutValue)
+		else
+			local _, globalLayout = reaper.ThemeLayout_GetLayout(param.section, -1)
+			globalLayout = not isEmpty(globalLayout) and globalLayout or "Default"
+
+			for i = 0, reaper.CountTracks(0) - 1 do
+				local tr = reaper.GetTrack(0, i)
+				local _, trackLayout = reaper.GetSetMediaTrackInfo_String(tr, param.track_section, "", false)
+				local needToChange = false
+
+				if isEmpty(trackLayout) or trackLayout == "Default" then trackLayout = globalLayout end
+
+				for j = 1, #param.values do
+					if param.values[j].value[layout] == trackLayout then
+						needToChange = true
+						break
+					end
+				end
+
+				if needToChange then
+					reaper.GetSetMediaTrackInfo_String(tr, param.track_section, layoutValue, true)
+				end
+			end
+		end
+	elseif param.value_type == adj.config.value_types.ThemeLayout then
+		local layout = adj.config.layouts.value
+		ThemeLayoutSetParameter(param.id[layout], param.data.value, param)
+		reaper.ThemeLayout_RefreshAll()
+	elseif param.value_type == adj.config.value_types.ColorFader then
+		ThemeLayoutSetParameter(param.id[1], (param.data.value >> 24) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[2], (param.data.value >> 16) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[3], (param.data.value >> 8) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[4], param.data.value & 0xFF, param)
+
 		reaper.ThemeLayout_RefreshAll()
 	else
-		reaper.ThemeLayout_SetParameter(parameter.id, parameter.data.value, true)
+		ThemeLayoutSetParameter(param.id, param.data.value, param)
 		reaper.ThemeLayout_RefreshAll()
 	end
 end
@@ -596,11 +665,54 @@ function adj.UpdateValues()
 
 	for id, param in pairs(adj.params) do
 		if param.value_type == adj.config.value_types.Layout then
-			local _, layout = reaper.ThemeLayout_GetLayout("mcp", -1)
-			adj.params[id].data = { value = not isEmpty(layout) and layout or "Default" }
+			if not param.cached_layout or param.cached_layout ~= adj.config.layouts.value then
+				local _, globalLayout = reaper.ThemeLayout_GetLayout(param.section, -1)
+				local layout = adj.config.layouts.value
+				local value
+
+				globalLayout = not isEmpty(globalLayout) and globalLayout or "Default"
+
+				if param.is_global then
+					for j = 1, #param.values do
+						if param.values[j].value[layout] == globalLayout then
+							value = j
+							break
+						end
+					end
+				else
+					for i = 0, reaper.CountTracks(0) - 1 do
+						local tr = reaper.GetTrack(0, i)
+						local _, trackLayout = reaper.GetSetMediaTrackInfo_String(tr, param.track_section, "", false)
+
+						if isEmpty(trackLayout) or trackLayout == "Default" then trackLayout = globalLayout end
+
+						for j = 1, #param.values do
+							if param.values[j].value[layout] == trackLayout then
+								value = j
+								break
+							end
+						end
+
+						if value then break end
+					end
+				end
+
+				adj.params[id].data = { value = value or 1 }
+				adj.params[id].cached_layout = adj.config.layouts.value
+			end
 		elseif param.value_type == adj.config.value_types.ThemeLayout then
-			local lid = adj.config.layouts[param.section].value
-			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[lid])
+			local layout = adj.config.layouts.value
+			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[layout])
+
+			if ret then
+				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
+			end
+		elseif param.value_type == adj.config.value_types.ColorFader then
+			local ret, name, cur_r, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[1])
+			local _, _, cur_g = reaper.ThemeLayout_GetParameter(param.id[2])
+			local _, _, cur_b = reaper.ThemeLayout_GetParameter(param.id[3])
+			local _, _, cur_a = reaper.ThemeLayout_GetParameter(param.id[4])
+			local value = ((cur_r & 0xFF) << 24) | ((cur_g & 0xFF) << 16) | ((cur_b & 0xFF) << 8) | (cur_a & 0xFF)
 
 			if ret then
 				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
@@ -928,20 +1040,20 @@ function adj.DrawLayoutBlock(parameter)
 	if ImGui.BeginTable(ctx, "table_sub_layout", parameter.colspan or #values) then
 		local curCol = 0
 
-		for _, val in pairs(values) do
+		for key, val in pairs(values) do
 			ImGui.TableNextColumn(ctx)
 
-			local selColor = val.value == parameter.data.value and adj.config.colors.Selected or adj.config.colors.Header
+			local selColor = parameter.data.value == key and adj.config.colors.Selected or adj.config.colors.Header
 			adj.DrawImage(SCRIPT_PATH .. val.image, { borderBg = selColor, borderRad = val.borderRad })
 
 			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, val.value)
+				adj.SetValue(parameter, key)
 			end
 
 			adj.CenterText(val.name, selColor)
 
 			if ImGui.IsItemClicked(ctx) then
-				adj.SetValue(parameter, val.value)
+				adj.SetValue(parameter, key)
 			end
 
 			curCol = curCol + 1
@@ -960,6 +1072,67 @@ function adj.DrawLayoutBlock(parameter)
 	ImGui.PopStyleVar(ctx)
 end
 
+function adj.DrawColorPicker(parameter)
+    local x, y = ImGui.GetCursorScreenPos(ctx)
+
+    -- 3. Рисуем кнопку-полоску
+    if ImGui.ColorButton(ctx, "##btn_" .. parameter.name, parameter.data.value, 0, parameter.width, parameter.height) then
+        ImGui.OpenPopup(ctx, "Popup_" .. parameter.name)
+    end
+
+	if ImGui.IsItemHovered(ctx) then
+		ImGui.SetMouseCursor(ctx, ImGui.MouseCursor_Hand)
+	end
+
+    -- Текст внутри кнопки (75% прозрачности)
+    local draw_list = ImGui.GetWindowDrawList(ctx)
+    local text_w, text_h = ImGui.CalcTextSize(ctx, parameter.name)
+    ImGui.DrawList_AddText(draw_list, x + (parameter.width - text_w) / 2, y + (parameter.height - text_h) / 2, 0x000000FF, parameter.name)
+
+    -- 5. Всплывающее окно
+    if ImGui.BeginPopup(ctx, "Popup_" .. parameter.name) then
+        ImGui.TextColored(ctx, parameter.data.value, "FADER COLOR SETTINGS: LAYOUT " .. parameter.name)
+        ImGui.Separator(ctx)
+        ImGui.Spacing(ctx)
+
+        local flags = ImGui.ColorEditFlags_AlphaBar
+        local changed, new_color = ImGui.ColorPicker4(ctx, "##pk_" .. parameter.name, parameter.data.value, flags)
+
+        if changed then
+			adj.SetValue(parameter, new_color)
+        end
+
+        ImGui.Spacing(ctx)
+        ImGui.Separator(ctx)
+
+        -- РИСУЕМ ПАЛИТРУ
+        local btn_sz = 20 -- размер квадратика
+        for i, col in ipairs(parameter.default_palette) do
+            if ImGui.ColorButton(ctx, "##pal_" .. parameter.name .. i, col, 0, btn_sz, btn_sz) then
+				adj.SetValue(parameter, col)
+            end
+            -- Сетка по 8 элементов
+            if i % 8 ~= 0 then ImGui.SameLine(ctx) end
+        end
+
+        -- КНОПКА ПЛЮС (+)
+        -- Если элементов 8, 16 и т.д., переходим на новую строку, иначе - в ряд
+        if #parameter.default_palette % 8 ~= 0 then ImGui.SameLine(ctx) end
+
+        if ImGui.Button(ctx, "+##add_" .. parameter.name, btn_sz, btn_sz) then
+            -- Добавляем текущий цвет в таблицу
+            table.insert(parameter.default_palette, parameter.data.value)
+        end
+
+        -- Подсказка при наведении на плюс
+        if ImGui.IsItemHovered(ctx) then
+            ImGui.SetTooltip(ctx, "Add current color to palette")
+        end
+
+        ImGui.EndPopup(ctx)
+    end
+end
+
 function adj.ShowParameter(parameter)
 	ImGui.PushStyleColor(ctx, ImGui.Col_ChildBg, adj.config.colors.ParameterBlockBackground)
 
@@ -974,6 +1147,8 @@ function adj.ShowParameter(parameter)
 			adj.DrawPanelBackground(parameter)
 		elseif parameter.type == adj.config.param_types.Layout then
 			adj.DrawLayoutBlock(parameter)
+		elseif parameter.type == adj.config.param_types.ColorPicker then
+			adj.DrawColorPicker(parameter)
 		end
 
 		ImGui.EndChild(ctx)
@@ -1050,51 +1225,51 @@ function adj.DrawTransportButtonsPanel()
 	ImGui.PopStyleColor(ctx, 1)
 end
 
-function adj.DrawLayoutsButtons(panel)
-	if not panel or not panel.values or #panel.values == 0 then
-		return
-	end
+function adj.DrawLayoutsButtons()
+    local values = adj.config.layouts.values
+    local avail_w = ImGui.GetContentRegionAvail(ctx)
+    local draw_list = ImGui.GetWindowDrawList(ctx)
+    local cur_x, cur_y = ImGui.GetCursorScreenPos(ctx)
 
-	local vertical_margin = 4
-	local button_width = 28
-	local button_height = 28
-	local button_spacing = 6
-	local total_width = (#panel.values * button_width) + ((#panel.values - 1) * button_spacing)
-	local avail_w = ImGui.GetContentRegionAvail(ctx)
+    local header_h = 56
+    ImGui.DrawList_AddRectFilled(draw_list, cur_x - 10, cur_y, cur_x + avail_w + 10, cur_y + header_h, 0x414141ff)
 
-	ImGui.Dummy(ctx, 0, vertical_margin)
-	ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) + math.max(0, (avail_w - total_width) / 2))
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 1)
-	ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, 7)
+    local vertical_margin = 0
+    local button_width = 30
+    local button_height = 30
+    local button_spacing = 8
+    local total_width = (#values * button_width) + ((#values - 1) * button_spacing)
 
-	for i = 1, #panel.values do
-		local is_active = panel.value == i
-		local button_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Background
-		local hover_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Hover
+    ImGui.Dummy(ctx, 0, vertical_margin)
+    ImGui.SetCursorPosX(ctx, ImGui.GetCursorPosX(ctx) + math.max(0, (avail_w - total_width) / 2))
 
-		ImGui.PushStyleColor(ctx, ImGui.Col_Button, button_color)
-		ImGui.PushStyleColor(ctx, ImGui.Col_ButtonHovered, hover_color)
-		ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, button_color)
-		ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Text)
+    -- Защита: берем значение из конфига, если его нет — ставим 7
+    local rounding = (adj.config and adj.config.borderRad and adj.config.borderRad.element) or 7
 
-		if ImGui.Button(ctx, panel.values[i] .. "##layout_" .. i, button_width, button_height) then
-			panel.value = i
-			need_to_update_values = true
-		end
+    ImGui.PushStyleVar(ctx, ImGui.StyleVar_FramePadding, 0, 0)
+    ImGui.PushStyleVar(ctx, ImGui.StyleVar_FrameRounding, rounding)
 
-		if ImGui.IsItemHovered(ctx) then
-			ImGui.SetMouseCursor(ctx, ImGui.MouseCursor_Hand)
-		end
+    for i = 1, #values do
+        local is_active = (adj.config.layouts.value == i)
+        local button_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Background
+        local hover_color = is_active and adj.config.colors.Selected or adj.config.colors.Input.Hover
 
-		ImGui.PopStyleColor(ctx, 4)
+        ImGui.PushStyleColor(ctx, ImGui.Col_Button, button_color)
+        ImGui.PushStyleColor(ctx, ImGui.Col_ButtonHovered, hover_color)
+        ImGui.PushStyleColor(ctx, ImGui.Col_ButtonActive, button_color)
+        ImGui.PushStyleColor(ctx, ImGui.Col_Text, adj.config.colors.Text)
 
-		if i < #panel.values then
-			ImGui.SameLine(ctx, 0, button_spacing)
-		end
-	end
+        if ImGui.Button(ctx, values[i] .. "##sync_layout_" .. i, button_width, button_height) then
+            adj.config.layouts.value = i
+            need_to_update_values = true
+        end
 
-	ImGui.PopStyleVar(ctx, 2)
-	ImGui.Dummy(ctx, 0, vertical_margin)
+        ImGui.PopStyleColor(ctx, 4)
+        if i < #values then ImGui.SameLine(ctx, 0, button_spacing) end
+    end
+
+    ImGui.PopStyleVar(ctx, 2)
+    ImGui.Dummy(ctx, 0, vertical_margin)
 end
 
 function adj.DrawPresetsSelect()
@@ -1220,161 +1395,139 @@ function adj.ShowWindow()
 	adj.UpdateValues()
 
 	adj.DrawHeader()
-	ImGui.Spacing(ctx)
-	ImGui.Spacing(ctx)
+	adj.DrawLayoutsButtons()
+
+	if ImGui.BeginTable(ctx, "sep_tcp_1", 5) then
+		ImGui.TableNextRow(ctx)
+
+		ImGui.TableNextColumn(ctx);
+		ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.fader_color_a)
+		ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.fader_color_b)
+		ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.fader_color_c)
+
+		ImGui.EndTable(ctx)
+	end
 
 	adj.DrawPresetsSelect()
 	ImGui.Spacing(ctx)
+	ImGui.Separator(ctx)
 
-	if not adj.opened_first_tab then
-		ImGui.SetNextItemOpen(ctx, true)
-		ImGui.SetScrollHereY(ctx, 1.0)
-		adj.opened_first_tab = true
-	end
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarSize, 14)
+	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarRounding, 12)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ScrollbarBg, 0x00000000)
+	ImGui.PushStyleColor(ctx, ImGui.Col_ScrollbarGrab, 0x555555ff)
 
-	adj.DrawCollapsingHeader('              TRACK CONTROL PANEL', function()
-		adj.DrawLayoutsButtons(adj.config.layouts.tcp)
-
-		adj.ShowParameter(adj.params.tcp_solid_color)
-		ImGui.Spacing(ctx)
-
-		if ImGui.BeginTable(ctx, "sep", 2) then
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.tcplabelbrightness)
-
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.foldermargin)
-			ImGui.EndTable(ctx)
+	if ImGui.BeginChild(ctx, "MainContentScroll", 0, -1.0, ImGui.ChildFlags_None) then
+		if adj.opened_first_tab == nil then
+			ImGui.SetNextItemOpen(ctx, true)
+			adj.opened_first_tab = true
 		end
 
-		adj.ShowParameter(adj.params.lnstatemd)
-		ImGui.Spacing(ctx)
+		adj.DrawCollapsingHeader('                         TRACK PANEL', function() 
+			adj.ShowParameter(adj.params.tcp_solid_color)
+			ImGui.Spacing(ctx)
 
-		adj.ShowParameter(adj.params.fxsidead)
-		ImGui.Spacing(ctx)
+			if ImGui.BeginTable(ctx, "sep_tcp_1", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.tcplabelbrightness)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.foldermargin)
+				ImGui.EndTable(ctx)
+			end
 
-		adj.ShowParameter(adj.params.tcp_layout)
-		ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.lnstatemd)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.fxsidead)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.tcp_layout)
+			ImGui.Spacing(ctx)
 
-		if ImGui.BeginTable(ctx, "sep", 2) then
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.embed_position)
+			if ImGui.BeginTable(ctx, "sep_tcp_2", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.embed_position)
+				ImGui.TableNextColumn(ctx)
+				adj.ShowParameter(adj.params.dbscales)
+				adj.ShowParameter(adj.params.tcp_folder_recarms)
+				adj.ShowParameter(adj.params.min_fxlist)
+				ImGui.EndTable(ctx)
+			end
 
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.dbscales)
-			adj.ShowParameter(adj.params.tcp_folder_recarms)
-			adj.ShowParameter(adj.params.min_fxlist)
+			if ImGui.BeginTable(ctx, "sep_tcp_3", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.sendlist)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.min_fxlist_sep)
+				ImGui.EndTable(ctx)
+			end
 
-			ImGui.EndTable(ctx)
-		end
+			if ImGui.BeginTable(ctx, "sep_tcp_4", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.dividercolor)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.fxheight)
+				ImGui.EndTable(ctx)
+			end
 
-		if ImGui.BeginTable(ctx, "sep", 2) then
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.sendlist)
+			ImGui.Spacing(ctx); adj.ShowParameter(adj.params.meter_position)
+			ImGui.Spacing(ctx); adj.ShowParameter(adj.params.tinymode)
 
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.min_fxlist_sep)
-
-			ImGui.EndTable(ctx)
-		end
-
-		if ImGui.BeginTable(ctx, "sep", 2) then
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.dividercolor)
-
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.fxheight)
-
-			ImGui.EndTable(ctx)
-		end
-
-		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.meter_position)
-		ImGui.Spacing(ctx)
-
-		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.tinymode)
-		ImGui.Spacing(ctx)
-
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-
-		ImGui.TextWrapped(ctx, "*in TCP, all pan/width controls are knobs technically, Even that it looks like slider, it works the same as knob")
-
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-
-		ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
-
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-
-		ImGui.TextWrapped(ctx, "***if separated, Sendlist will appear after creating any send")
-	end)
-
-	ImGui.Spacing(ctx)
-
-	adj.DrawCollapsingHeader('                         MIXER PANEL', function()
-		adj.DrawLayoutsButtons(adj.config.layouts.mcp)
-
-		adj.ShowParameter(adj.params.mcp_solid_color)
-		ImGui.Spacing(ctx)
-		adj.ShowParameter(adj.params.mixer_folderindent)
-		ImGui.Spacing(ctx)
-
-		adj.ShowParameter(adj.params.mcppanslider)
-		ImGui.Spacing(ctx)
-
-		if ImGui.BeginTable(ctx, "sep2", 2) then
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.mcp_folder_recarms)
-
-			ImGui.TableNextColumn(ctx)
-			adj.ShowParameter(adj.params.mcpdbscales)
-
-			ImGui.EndTable(ctx)
-		end
+			ImGui.Spacing(ctx); ImGui.Spacing(ctx); ImGui.Spacing(ctx)
+			ImGui.TextWrapped(ctx, "*in TCP, all pan/width controls are knobs technically, Even that it looks like slider, it works the same as knob")
+			ImGui.Spacing(ctx); ImGui.Spacing(ctx)
+			ImGui.TextWrapped(ctx, "**Embedded Ul will be shown instead of FX slots only it the option enabled")
+			ImGui.Spacing(ctx); ImGui.Spacing(ctx)
+			ImGui.TextWrapped(ctx, "***if separated, Sendlist will appear after creating any send")
+		end)
 
 		ImGui.Spacing(ctx)
 
-		adj.ShowParameter(adj.params.mcp_layout)
-		ImGui.Spacing(ctx)
-	end)
+		adj.DrawCollapsingHeader('                          MIXER PANEL', function()
+			adj.ShowParameter(adj.params.mcp_solid_color)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.mixer_folderindent)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.mcppanslider)
+			ImGui.Spacing(ctx)
 
-	ImGui.Spacing(ctx)
+			if ImGui.BeginTable(ctx, "sep_mcp_1", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.mcp_folder_recarms)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.mcpdbscales)
+				ImGui.EndTable(ctx)
+			end
 
-    adj.DrawCollapsingHeader('                         TRANSPORT', function()
-		adj.ShowParameter(adj.params.trans_position)
-		ImGui.Spacing(ctx)
-		adj.DrawTransportButtonsPanel()
-	end)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.mcp_layout)
+			ImGui.Spacing(ctx)
+			adj.ShowParameter(adj.params.volumeadj)
+			ImGui.TextWrapped(ctx, "*this feature requires included scripts to be installed")
+		end)
 
-	ImGui.Spacing(ctx)
-
-	adj.DrawCollapsingHeader('                       ABOUT SCRIPT', function()
-		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
-		ImGui.Text(ctx, "Cheat Sheet:")
-		ImGui.PopFont(ctx)
-
-		adj.ShowParameter(adj.params.gloss)
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-		ImGui.Spacing(ctx)
-
-		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
-		ImGui.Text(ctx, "Credits:")
-		if ImGui.IsItemClicked(ctx) then
-			reaper.ShowConsoleMsg(adj.ExportParameters() .. "\n")
-		end
-		ImGui.PopFont(ctx)
-
-		ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.None, adj.config.font_size))
-		ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
-		ImGui.Spacing(ctx)
 		ImGui.Spacing(ctx)
 
-		if ImGui.BeginTable(ctx, "sep3", 2) then
+		adj.DrawCollapsingHeader('                          TRANSPORT', function()
+			adj.ShowParameter(adj.params.trans_position)
+			ImGui.Spacing(ctx)
+			adj.DrawTransportButtonsPanel()
+		end)
+
+		ImGui.Spacing(ctx)
+
+		adj.DrawCollapsingHeader('                          ABOUT SCRIPT', function()
+			ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
+			ImGui.Text(ctx, "Cheat Sheet:")
+			ImGui.PopFont(ctx)
+
+			adj.ShowParameter(adj.params.gloss)
+			ImGui.Spacing(ctx)
+			ImGui.Spacing(ctx)
+			ImGui.Spacing(ctx)
+
+			ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.Bold, adj.config.font_size))
+			ImGui.Text(ctx, "Credits:")
+			if ImGui.IsItemClicked(ctx) then
+				reaper.ShowConsoleMsg(adj.ExportParameters() .. "\n")
+			end
+			ImGui.PopFont(ctx)
+
+			ImGui.PushFont(ctx, adj.getFont(adj.config.font_types.None, adj.config.font_size))
+			ImGui.TextWrapped(ctx, 'FM4 theme is created by Dmytro Hapochka, theme adjuster is designed by Dmytro Hapochka and developed by Ed Kashinsky.')
+			ImGui.Spacing(ctx)
+			ImGui.Spacing(ctx)
+
+			if ImGui.BeginTable(ctx, "sep3", 2) then
 			ImGui.TableNextColumn(ctx)
 
 			adj.DrawImage(SCRIPT_PATH .. "/images/bmc_qr_hapochka.png", { width = 270, borderRad = 8, border = 2 })
@@ -1388,7 +1541,7 @@ function adj.ShowWindow()
 			adj.CenterText("Support Ed Kashinsky")
 
 			ImGui.EndTable(ctx)
-		end
+		    end
 
 		ImGui.PopFont(ctx)
 
@@ -1408,7 +1561,13 @@ function adj.ShowWindow()
 		end
 
 		ImGui.TextWrapped(ctx, "ReaImGui version: " .. imGuiVersion)
-	end)
+		end)
+
+		ImGui.EndChild(ctx)
+	end
+
+	ImGui.PopStyleColor(ctx, 2)
+	ImGui.PopStyleVar(ctx, 2)
 
 	return true
 end
