@@ -1,211 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="47ce22a1c12980a79153fc6ac4d7f2317cccee0f">
+<index version="1" name="Flat Madness Theme" commit="36eee1810c9f1dd93a1c4433943b3189611fbc7b">
   <category name="ColorThemes">
-    <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
-}
-]]></description>
-        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
-        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
-        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
-      </metadata>
-      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:32:33Z">
-        <changelog><![CDATA[- two additional color schemes
-- adjustable backgrounds in TCP/MCP
-- adjuster presets
-- adjuster quick layout switch
-- adjustable TCP label brightness
-- clearly rounded items
-- left orientation for TCP folder/longname states]]></changelog>
-        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/512d38c93c7729bc3ab516ab210e05203c0c952a/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.1" author="Dmytro Hapochka" time="2025-01-10T22:36:51Z">
-        <changelog><![CDATA[- re-designed folders and longname layouts to be more consistant
-- fixed issues with colors for disabled sends and stretch markers
-- increased range for TCP label color (unselected)
-- improved behavior in longname layouts
-- added two color variations - solid item backgrounds for bright and grey themes (experimental)
-- some refactoring stuff]]></changelog>
-        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/5d984f5b9751718e2bc46fe34f64ecc5a724a6b4/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.3" author="Dmytro Hapochka" time="2025-02-19T16:20:01Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8100d5a7212ce57c25cb7e34739acbe41d37ab99/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.4" author="Dmytro Hapochka" time="2025-02-27T00:13:09Z">
-        <changelog><![CDATA[- upgraded envelope panel
-- track color strip with color picker
-- envelope type indicator (basic/FX parameter)
-- Transport improvements
-- revealed dock/undock button
-- adjuster button placed below dock button to be more compact
-- introduced quick tools for transport panel
-- changed behavior in floating state
-- center position is really centered now for any screen size]]></changelog>
-        <source file="Flat Madness Black CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Black%20CI.ReaperThemeZip</source>
-      </version>
-    </reapack>
-    <reapack name="Flat Madness Black.theme" type="theme" desc="Flat Madness Black">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
-}
-]]></description>
-        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
-        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
-        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
-      </metadata>
-      <version name="3.71" author="Dmytry Hapochka" time="2022-05-23T11:29:56Z">
-        <changelog><![CDATA[- TCP solid color layout changed again.
-- some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
-        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
-- longname 2 layout removed
-- longname layout is fixed and fit new logic
-- little design changes]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
-        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
- - improved meter and TCP elements behavior on collapsing
-- whole new envelope panel 
-- added TCP elements for triggering fixed lanes (_dev only)
-- TCP backgrounds becomes bit brighter
-- some re-factoring stuff
-- some bugs fixed
-- some bugs added]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.0" author="Dmytro Hapochka" time="2024-06-30T21:06:12Z">
-        <changelog><![CDATA[- Advanced Tools For Fixed Lanes
-- Toggle Mcp Folder Padding
-- Availability To Set Color From Tcp And Mcp
-- Redesigned Layouts
-- Brand new custom theme adjuster
-- Unmute/unsolo all from transport panel
-- Fast access to theme adjuster from transport
-- Fast switch between docked and floating transport
-- Disabling folder State from MCP
-- More smooth collapsing behavior
-- 4 color schemes]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3da1cae465ff27134751989f2363435722a51db1/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.1" author="Dmytro Hapochka" time="2024-06-30T21:22:23Z">
-        <changelog><![CDATA[- Advanced Tools For Fixed Lanes
-- Toggle Mcp Folder Padding
-- Availability To Set Color From Tcp And Mcp
-- Redesigned Layouts
-- Brand new custom theme adjuster
-- Unmute/unsolo all from transport panel
-- Fast access to theme adjuster from transport
-- Fast switch between docked and floating transport
-- Disabling folder State from MCP
-- More smooth collapsing behavior
-- 4 color schemes]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/99a7a8930d8b3d7da131e5c9d4dfe8802f6555f7/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.2" author="Dmytro Hapochka" time="2024-07-09T08:28:45Z">
-        <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
-        <changelog><![CDATA[- fixed small bugs in longname TCP layout
-- changed behavior for TCP folders when option “record stuff in folders” is enabled
-- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
-- darken meter background in MCP meterbridge layout
-- re-designed routing button in MCP meterbridge layout
-- added colored background for track name in MCP meterbridge layout, and letters become brighter.
-- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
-        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
-- fixed wrong track name alignment in TCP "longname" layout
-- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
-- if there is not enough panel width to contain the FX list
-- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
-- new color scheme for items in arrange view (dark and black themes only)
-- new color scheme for TCP in dark and black themes
-- fixed some minor issues with everything
-- default MCP layout was a bit re-designed]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
-        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
-- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
-- fixed some small visual inconsistencies across TCP]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.2" author="Dmytro Hapochka" time="2024-11-25T14:18:29Z">
-        <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
-        <changelog><![CDATA[- two additional color schemes
-- adjustable backgrounds in TCP/MCP
-- adjuster presets
-- adjuster quick layout switch
-- adjustable TCP label brightness
-- clearly rounded items
-- left orientation for TCP folder/longname states]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.1" author="Dmytro Hapochka" time="2025-01-12T12:50:01Z">
-        <changelog><![CDATA[- re-designed folders and longname layouts to be more consistant
-- fixed issues with colors for disabled sends and stretch markers
-- increased range for TCP label color (unselected)
-- improved behavior in longname layouts
-- added two color variations - solid item backgrounds for bright and grey themes (experimental)
-- some refactoring stuff]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.3" author="Dmytro Hapochka" time="2025-02-19T16:20:01Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8100d5a7212ce57c25cb7e34739acbe41d37ab99/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.4" author="Dmytro Hapochka" time="2025-02-27T00:13:09Z">
-        <changelog><![CDATA[- upgraded envelope panel
-- track color strip with color picker
-- envelope type indicator (basic/FX parameter)
-- Transport improvements
-- revealed dock/undock button
-- adjuster button placed below dock button to be more compact
-- introduced quick tools for transport panel
-- changed behavior in floating state
-- center position is really centered now for any screen size]]></changelog>
-        <source file="Flat Madness Black.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Black.ReaperThemeZip</source>
-      </version>
-    </reapack>
     <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Bright CI">
       <metadata>
         <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
@@ -820,191 +615,6 @@
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/47ce22a1c12980a79153fc6ac4d7f2317cccee0f/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
-    <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
-}
-]]></description>
-        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
-        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
-        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
-      </metadata>
-      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Grey CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Grey%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.3" author="Dmytro Hapochka" time="2025-02-19T16:20:01Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Grey CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8100d5a7212ce57c25cb7e34739acbe41d37ab99/ColorThemes/Flat%20Madness%20Grey%20CI.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.4" author="Dmytro Hapochka" time="2025-02-27T00:13:09Z">
-        <changelog><![CDATA[- upgraded envelope panel
-- track color strip with color picker
-- envelope type indicator (basic/FX parameter)
-- Transport improvements
-- revealed dock/undock button
-- adjuster button placed below dock button to be more compact
-- introduced quick tools for transport panel
-- changed behavior in floating state
-- center position is really centered now for any screen size]]></changelog>
-        <source file="Flat Madness Grey CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Grey%20CI.ReaperThemeZip</source>
-      </version>
-    </reapack>
-    <reapack name="Flat Madness Grey.theme" type="theme" desc="Flat Madness Grey">
-      <metadata>
-        <description><![CDATA[{\rtf1\ansi\deff0{\fonttbl{\f0 \fswiss Helvetica;}{\f1 \fmodern Courier;}}
-{\colortbl;\red255\green0\blue0;\red0\green0\blue255;}
-\widowctrl\hyphauto
-
-{\pard \ql \f0 \sa180 \li0 \fi0 Hi Everyone! this theme is created for people who love modern cute flat design. This theme is created to make people enjoy to work with TCP FX list, so at first - go to options, and enable "show FX inserts in TCP" and "show FX sends in TCP" enjoy!\par}
-}
-]]></description>
-        <link rel="website" href="https://forum.cockos.com/showthread.php?t=247086">Forum Thread</link>
-        <link rel="screenshot">https://github.com/gapalil001/FlatMadness/raw/master/Adjuster/images/screenshot.png</link>
-        <link rel="donation">https://buymeacoffee.com/flatmadness</link>
-      </metadata>
-      <version name="3.71" author="Dmytry Hapochka" time="2022-05-23T11:29:56Z">
-        <changelog><![CDATA[- TCP solid color layout changed again.
-- some panels and buttons in dark versions are becoming darker. fixed issue with “bright meter” on “sidemeter” adjuster positions]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/a4176939b05ca3d5c7c9bb17412f19e1123bf083/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="3.8" author="Dmytro Hapochka" time="2022-11-22T16:38:18Z">
-        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
-- longname 2 layout removed
-- longname layout is fixed and fit new logic
-- little design changes]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/62b6b6e6d11268aec01a13af2eba8ecdee97bc2d/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="3.81" author="Dmytro Hapochka" time="2023-03-01T19:32:26Z">
-        <changelog><![CDATA[- new TCP behavior when FX or send lists are not visible
- - improved meter and TCP elements behavior on collapsing
-- whole new envelope panel 
-- added TCP elements for triggering fixed lanes (_dev only)
-- some re-factoring stuff
-- some bugs fixed
-- some bugs added]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/2c56814485bd88538b2fc44c67cabd63139f6312/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.0" author="Dmytro Hapochka" time="2024-06-30T21:06:12Z">
-        <changelog><![CDATA[- Advanced Tools For Fixed Lanes
-- Toggle Mcp Folder Padding
-- Availability To Set Color From Tcp And Mcp
-- Redesigned Layouts
-- Brand new custom theme adjuster
-- Unmute/unsolo all from transport panel
-- Fast access to theme adjuster from transport
-- Fast switch between docked and floating transport
-- Disabling folder State from MCP
-- More smooth collapsing behavior
-- 4 color schemes]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3da1cae465ff27134751989f2363435722a51db1/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.1" author="Dmytro Hapochka" time="2024-06-30T21:22:23Z">
-        <changelog><![CDATA[- Advanced Tools For Fixed Lanes
-- Toggle Mcp Folder Padding
-- Availability To Set Color From Tcp And Mcp
-- Redesigned Layouts
-- Brand new custom theme adjuster
-- Unmute/unsolo all from transport panel
-- Fast access to theme adjuster from transport
-- Fast switch between docked and floating transport
-- Disabling folder State from MCP
-- More smooth collapsing behavior
-- 4 color schemes]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/99a7a8930d8b3d7da131e5c9d4dfe8802f6555f7/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.2" author="Dmytro Hapochka" time="2024-07-09T08:28:45Z">
-        <changelog><![CDATA[Fixed bug of wrong view when FX was disabled in TCP]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/3c700d1d03238600966e131856d9ccb00674fc14/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.0.3" author="Dmytro Hapochka" time="2024-08-06T14:20:20Z">
-        <changelog><![CDATA[- fixed small bugs in longname TCP layout
-- changed behavior for TCP folders when option “record stuff in folders” is enabled
-- fixed wrong meter size with meterbridge position in TCP for longname layouts and folders
-- darken meter background in MCP meterbridge layout
-- re-designed routing button in MCP meterbridge layout
-- added colored background for track name in MCP meterbridge layout, and letters become brighter.
-- MCP meterbridge layout is now obeying “solid background” option in adjuster]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/4d7defbdbc3fcaa203706d1f595a81dfdf943802/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.0" author="Dmytro Hapochka" time="2024-10-22T09:40:33Z">
-        <changelog><![CDATA[- improved alignment behavior when "align TCP controls when track icons or fixed lanes are used"
-- fixed wrong track name alignment in TCP "longname" layout
-- improved TCP FX list behavior: now, there are two scenarios, when the FX list will be shown under the volume column:
-- if there is not enough panel width to contain the FX list
-- when the option "show Embedded UI of plugins instead of FX list" is enabled (see screenshots)
-- new color scheme for items in arrange view (dark and black themes only)
-- new color scheme for TCP in dark and black themes
-- fixed some minor issues with everything
-- default MCP layout was a bit re-designed]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8365a3fedd8eaff63c5d5ab673377c029d9bf3ab/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.1" author="Dmytro Hapochka" time="2024-11-19T10:45:42Z">
-        <changelog><![CDATA[- improved TCP meter behavior, especially for «meterbridge» conditions including collapsing etc
-- when TCP «Meterbridge» is enabled, FX list will appear in «compact mode» (as well as it goes with «embedded UI instead FX list»)
-- fixed some small visual inconsistencies across TCP]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/77ddb3b0eb2e54d709d17521b472d9894b92ca08/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.1.2" author="Dmytro Hapochka" time="2024-11-25T14:18:29Z">
-        <changelog><![CDATA[- fixed bug when FX List disappears in colored fader TCP layouts]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1a6359b3364b1886a5012156e3b064b0551c4f9f/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.0" author="Dmytro Hapochka" time="2025-01-05T23:26:45Z">
-        <changelog><![CDATA[- two additional color schemes
-- adjustable backgrounds in TCP/MCP
-- adjuster presets
-- adjuster quick layout switch
-- adjustable TCP label brightness
-- clearly rounded items
-- left orientation for TCP folder/longname states]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/7ebe2bc27af21ddba5f13998fcd6412b2e563165/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.1" author="Dmytro Hapochka" time="2025-01-12T12:50:01Z">
-        <changelog><![CDATA[- re-designed folders and longname layouts to be more consistant
-- fixed issues with colors for disabled sends and stretch markers
-- increased range for TCP label color (unselected)
-- improved behavior in longname layouts
-- added two color variations - solid item backgrounds for bright and grey themes (experimental)
-- some refactoring stuff]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/86b3cd20f23c629fa89f53f05cdc33a531419946/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.2" author="Dmytro Hapochka" time="2025-02-19T15:11:06Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f306f91db9e7747f61b5068f512ea6bc653c4655/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.3" author="Dmytro Hapochka" time="2025-02-19T16:20:01Z">
-        <changelog><![CDATA[- overall improvements for TCP collapsing behavior
-- small bug fixes
-- small changes in TCP meter behavior
-- hidden feature for geeks]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/8100d5a7212ce57c25cb7e34739acbe41d37ab99/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-      <version name="4.2.4" author="Dmytro Hapochka" time="2025-02-27T00:13:09Z">
-        <changelog><![CDATA[- upgraded envelope panel
-- track color strip with color picker
-- envelope type indicator (basic/FX parameter)
-- Transport improvements
-- revealed dock/undock button
-- adjuster button placed below dock button to be more compact
-- introduced quick tools for transport panel
-- changed behavior in floating state
-- center position is really centered now for any screen size]]></changelog>
-        <source file="Flat Madness Grey.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/6a7527eab48c910b8c7a40d988292200ab19cc95/ColorThemes/Flat%20Madness%20Grey.ReaperThemeZip</source>
-      </version>
-    </reapack>
   </category>
   <category name="Utility">
     <reapack name="Flat Madness Theme Adjuster.lua" type="script" desc="Flat Madness Theme Adjuster">
@@ -1059,6 +669,52 @@
         <source file="images/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/13f194d81cae3090769801da41ef5f763a1db1e7/Utility/images/pref_trans_position_left.png</source>
         <source file="images/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/13f194d81cae3090769801da41ef5f763a1db1e7/Utility/images/pref_trans_position_right.png</source>
         <source file="images/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/13f194d81cae3090769801da41ef5f763a1db1e7/Utility/images/screenshot.png</source>
+      </version>
+      <version name="5.2.0.1" author="Ed Kashinsky" time="2026-03-28T12:14:16Z">
+        <changelog><![CDATA[* Added 5.2.0 theme support
+* Added ABC layouts support
+* Fixed presets settings
+* Added fader colors support]]></changelog>
+        <source main="main">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/Flat%20Madness%20Theme%20Adjuster.lua</source>
+        <source main="main" file="theme/FM_nudge_volume_down.lua">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/theme/FM_nudge_volume_down.lua</source>
+        <source main="main" file="theme/FM_nudge_volume_up.lua">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/theme/FM_nudge_volume_up.lua</source>
+        <source main="main" file="theme/FM_toggle_fxsidem.lua">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/theme/FM_toggle_fxsidem.lua</source>
+        <source main="main" file="theme/FM_toggle_mastertcp_meterbridge.lua">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/theme/FM_toggle_mastertcp_meterbridge.lua</source>
+        <source main="main" file="theme/FM_toggle_msterdbscales.lua">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/theme/FM_toggle_msterdbscales.lua</source>
+        <source file="img/bmc_qr_hapochka.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/bmc_qr_hapochka.png</source>
+        <source file="img/bmc_qr_kashinsky.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/bmc_qr_kashinsky.png</source>
+        <source file="img/header.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/header.png</source>
+        <source file="img/pref_mcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_colorbg.png</source>
+        <source file="img/pref_mcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_custom.png</source>
+        <source file="img/pref_mcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_greybg.png</source>
+        <source file="img/pref_mcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_layout_1.png</source>
+        <source file="img/pref_mcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_layout_2.png</source>
+        <source file="img/pref_mcp_paddingoff.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_paddingoff.png</source>
+        <source file="img/pref_mcp_paddingon.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_mcp_paddingon.png</source>
+        <source file="img/pref_tcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_colorbg.png</source>
+        <source file="img/pref_tcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_custom.png</source>
+        <source file="img/pref_tcp_embedinstead.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_embedinstead.png</source>
+        <source file="img/pref_tcp_embedright.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_embedright.png</source>
+        <source file="img/pref_tcp_fxcenter.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_fxcenter.png</source>
+        <source file="img/pref_tcp_fxside.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_fxside.png</source>
+        <source file="img/pref_tcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_greybg.png</source>
+        <source file="img/pref_tcp_knob.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_knob.png</source>
+        <source file="img/pref_tcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_layout_1.png</source>
+        <source file="img/pref_tcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_layout_2.png</source>
+        <source file="img/pref_tcp_meterbridge.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_meterbridge.png</source>
+        <source file="img/pref_tcp_meterleft.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_meterleft.png</source>
+        <source file="img/pref_tcp_meterright.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_meterright.png</source>
+        <source file="img/pref_tcp_meterrightedge.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_meterrightedge.png</source>
+        <source file="img/pref_tcp_norecarms.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_norecarms.png</source>
+        <source file="img/pref_tcp_recarms.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_recarms.png</source>
+        <source file="img/pref_tcp_slider.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_slider.png</source>
+        <source file="img/pref_tcp_tiny1.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_tiny1.png</source>
+        <source file="img/pref_tcp_tiny2.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_tiny2.png</source>
+        <source file="img/pref_tcp_tiny3.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_tcp_tiny3.png</source>
+        <source file="img/pref_trans_position_center.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_trans_position_center.png</source>
+        <source file="img/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_trans_position_left.png</source>
+        <source file="img/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/pref_trans_position_right.png</source>
+        <source file="img/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/36eee1810c9f1dd93a1c4433943b3189611fbc7b/Utility/img/screenshot.png</source>
       </version>
     </reapack>
   </category>
