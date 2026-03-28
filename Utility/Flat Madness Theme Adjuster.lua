@@ -1,12 +1,15 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.0
+-- @version 5.2.0.1
 -- @changelog
---   - Updated presets list
+--   * Added 5.2.0 theme support
+--   * Added ABC layouts support
+--   * Fixed presets settings
+--   * Added fader colors support
 -- @provides
 --   [main] theme/*.lua
---   [nomain] images/*.png
+--   [nomain] img/*.png
 
 local ImGui
 local CONTEXT = ({reaper.get_action_context()})
@@ -133,7 +136,7 @@ local adj = {
 		windFlags = ImGui.WindowFlags_NoScrollbar | ImGui.WindowFlags_NoScrollWithMouse,
 		childFlags = ImGui.ChildFlags_AlwaysUseWindowPadding | ImGui.ChildFlags_AutoResizeY,
 		tableFlags = ImGui.TableFlags_BordersV | ImGui.TableFlags_BordersOuterH | ImGui.TableFlags_RowBg,
-		header = { image = nil, src = "images/header.png" },
+		header = { image = nil, src = "img/header.png" },
 		layouts = {
 			value = 1, values = { "A", "B", "C" },
 		}
@@ -167,10 +170,10 @@ adj.params = {
 		height = 165,
 		colspan = 2,
 		values = {
-			{ name = "Left", value = 1, image = "images/pref_tcp_meterleft.png", borderRad = 5 },
-			{ name = "Meterbridge", value = 2, image = "images/pref_tcp_meterbridge.png", borderRad = 5 },
-			{ name = "Right", value = 3, image = "images/pref_tcp_meterright.png", borderRad = 5 },
-			{ name = "Almost Right", value = 4, image = "images/pref_tcp_meterrightedge.png", borderRad = 5 },
+			{ name = "Left", value = 1, image = "img/pref_tcp_meterleft.png", borderRad = 5 },
+			{ name = "Meterbridge", value = 2, image = "img/pref_tcp_meterbridge.png", borderRad = 5 },
+			{ name = "Right", value = 3, image = "img/pref_tcp_meterright.png", borderRad = 5 },
+			{ name = "Almost Right", value = 4, image = "img/pref_tcp_meterrightedge.png", borderRad = 5 },
 		}
 	},
 	lnstatemd = {
@@ -180,8 +183,8 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 155,
 		values = {
-			{ name = "Default", value = 2, image = "images/pref_tcp_layout_1.png" },
-			{ name = "Longname", value = 1, image = "images/pref_tcp_layout_2.png" },
+			{ name = "Default", value = 2, image = "img/pref_tcp_layout_1.png" },
+			{ name = "Longname", value = 1, image = "img/pref_tcp_layout_2.png" },
 		}
 	},
 	min_fxlist = {
@@ -199,8 +202,8 @@ adj.params = {
 		width = 205, height = 165,
 		colspan = 1,
 		values = {
-			{ name = "Beside FX", value = 0, image = "images/pref_tcp_embedright.png", borderRad = 5 },
-			{ name = "Instead FX**", value = 1, image = "images/pref_tcp_embedinstead.png", borderRad = 5 },
+			{ name = "Beside FX", value = 0, image = "img/pref_tcp_embedright.png", borderRad = 5 },
+			{ name = "Instead FX**", value = 1, image = "img/pref_tcp_embedinstead.png", borderRad = 5 },
 		}
 	},
 	tcp_folder_recarms = {
@@ -243,9 +246,9 @@ adj.params = {
 		height = 95,
 		--colspan = 2,
 		values = {
-			{ name = "Left", value = 1, image = "images/pref_trans_position_left.png" },
-			{ name = "Center", value = 2, image = "images/pref_trans_position_center.png" },
-			{ name = "Right", value = 3, image = "images/pref_trans_position_right.png" },
+			{ name = "Left", value = 1, image = "img/pref_trans_position_left.png" },
+			{ name = "Center", value = 2, image = "img/pref_trans_position_center.png" },
+			{ name = "Right", value = 3, image = "img/pref_trans_position_right.png" },
 		}
 	},
 	tcp_solid_color = {
@@ -263,9 +266,9 @@ adj.params = {
 			saturnfolder = "mcpsaturnfolder"
 		}},
 		values = {
-			{ name = "Solid", value = 2, image = "images/pref_tcp_greybg.png", borderRad = 15 },
-			{ name = "Color", value = 1, image = "images/pref_tcp_colorbg.png", borderRad = 15 },
-			{ name = "Custom", value = 3, image = "images/pref_tcp_custom.png", borderRad = 15 },
+			{ name = "Solid", value = 2, image = "img/pref_tcp_greybg.png", borderRad = 15 },
+			{ name = "Color", value = 1, image = "img/pref_tcp_colorbg.png", borderRad = 15 },
+			{ name = "Custom", value = 3, image = "img/pref_tcp_custom.png", borderRad = 15 },
 		}
 	},
 	mcp_solid_color = {
@@ -283,9 +286,9 @@ adj.params = {
 			mcpsaturnfolder = "saturnfolder"
 		}},
 		values = {
-			{ name = "Solid", value = 2, image = "images/pref_mcp_greybg.png", borderRad = 15 },
-			{ name = "Color", value = 1, image = "images/pref_mcp_colorbg.png", borderRad = 15 },
-			{ name = "Custom", value = 3, image = "images/pref_mcp_custom.png", borderRad = 15 },
+			{ name = "Solid", value = 2, image = "img/pref_mcp_greybg.png", borderRad = 15 },
+			{ name = "Color", value = 1, image = "img/pref_mcp_colorbg.png", borderRad = 15 },
+			{ name = "Custom", value = 3, image = "img/pref_mcp_custom.png", borderRad = 15 },
 		}
 	},
 	mixer_folderindent = {
@@ -295,8 +298,8 @@ adj.params = {
 		width = 420,
 		height = 160,
 		values = {
-			{ name = "Padding Off", value = 1, image = "images/pref_mcp_paddingoff.png" },
-			{ name = "Padding On", value = 2, image = "images/pref_mcp_paddingon.png" },
+			{ name = "Padding Off", value = 1, image = "img/pref_mcp_paddingoff.png" },
+			{ name = "Padding On", value = 2, image = "img/pref_mcp_paddingon.png" },
 		}
 	},
 	saturnc = {
@@ -428,8 +431,8 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 160,
 		values = {
-			{ name = "Center", value = 0, image = "images/pref_tcp_fxcenter.png" },
-			{ name = "Right", value = 1, image = "images/pref_tcp_fxside.png" },
+			{ name = "Center", value = 0, image = "img/pref_tcp_fxcenter.png" },
+			{ name = "Right", value = 1, image = "img/pref_tcp_fxside.png" },
 		}
 	},
 	gloss = {
@@ -448,9 +451,9 @@ adj.params = {
 		width = 420, height = 210,
 		colspan = 1,
 		values = {
-			{ name = "Effects", value = 1, image = "images/pref_tcp_tiny1.png", borderRad = 2 },
-			{ name = "Meterbridge", value = 2, image = "images/pref_tcp_tiny2.png", borderRad = 2 },
-			{ name = "Longname", value = 3, image = "images/pref_tcp_tiny3.png", borderRad = 2 },
+			{ name = "Effects", value = 1, image = "img/pref_tcp_tiny1.png", borderRad = 2 },
+			{ name = "Meterbridge", value = 2, image = "img/pref_tcp_tiny2.png", borderRad = 2 },
+			{ name = "Longname", value = 3, image = "img/pref_tcp_tiny3.png", borderRad = 2 },
 		}
 	},
 	mcpsaturnfolder = {
@@ -491,8 +494,8 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 160,
 		values = {
-			{ name = "KNOB", value = 0, image = "images/pref_tcp_knob.png" },
-			{ name = "SLIDER", value = 1, image = "images/pref_tcp_slider.png" },
+			{ name = "KNOB", value = 0, image = "img/pref_tcp_knob.png" },
+			{ name = "SLIDER", value = 1, image = "img/pref_tcp_slider.png" },
 		}
 	},
 	fxheight = {
@@ -521,8 +524,8 @@ adj.params = {
 		section = "tcp",
 		track_section = "P_TCP_LAYOUT",
 		values = {
-			{ name = "Knob", value = { "A", "B", "C" }, image = "images/pref_tcp_knob.png", borderRad = 15 },
-			{ name = "Slider", value = { "PAN_SLIDER A", "PAN_SLIDER B", "PAN_SLIDER C" }, image = "images/pref_tcp_slider.png", borderRad = 15, is_layout = true },
+			{ name = "Knob", value = { "A", "B", "C" }, image = "img/pref_tcp_knob.png", borderRad = 15 },
+			{ name = "Slider", value = { "PAN_SLIDER A", "PAN_SLIDER B", "PAN_SLIDER C" }, image = "img/pref_tcp_slider.png", borderRad = 15, is_layout = true },
 		},
 	},
 	mcp_layout = {
@@ -536,8 +539,8 @@ adj.params = {
 		section = "mcp",
 		track_section = "P_MCP_LAYOUT",
 		values = {
-			{ name = "Default", value = { "A", "B", "C" }, image = "images/pref_mcp_layout_1.png", borderRad = 15 },
-			{ name = "Meterbridge", value = { "METERBRIDGE A", "METERBRIDGE B", "METERBRIDGE C" }, image = "images/pref_mcp_layout_2.png", borderRad = 15, is_layout = true },
+			{ name = "Default", value = { "A", "B", "C" }, image = "img/pref_mcp_layout_1.png", borderRad = 15 },
+			{ name = "Meterbridge", value = { "METERBRIDGE A", "METERBRIDGE B", "METERBRIDGE C" }, image = "img/pref_mcp_layout_2.png", borderRad = 15, is_layout = true },
 		},
 	},
 	fader_color_a = {
@@ -569,12 +572,78 @@ adj.params = {
 	},
 }
 
+function adj.GetValue(param, id)
+	if param.value_type == adj.config.value_types.Layout then
+		if not param.cached_layout or param.cached_layout ~= adj.config.layouts.value then
+			local _, globalLayout = reaper.ThemeLayout_GetLayout(param.section, -1)
+			local layout = adj.config.layouts.value
+			local value
+
+			globalLayout = not isEmpty(globalLayout) and globalLayout or "Default"
+
+			if param.is_global then
+				for j = 1, #param.values do
+					if param.values[j].value[layout] == globalLayout then
+						value = j
+						break
+					end
+				end
+			else
+				for i = 0, reaper.CountTracks(0) - 1 do
+					local tr = reaper.GetTrack(0, i)
+					local _, trackLayout = reaper.GetSetMediaTrackInfo_String(tr, param.track_section, "", false)
+
+					if isEmpty(trackLayout) or trackLayout == "Default" then trackLayout = globalLayout end
+
+					for j = 1, #param.values do
+						if param.values[j].value[layout] == trackLayout then
+							value = j
+							break
+						end
+					end
+
+					if value then break end
+				end
+			end
+
+			adj.params[id].cached_layout = adj.config.layouts.value
+
+			return { value = value or 1 }
+		end
+	elseif param.value_type == adj.config.value_types.ThemeLayout then
+		local layout = adj.config.layouts.value
+		local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[layout])
+
+		if ret then
+			return { name = name, value = value, min = minValue, max = maxValue }
+		end
+	elseif param.value_type == adj.config.value_types.ColorFader then
+		local ret, name, cur_r, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[1])
+		local _, _, cur_g = reaper.ThemeLayout_GetParameter(param.id[2])
+		local _, _, cur_b = reaper.ThemeLayout_GetParameter(param.id[3])
+		local _, _, cur_a = reaper.ThemeLayout_GetParameter(param.id[4])
+		local value = ((cur_r & 0xFF) << 24) | ((cur_g & 0xFF) << 16) | ((cur_b & 0xFF) << 8) | (cur_a & 0xFF)
+
+		if ret then
+			return { name = name, value = value, min = minValue, max = maxValue }
+		end
+	else
+		local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
+
+		if ret then
+			return { name = name, value = value, min = minValue, max = maxValue }
+		end
+	end
+
+	return param.data
+end
+
 function adj.SetValue(param, value)
 	param.data.value = value
 
 	if param.value_type == adj.config.value_types.Layout then
 		local layout = adj.config.layouts.value
-		local layoutValue = param.values[param.data.value].value[layout]
+		local layoutValue = param.values[param.data.value] and param.values[param.data.value].value[layout] or "Default"
 
 		if param.is_global then
 			reaper.ThemeLayout_SetLayout(param.section, layoutValue)
@@ -664,66 +733,7 @@ function adj.UpdateValues()
 	if not NeedToUpdateValues() then return end
 
 	for id, param in pairs(adj.params) do
-		if param.value_type == adj.config.value_types.Layout then
-			if not param.cached_layout or param.cached_layout ~= adj.config.layouts.value then
-				local _, globalLayout = reaper.ThemeLayout_GetLayout(param.section, -1)
-				local layout = adj.config.layouts.value
-				local value
-
-				globalLayout = not isEmpty(globalLayout) and globalLayout or "Default"
-
-				if param.is_global then
-					for j = 1, #param.values do
-						if param.values[j].value[layout] == globalLayout then
-							value = j
-							break
-						end
-					end
-				else
-					for i = 0, reaper.CountTracks(0) - 1 do
-						local tr = reaper.GetTrack(0, i)
-						local _, trackLayout = reaper.GetSetMediaTrackInfo_String(tr, param.track_section, "", false)
-
-						if isEmpty(trackLayout) or trackLayout == "Default" then trackLayout = globalLayout end
-
-						for j = 1, #param.values do
-							if param.values[j].value[layout] == trackLayout then
-								value = j
-								break
-							end
-						end
-
-						if value then break end
-					end
-				end
-
-				adj.params[id].data = { value = value or 1 }
-				adj.params[id].cached_layout = adj.config.layouts.value
-			end
-		elseif param.value_type == adj.config.value_types.ThemeLayout then
-			local layout = adj.config.layouts.value
-			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[layout])
-
-			if ret then
-				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
-			end
-		elseif param.value_type == adj.config.value_types.ColorFader then
-			local ret, name, cur_r, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id[1])
-			local _, _, cur_g = reaper.ThemeLayout_GetParameter(param.id[2])
-			local _, _, cur_b = reaper.ThemeLayout_GetParameter(param.id[3])
-			local _, _, cur_a = reaper.ThemeLayout_GetParameter(param.id[4])
-			local value = ((cur_r & 0xFF) << 24) | ((cur_g & 0xFF) << 16) | ((cur_b & 0xFF) << 8) | (cur_a & 0xFF)
-
-			if ret then
-				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
-			end
-		else
-			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
-
-			if ret then
-				adj.params[id].data = { name = name, value = value, min = minValue, max = maxValue }
-			end
-		end
+		adj.params[id].data = adj.GetValue(param, id)
 	end
 
 	if adj.params.hideall.data == nil or not string.find(adj.params.hideall.data.name, "DOES FLAT MADNESS BEST THEME EVER?") then
@@ -1345,7 +1355,9 @@ function adj.DrawPresetsSelect()
 				adj.presets.current = newVal
 
 				for key, value in pairs(values) do
-					adj.SetValue(adj.params[key], value)
+					if adj.params[key] then
+						adj.SetValue(adj.params[key], value)
+					end
 				end
 			end
 		end
@@ -1382,9 +1394,9 @@ function adj.ExportParameters()
 	local debug = "{ "
 
 	for id, param in pairs(adj.params) do
-		if param.id then
-			local ret, name, value, _, minValue, maxValue = reaper.ThemeLayout_GetParameter(param.id)
-			debug = debug .. id .. " = " .. value .. ", "
+		local value = adj.GetValue(param, id)
+		if value then
+			debug = debug .. id .. " = " .. value.value .. ", "
 		end
 	end
 
@@ -1530,13 +1542,13 @@ function adj.ShowWindow()
 			if ImGui.BeginTable(ctx, "sep3", 2) then
 			ImGui.TableNextColumn(ctx)
 
-			adj.DrawImage(SCRIPT_PATH .. "/images/bmc_qr_hapochka.png", { width = 270, borderRad = 8, border = 2 })
+			adj.DrawImage(SCRIPT_PATH .. "/img/bmc_qr_hapochka.png", { width = 270, borderRad = 8, border = 2 })
 			ImGui.Dummy(ctx, 195, 0)
 			adj.CenterText("Support Dmytro Hapochka")
 
 			ImGui.TableNextColumn(ctx)
 
-			adj.DrawImage(SCRIPT_PATH .. "/images/bmc_qr_kashinsky.png", { width = 270, borderRad = 8, border = 2 })
+			adj.DrawImage(SCRIPT_PATH .. "/img/bmc_qr_kashinsky.png", { width = 270, borderRad = 8, border = 2 })
 			ImGui.Dummy(ctx, 195, 0)
 			adj.CenterText("Support Ed Kashinsky")
 
