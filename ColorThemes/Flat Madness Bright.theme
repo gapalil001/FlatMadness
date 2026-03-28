@@ -1,8 +1,14 @@
 @description Flat Madness Bright
-@version 5.0.3
+@version 5.2.0
 @changelog
-   * fixed issue with presets in adjuster
-   * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks
+   * Unified Layout Logic: All TCP and MCP layouts are now split into A/B/C categories, mirroring the behavior of the default theme.
+   * Enhanced Customization: TCP and MCP volume fader colors can now be changed individually via the Theme Adjuster for A, B, and C layouts.
+   * Streamlined Options: Dedicated "colored fader" layouts have been removed as they are now redundant due to the new customization engine.
+   * Visual Overhaul: Redesigned TCP FX slots and modernized MCP volume faders/labels for a cleaner look and better consistency.
+   * Flexible Slot Heights: Added the option to adjust FX and Send slot heights independently (16–20px).
+   * Precision Control: Added arrow buttons above and below MCP faders for fine-grained volume adjustment (±0.1 dB). This feature requires the included scripts and can be toggled via the Theme Adjuster.
+   * Master TCP Updates: Added dedicated buttons to toggle Meter Bridge mode, dB scales, and column swapping (requires included scripts).
+   * Refined Aesthetics: The gloss effect is now more subtle for a more modern, flat feel.
 @provides Flat Madness Bright.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
