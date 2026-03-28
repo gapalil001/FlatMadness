@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="13f194d81cae3090769801da41ef5f763a1db1e7">
+<index version="1" name="Flat Madness Theme" commit="47ce22a1c12980a79153fc6ac4d7f2317cccee0f">
   <category name="ColorThemes">
     <reapack name="Flat Madness Black CI.theme" type="theme" desc="Flat Madness Black CI">
       <metadata>
@@ -290,6 +290,17 @@
 * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks]]></changelog>
         <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f95263f4564bd98a77fc5f7a89cc702cbe16fcb6/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
       </version>
+      <version name="5.2.0" author="Dmytro Hapochka" time="2026-03-28T11:31:15Z">
+        <changelog><![CDATA[* Unified Layout Logic: All TCP and MCP layouts are now split into A/B/C categories, mirroring the behavior of the default theme.
+* Enhanced Customization: TCP and MCP volume fader colors can now be changed individually via the Theme Adjuster for A, B, and C layouts.
+* Streamlined Options: Dedicated "colored fader" layouts have been removed as they are now redundant due to the new customization engine.
+* Visual Overhaul: Redesigned TCP FX slots and modernized MCP volume faders/labels for a cleaner look and better consistency.
+* Flexible Slot Heights: Added the option to adjust FX and Send slot heights independently (16–20px).
+* Precision Control: Added arrow buttons above and below MCP faders for fine-grained volume adjustment (±0.1 dB). This feature requires the included scripts and can be toggled via the Theme Adjuster.
+* Master TCP Updates: Added dedicated buttons to toggle Meter Bridge mode, dB scales, and column swapping (requires included scripts).
+* Refined Aesthetics: The gloss effect is now more subtle for a more modern, flat feel.]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/47ce22a1c12980a79153fc6ac4d7f2317cccee0f/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
       <metadata>
@@ -480,6 +491,17 @@
 * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f95263f4564bd98a77fc5f7a89cc702cbe16fcb6/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="5.2.0" author="Dmytro Hapochka" time="2026-03-28T11:31:15Z">
+        <changelog><![CDATA[* Unified Layout Logic: All TCP and MCP layouts are now split into A/B/C categories, mirroring the behavior of the default theme.
+* Enhanced Customization: TCP and MCP volume fader colors can now be changed individually via the Theme Adjuster for A, B, and C layouts.
+* Streamlined Options: Dedicated "colored fader" layouts have been removed as they are now redundant due to the new customization engine.
+* Visual Overhaul: Redesigned TCP FX slots and modernized MCP volume faders/labels for a cleaner look and better consistency.
+* Flexible Slot Heights: Added the option to adjust FX and Send slot heights independently (16–20px).
+* Precision Control: Added arrow buttons above and below MCP faders for fine-grained volume adjustment (±0.1 dB). This feature requires the included scripts and can be toggled via the Theme Adjuster.
+* Master TCP Updates: Added dedicated buttons to toggle Meter Bridge mode, dB scales, and column swapping (requires included scripts).
+* Refined Aesthetics: The gloss effect is now more subtle for a more modern, flat feel.]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/47ce22a1c12980a79153fc6ac4d7f2317cccee0f/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -583,6 +605,17 @@
         <changelog><![CDATA[* fixed issue with presets in adjuster
 * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f95263f4564bd98a77fc5f7a89cc702cbe16fcb6/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.2.0" author="Dmytro Hapochka" time="2026-03-28T11:31:15Z">
+        <changelog><![CDATA[* Unified Layout Logic: All TCP and MCP layouts are now split into A/B/C categories, mirroring the behavior of the default theme.
+* Enhanced Customization: TCP and MCP volume fader colors can now be changed individually via the Theme Adjuster for A, B, and C layouts.
+* Streamlined Options: Dedicated "colored fader" layouts have been removed as they are now redundant due to the new customization engine.
+* Visual Overhaul: Redesigned TCP FX slots and modernized MCP volume faders/labels for a cleaner look and better consistency.
+* Flexible Slot Heights: Added the option to adjust FX and Send slot heights independently (16–20px).
+* Precision Control: Added arrow buttons above and below MCP faders for fine-grained volume adjustment (±0.1 dB). This feature requires the included scripts and can be toggled via the Theme Adjuster.
+* Master TCP Updates: Added dedicated buttons to toggle Meter Bridge mode, dB scales, and column swapping (requires included scripts).
+* Refined Aesthetics: The gloss effect is now more subtle for a more modern, flat feel.]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/47ce22a1c12980a79153fc6ac4d7f2317cccee0f/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -774,6 +807,17 @@
         <changelog><![CDATA[* fixed issue with presets in adjuster
 * fixed issue that bright themes didn’t show db scales for tcp and mcp master tracks]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/f95263f4564bd98a77fc5f7a89cc702cbe16fcb6/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+      <version name="5.2.0" author="Dmytro Hapochka" time="2026-03-28T11:31:15Z">
+        <changelog><![CDATA[* Unified Layout Logic: All TCP and MCP layouts are now split into A/B/C categories, mirroring the behavior of the default theme.
+* Enhanced Customization: TCP and MCP volume fader colors can now be changed individually via the Theme Adjuster for A, B, and C layouts.
+* Streamlined Options: Dedicated "colored fader" layouts have been removed as they are now redundant due to the new customization engine.
+* Visual Overhaul: Redesigned TCP FX slots and modernized MCP volume faders/labels for a cleaner look and better consistency.
+* Flexible Slot Heights: Added the option to adjust FX and Send slot heights independently (16–20px).
+* Precision Control: Added arrow buttons above and below MCP faders for fine-grained volume adjustment (±0.1 dB). This feature requires the included scripts and can be toggled via the Theme Adjuster.
+* Master TCP Updates: Added dedicated buttons to toggle Meter Bridge mode, dB scales, and column swapping (requires included scripts).
+* Refined Aesthetics: The gloss effect is now more subtle for a more modern, flat feel.]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/47ce22a1c12980a79153fc6ac4d7f2317cccee0f/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Grey CI.theme" type="theme" desc="Flat Madness Dark CI">
