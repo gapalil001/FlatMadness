@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="8addb36bb76d2816015eaa7379810120ad5a8843">
+<index version="1" name="Flat Madness Theme" commit="4501d0c514ab9eff8cb80661aa4157cd57867042">
   <category name="ColorThemes">
     <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Bright CI">
       <metadata>
@@ -779,6 +779,52 @@
         <source file="img/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/8addb36bb76d2816015eaa7379810120ad5a8843/Utility/img/pref_trans_position_left.png</source>
         <source file="img/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/8addb36bb76d2816015eaa7379810120ad5a8843/Utility/img/pref_trans_position_right.png</source>
         <source file="img/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/8addb36bb76d2816015eaa7379810120ad5a8843/Utility/img/screenshot.png</source>
+      </version>
+      <version name="5.2.0.3" author="Ed Kashinsky" time="2026-03-29T14:48:10Z">
+        <changelog><![CDATA[* Added 5.2.0 theme support
+* Added ABC layouts support
+* Fixed presets settings
+* Added fader colors support]]></changelog>
+        <source main="main">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/Flat%20Madness%20Theme%20Adjuster.lua</source>
+        <source main="main" file="theme/FM_nudge_volume_down.lua">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/theme/FM_nudge_volume_down.lua</source>
+        <source main="main" file="theme/FM_nudge_volume_up.lua">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/theme/FM_nudge_volume_up.lua</source>
+        <source main="main" file="theme/FM_toggle_fxsidem.lua">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/theme/FM_toggle_fxsidem.lua</source>
+        <source main="main" file="theme/FM_toggle_mastertcp_meterbridge.lua">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/theme/FM_toggle_mastertcp_meterbridge.lua</source>
+        <source main="main" file="theme/FM_toggle_msterdbscales.lua">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/theme/FM_toggle_msterdbscales.lua</source>
+        <source file="img/bmc_qr_hapochka.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/bmc_qr_hapochka.png</source>
+        <source file="img/bmc_qr_kashinsky.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/bmc_qr_kashinsky.png</source>
+        <source file="img/header.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/header.png</source>
+        <source file="img/pref_mcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_colorbg.png</source>
+        <source file="img/pref_mcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_custom.png</source>
+        <source file="img/pref_mcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_greybg.png</source>
+        <source file="img/pref_mcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_layout_1.png</source>
+        <source file="img/pref_mcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_layout_2.png</source>
+        <source file="img/pref_mcp_paddingoff.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_paddingoff.png</source>
+        <source file="img/pref_mcp_paddingon.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_mcp_paddingon.png</source>
+        <source file="img/pref_tcp_colorbg.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_colorbg.png</source>
+        <source file="img/pref_tcp_custom.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_custom.png</source>
+        <source file="img/pref_tcp_embedinstead.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_embedinstead.png</source>
+        <source file="img/pref_tcp_embedright.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_embedright.png</source>
+        <source file="img/pref_tcp_fxcenter.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_fxcenter.png</source>
+        <source file="img/pref_tcp_fxside.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_fxside.png</source>
+        <source file="img/pref_tcp_greybg.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_greybg.png</source>
+        <source file="img/pref_tcp_knob.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_knob.png</source>
+        <source file="img/pref_tcp_layout_1.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_layout_1.png</source>
+        <source file="img/pref_tcp_layout_2.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_layout_2.png</source>
+        <source file="img/pref_tcp_meterbridge.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_meterbridge.png</source>
+        <source file="img/pref_tcp_meterleft.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_meterleft.png</source>
+        <source file="img/pref_tcp_meterright.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_meterright.png</source>
+        <source file="img/pref_tcp_meterrightedge.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_meterrightedge.png</source>
+        <source file="img/pref_tcp_norecarms.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_norecarms.png</source>
+        <source file="img/pref_tcp_recarms.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_recarms.png</source>
+        <source file="img/pref_tcp_slider.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_slider.png</source>
+        <source file="img/pref_tcp_tiny1.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_tiny1.png</source>
+        <source file="img/pref_tcp_tiny2.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_tiny2.png</source>
+        <source file="img/pref_tcp_tiny3.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_tcp_tiny3.png</source>
+        <source file="img/pref_trans_position_center.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_trans_position_center.png</source>
+        <source file="img/pref_trans_position_left.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_trans_position_left.png</source>
+        <source file="img/pref_trans_position_right.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/pref_trans_position_right.png</source>
+        <source file="img/screenshot.png">https://github.com/gapalil001/FlatMadness/raw/4501d0c514ab9eff8cb80661aa4157cd57867042/Utility/img/screenshot.png</source>
       </version>
     </reapack>
   </category>
