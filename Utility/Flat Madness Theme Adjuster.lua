@@ -1,7 +1,7 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.0.2
+-- @version 5.2.0.3
 -- @changelog
 --   * Added 5.2.0 theme support
 --   * Added ABC layouts support
@@ -660,7 +660,7 @@ function adj.SetValue(param, value)
 				if isEmpty(trackLayout) or trackLayout == "Default" then trackLayout = globalLayout end
 
 				for j = 1, #param.values do
-					if param.values[j].value[layout] == trackLayout then
+					if param.values[j].value[layout] == trackLayout or (trackLayout == "Default" and layout == 1 and j == 1) then
 						needToChange = true
 						break
 					end
