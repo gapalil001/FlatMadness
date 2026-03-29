@@ -1,7 +1,7 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.0.1
+-- @version 5.2.0.2
 -- @changelog
 --   * Added 5.2.0 theme support
 --   * Added ABC layouts support
@@ -40,6 +40,8 @@ local Pickle = { clone = function(t) local nt = {} for i, v in pairs(t) do nt[i]
 function Pickle:pickle_(root) if type(root) ~= "table" then error("can only pickle tables, not ".. type(root).."s") end self._tableToRef = {} self._refToTable = {} local savecount = 0 self:ref_(root) local s = "" while #self._refToTable > savecount do savecount = savecount + 1 local t = self._refToTable[savecount] s = s.."{" for i, v in pairs(t) do s = string.format("%s[%s]=%s,", s, self:value_(i), self:value_(v)) end s = s.."}," end return string.format("{%s}", s) end
 function Pickle:value_(v) local vtype = type(v) if vtype == "string" then return string.format("%q", v) elseif vtype == "number" then return v elseif vtype == "boolean" then return tostring(v) elseif vtype == "table" then return "{"..self:ref_(v).."}" elseif vtype == "function" then return "{function}" else error("pickle a "..type(v).." is not supported") end end
 function Pickle:ref_(t) local ref = self._tableToRef[t] if not ref then if t == self then error("can't pickle the pickle class") end table.insert(self._refToTable, t) ref = #self._refToTable self._tableToRef[t] = ref end return ref end
+local ek_log_levels = { Debug = 1 }
+local function Log(msg) if type(msg) == 'table' then msg = serializeTable(msg) else msg = tostring(msg) end if msg then reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ") reaper.ShowConsoleMsg(msg) reaper.ShowConsoleMsg('\n') end end
 
 local _, _, imGuiVersion = reaper.ImGui_GetVersion()
 local function serializeTable(t) return Pickle:clone():pickle_(t) end
@@ -49,10 +51,11 @@ local function in_array(tab, val) for _, value in ipairs(tab) do if value == val
 local function isEmpty(value) if value == nil then return true end if type(value) == 'boolean' and value == false then return true end if type(value) == 'table' and next(value) == nil then return true end if type(value) == 'number' and value == 0 then return true end if type(value) == 'string' and string.len(value) == 0 then return true end return false end
 local function round(number, decimals) if not decimals then decimals = 0 end local power = 10 ^ decimals return math.ceil(number * power) / power end
 local function clamp(value, min, max) return math.max(tonumber(min) or 0, math.min(tonumber(value) or 0, tonumber(max) or 0)) end
-local function ThemeLayoutSetParameter(id, val, param) reaper.ThemeLayout_SetParameter(id, clamp(val, param.data.min, param.data.max), true) end
+local function ThemeLayoutSetParameter(id, val, param)
+	--Log("SET " .. id .. " = " .. val .. " " ..  clamp(val, param.data.min, param.data.max), ek_log_levels.Important)
+	reaper.ThemeLayout_SetParameter(id, clamp(val, param.data.min, param.data.max), true)
+end
 
-local ek_log_levels = { Debug = 1 }
-local function Log(msg) if type(msg) == 'table' then msg = serializeTable(msg) else msg = tostring(msg) end if msg then reaper.ShowConsoleMsg("[" .. os.date("%H:%M:%S") .. "] ") reaper.ShowConsoleMsg(msg) reaper.ShowConsoleMsg('\n') end end
 
 local ctx = ImGui.CreateContext(SCRIPT_NAME)
 local _, FLT_MAX = ImGui.NumericLimits_Float()
@@ -183,7 +186,7 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 155,
 		values = {
-			{ name = "Default", value = 2, image = "img/pref_tcp_layout_1.png" },
+			{ name = "Default", value = 0, image = "img/pref_tcp_layout_1.png" },
 			{ name = "Longname", value = 1, image = "img/pref_tcp_layout_2.png" },
 		}
 	},
@@ -507,7 +510,7 @@ adj.params = {
 	},
 	volumeadj = {
 		id = { 46, 78, 110 },
-		name = 'show volume buttons +-0.1db*',
+		name = 'show volume buttons +-0.1db',
 		type = adj.config.param_types.Checkbox,
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 41,
@@ -639,11 +642,9 @@ function adj.GetValue(param, id)
 end
 
 function adj.SetValue(param, value)
-	param.data.value = value
-
 	if param.value_type == adj.config.value_types.Layout then
 		local layout = adj.config.layouts.value
-		local layoutValue = param.values[param.data.value] and param.values[param.data.value].value[layout] or "Default"
+		local layoutValue = param.values[value] and param.values[value].value[layout] or "Default"
 
 		if param.is_global then
 			reaper.ThemeLayout_SetLayout(param.section, layoutValue)
@@ -672,19 +673,21 @@ function adj.SetValue(param, value)
 		end
 	elseif param.value_type == adj.config.value_types.ThemeLayout then
 		local layout = adj.config.layouts.value
-		ThemeLayoutSetParameter(param.id[layout], param.data.value, param)
+		ThemeLayoutSetParameter(param.id[layout], value, param)
 		reaper.ThemeLayout_RefreshAll()
 	elseif param.value_type == adj.config.value_types.ColorFader then
-		ThemeLayoutSetParameter(param.id[1], (param.data.value >> 24) & 0xFF, param)
-		ThemeLayoutSetParameter(param.id[2], (param.data.value >> 16) & 0xFF, param)
-		ThemeLayoutSetParameter(param.id[3], (param.data.value >> 8) & 0xFF, param)
-		ThemeLayoutSetParameter(param.id[4], param.data.value & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[1], (value >> 24) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[2], (value >> 16) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[3], (value >> 8) & 0xFF, param)
+		ThemeLayoutSetParameter(param.id[4], value & 0xFF, param)
 
 		reaper.ThemeLayout_RefreshAll()
 	else
-		ThemeLayoutSetParameter(param.id, param.data.value, param)
+		ThemeLayoutSetParameter(param.id, value, param)
 		reaper.ThemeLayout_RefreshAll()
 	end
+
+	param.data.value = value
 end
 
 function adj.GetUserPresets()
@@ -1504,7 +1507,6 @@ function adj.ShowWindow()
 			adj.ShowParameter(adj.params.mcp_layout)
 			ImGui.Spacing(ctx)
 			adj.ShowParameter(adj.params.volumeadj)
-			ImGui.TextWrapped(ctx, "*this feature requires included scripts to be installed")
 		end)
 
 		ImGui.Spacing(ctx)
