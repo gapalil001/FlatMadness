@@ -1,9 +1,9 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.1.0
+-- @version 5.2.1.1
 -- @changelog
---   * fixed bug with TCP folder saturation parameter
+--   * Presets works now!
 -- @provides
 --   [main] theme/*.lua
 --   [nomain] img/*.png
@@ -1421,9 +1421,9 @@ function adj.ShowWindow()
 		ImGui.EndTable(ctx)
 	end
 
-	---adj.DrawPresetsSelect()
-	---ImGui.Spacing(ctx)
-	---ImGui.Separator(ctx)
+	adj.DrawPresetsSelect()
+	ImGui.Spacing(ctx)
+	ImGui.Separator(ctx)
 
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarSize, 14)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarRounding, 12)
