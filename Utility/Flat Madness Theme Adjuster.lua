@@ -1,12 +1,9 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.0.3
+-- @version 5.2.1.0
 -- @changelog
---   * Added 5.2.0 theme support
---   * Added ABC layouts support
---   * Fixed presets settings
---   * Added fader colors support
+--   * fixed bug with TCP folder saturation parameter
 -- @provides
 --   [main] theme/*.lua
 --   [nomain] img/*.png
@@ -420,9 +417,10 @@ adj.params = {
 		values = { 0, 1 }
 	},
 	saturnfolder = {
-		id = 32,
+		id = { 32, 66, 98 },
 		name = 'Folder Saturation',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
 		width = 205,
 		height = 57,
@@ -1423,9 +1421,9 @@ function adj.ShowWindow()
 		ImGui.EndTable(ctx)
 	end
 
-	adj.DrawPresetsSelect()
-	ImGui.Spacing(ctx)
-	ImGui.Separator(ctx)
+	---adj.DrawPresetsSelect()
+	---ImGui.Spacing(ctx)
+	---ImGui.Separator(ctx)
 
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarSize, 14)
 	ImGui.PushStyleVar(ctx, ImGui.StyleVar_ScrollbarRounding, 12)
