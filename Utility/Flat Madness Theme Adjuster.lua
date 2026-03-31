@@ -1,9 +1,10 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.1.1
+-- @version 5.2.1.2
 -- @changelog
---   * Presets works now!
+--   * Fixed MCP Panel Background
+--   * Fixed TCP Folder Saturation
 -- @provides
 --   [main] theme/*.lua
 --   [nomain] img/*.png
@@ -272,7 +273,7 @@ adj.params = {
 		}
 	},
 	mcp_solid_color = {
-		id = { 11, 55, 91 },
+		id = { 11, 56, 88 },
 		name = 'Panel Background',
 		type = adj.config.param_types.PanelBackground,
 		value_type = adj.config.value_types.ThemeLayout,
@@ -417,10 +418,9 @@ adj.params = {
 		values = { 0, 1 }
 	},
 	saturnfolder = {
-		id = { 32, 66, 98 },
+		id = 32,
 		name = 'Folder Saturation',
 		type = adj.config.param_types.Range,
-		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
 		width = 205,
 		height = 57,
