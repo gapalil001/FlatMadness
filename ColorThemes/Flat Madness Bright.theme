@@ -1,7 +1,7 @@
 @description Flat Madness Bright
-@version 5.2.1
+@version 5.2.2
 @changelog
-   * fixed bug with TCP folder saturation parameter
+   * fixed issue with wrong fonts in 150% layouts
 @provides Flat Madness Bright.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
