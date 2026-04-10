@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="902db3296ed58ecfbc3e6fb33873056a744f38c0">
+<index version="1" name="Flat Madness Theme" commit="1d01690d824d7ee66b8f7f6ee612c591928e3b74">
   <category name="ColorThemes">
     <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Bright CI">
       <metadata>
@@ -99,6 +99,10 @@
       <version name="5.2.1" author="Dmytro Hapochka" time="2026-03-30T10:02:39Z">
         <changelog><![CDATA[* fixed bug with TCP folder saturation parameter]]></changelog>
         <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/359c8c03e9eaed13a0fa3049102f17efc0cf0611/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.2.2" author="Dmytro Hapochka" time="2026-04-10T14:21:27Z">
+        <changelog><![CDATA[* fixed issue with wrong fonts in 150% layouts]]></changelog>
+        <source file="Flat Madness Bright CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1d01690d824d7ee66b8f7f6ee612c591928e3b74/ColorThemes/Flat%20Madness%20Bright%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Bright.theme" type="theme" desc="Flat Madness Bright">
@@ -305,6 +309,10 @@
         <changelog><![CDATA[* fixed bug with TCP folder saturation parameter]]></changelog>
         <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/359c8c03e9eaed13a0fa3049102f17efc0cf0611/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
       </version>
+      <version name="5.2.2" author="Dmytro Hapochka" time="2026-04-10T14:21:27Z">
+        <changelog><![CDATA[* fixed issue with wrong fonts in 150% layouts]]></changelog>
+        <source file="Flat Madness Bright.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1d01690d824d7ee66b8f7f6ee612c591928e3b74/ColorThemes/Flat%20Madness%20Bright.ReaperThemeZip</source>
+      </version>
     </reapack>
     <reapack name="Flat Madness Dark CI.theme" type="theme" desc="Flat Madness Dark CI">
       <metadata>
@@ -423,6 +431,10 @@
       <version name="5.2.1" author="Dmytro Hapochka" time="2026-03-30T10:02:39Z">
         <changelog><![CDATA[* fixed bug with TCP folder saturation parameter]]></changelog>
         <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/359c8c03e9eaed13a0fa3049102f17efc0cf0611/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
+      </version>
+      <version name="5.2.2" author="Dmytro Hapochka" time="2026-04-10T14:21:27Z">
+        <changelog><![CDATA[* fixed issue with wrong fonts in 150% layouts]]></changelog>
+        <source file="Flat Madness Dark CI.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1d01690d824d7ee66b8f7f6ee612c591928e3b74/ColorThemes/Flat%20Madness%20Dark%20CI.ReaperThemeZip</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Dark.theme" type="theme" desc="Flat Madness Dark">
@@ -629,6 +641,10 @@
       <version name="5.2.1" author="Dmytro Hapochka" time="2026-03-30T10:02:39Z">
         <changelog><![CDATA[* fixed bug with TCP folder saturation parameter]]></changelog>
         <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/359c8c03e9eaed13a0fa3049102f17efc0cf0611/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
+      </version>
+      <version name="5.2.2" author="Dmytro Hapochka" time="2026-04-10T14:21:27Z">
+        <changelog><![CDATA[* fixed issue with wrong fonts in 150% layouts]]></changelog>
+        <source file="Flat Madness Dark.ReaperThemeZip">https://github.com/gapalil001/FlatMadness/raw/1d01690d824d7ee66b8f7f6ee612c591928e3b74/ColorThemes/Flat%20Madness%20Dark.ReaperThemeZip</source>
       </version>
     </reapack>
   </category>
