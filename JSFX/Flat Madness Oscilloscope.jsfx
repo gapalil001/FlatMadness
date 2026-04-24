@@ -1,5 +1,4 @@
 desc: Flat Madness Oscilloscope
-tags: analysator
 version: 1.0
 author: gapalil
 changelog: init
@@ -28,7 +27,7 @@ options:no_meter
 gfx_ext_retina == 0 ? gfx_ext_retina = 1;
 last_scale = -1;
 
-buffer_size = (srate * 10)|0; 
+buffer_size = (srate * 20)|0; 
 write_pos = 1;
 is_frozen = 0;
 drag_mode = 0; 

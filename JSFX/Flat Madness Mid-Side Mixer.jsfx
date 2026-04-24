@@ -1,0 +1,42 @@
+desc: Flat Madness Mid-Side Mixer
+version: 1.0
+author: gapalil
+changelog: init
+license: MIT
+about: Simple 2-fader utility to balance between mid and side
+website: https://forum.cockos.com/showthread.php?t=247086
+
+// Two faders to independently balance the Mid and Side components.
+
+slider1:0<-60,12,0.1>Mid Gain (dB)
+slider2:0<-60,12,0.1>Side Gain (dB)
+
+@init
+// Pre-calculate constants
+log2db = 8.6858896380650365530225783783321; // 20 / ln(10)
+db2log = 0.11512925464970228420089957273422; // ln(10) / 20
+
+@slider
+// Convert dB slider values to raw gain coefficients
+g_mid = exp(slider1 * db2log);
+g_side = exp(slider2 * db2log);
+
+@sample
+// 1. Capture Input
+s0 = spl0; // Left channel
+s1 = spl1; // Right channel
+
+// 2. Encode to Mid-Side
+// Mid = (L + R) / 2 , Side = (L - R) / 2
+// We multiply by 0.5 to maintain unity gain during the round trip
+m = (s0 + s1) * 0.5;
+s = (s0 - s1) * 0.5;
+
+// 3. Apply Gain from Sliders
+m *= g_mid;
+s *= g_side;
+
+// 4. Decode back to Stereo
+// Left = Mid + Side, Right = Mid - Side
+spl0 = m + s;
+spl1 = m - s;

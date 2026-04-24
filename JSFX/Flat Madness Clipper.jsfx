@@ -1,0 +1,724 @@
+desc: Flat Madness Clipper
+version: 1.0
+author: gapalil
+changelog: init
+license: MIT
+about: Classic clipper with precision graphical metering and release adjustment
+website: https://forum.cockos.com/showthread.php?t=247086
+
+options:no_meter
+
+slider1:0.0<-30.0,0.0,0.1>-Threshold
+slider2:-0.1<-20.0,0.0,0.1>-Ceiling
+slider3:1<1,1200,1>-Release (ms)
+slider4:3<1,10,0.1>-Time Window (s)
+slider5:100<0,100,1>-Smooth (%)
+
+in_pin:left input
+in_pin:right input
+out_pin:left output
+out_pin:right output
+
+@init
+  ext_tail_size = -1;
+  pi = 3.1415926535;
+  log2db = 8.6858896380650365530225783783321;
+  db2log = 0.11512925464970228420089957273422; 
+  attime=0.004;
+
+  MAX_POINTS = 8192; 
+  MAX_TIME = 10.0;
+  
+  // Memory Map
+  wave_buf = 0;         // 0 - 8191
+  gr_buf = 10000;       // 10000 - 18191
+  in_wave_buf = 20000;  // 20000 - 28191
+  diff_buf = 30000;     // 30000 - 38191
+  meter_env = 40000;    // 40000+
+  out_peak_hold = 40100;
+  peak_hold_timer = 40200;
+  grid_v = 40300;       
+  
+  write_pos = 0;
+  smpl_cnt = 0;
+  ui_peak = 0;
+  ui_gr = 0;
+  ui_in_peak = 0;
+  ui_gr_amp = 1.0; // Starts at 1.0 (no reduction)
+  rundb = 0;
+  
+  // Fill GR buffer with 1.0 to prevent red flashes on init
+  i = 0; loop(MAX_POINTS, diff_buf[i] = 1.0; i += 1;);
+
+  show_grid = 1; 
+
+  grid_v[0] = 0; grid_v[1] = -1; grid_v[2] = -2; grid_v[3] = -3; grid_v[4] = -6; 
+  grid_v[5] = -12; grid_v[6] = -18; grid_v[7] = -24; grid_v[8] = -30; 
+  grid_v[9] = -36; grid_v[10] = -42; grid_v[11] = -48; grid_v[12] = -54; 
+  grid_v[13] = -60;
+  num_grid = 14;
+
+  meter_falloff = exp(-1/(0.1 * srate)); 
+
+  rms_mom_coeff = exp(-1/(0.4 * srate)); 
+  rms_st_coeff = exp(-1/(3.0 * srate));  
+  rms_mom = 0;
+  rms_st = 0;
+  lufs_int_sum = 0;
+  lufs_int_cnt = 0;
+  
+  lufs_mode = 1; 
+
+  function recalc_dsp() (
+    thresh=exp(slider1 * db2log);
+    threshdb=slider1;
+    ceiling=exp(slider2 * db2log);
+    ceildb=slider2;
+    makeup=exp((ceildb-threshdb) * db2log);
+    makeupdb=ceildb-threshdb;
+    peakdb = ceildb+25;
+    peaklvl = exp(peakdb * db2log);
+    
+    reltime=slider3/1000;
+    
+    atcoef=exp(-1/(attime * srate));
+    relcoef=exp(-1/(reltime * srate));
+    
+    update_samples = max((srate * MAX_TIME) / MAX_POINTS, 1);
+  );
+
+  recalc_dsp();
+
+  // ===== GUI ENGINE =====
+  mouse_state = 0;
+  drag_id = 0;
+  drag_start_y = 0;
+  drag_start_val = 0;
+  drag_offset = 0;
+
+  function is_in_rect(x,y,w,h) (
+    mouse_x >= x && mouse_x <= x+w && mouse_y >= y && mouse_y <= y+h
+  );
+
+  function fill_roundrect(x, y, w, h, r) (
+    w = max(w, r*2);
+    h = max(h, r*2);
+    gfx_circle(x+r, y+r, r, 1);
+    gfx_circle(x+w-r, y+r, r, 1);
+    gfx_circle(x+r, y+h-r, r, 1);
+    gfx_circle(x+w-r, y+h-r, r, 1);
+    gfx_rect(x+r, y, w-r*2, h);
+    gfx_rect(x, y+r, w, h-r*2);
+  );
+
+  function process_button(id, x, y, w, h, state)
+  local(is_hover)
+  (
+    is_hover = is_in_rect(x, y, w, h);
+    mouse_cap == 1 && mouse_state == 0 && is_hover ? (
+      mouse_state = 1; drag_id = id; state = !state; 
+    );
+    mouse_cap == 0 && drag_id == id ? (drag_id = 0; mouse_state = 0;);
+    state;
+  );
+
+  function process_multistate(id, x, y, w, h, state, max_state)
+  local(is_hover)
+  (
+    is_hover = is_in_rect(x, y, w, h);
+    mouse_cap == 1 && mouse_state == 0 && is_hover ? (
+      mouse_state = 1; drag_id = id;
+      state += 1;
+      state > max_state ? state = 0;
+    );
+    mouse_cap == 0 && drag_id == id ? (drag_id = 0; mouse_state = 0;);
+    state;
+  );
+
+  function draw_button(x, y, w, h, state, title)
+  (
+    state ? (gfx_r=0.075; gfx_g=0.237; gfx_b=0.225; gfx_a=0.8;) 
+          : (gfx_r=0.15; gfx_g=0.15; gfx_b=0.15; gfx_a=1.0;); 
+    
+    gfx_roundrect(x, y, w, h, 3, 1);
+    gfx_r=0.125; gfx_g=0.375; gfx_b=0.350; gfx_a=1.0; 
+    gfx_roundrect(x, y, w, h, 3, 0); 
+    
+    state ? (gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=0.9;) 
+          : (gfx_r=0.7; gfx_g=0.7; gfx_b=0.7; gfx_a=1.0;);
+    
+    gfx_setfont(2, "Arial", 11, 'b');
+    gfx_measurestr(title, tw, th);
+    gfx_x = x + (w-tw)/2; gfx_y = y + (h-th)/2;
+    gfx_drawstr(title);
+  );
+
+  function process_h_slider(id, x, y, w, h, val, min_v, max_v, step)
+  local(is_hover, range, new_val, sens)
+  (
+    is_hover = is_in_rect(x, y, w, h);
+    range = max_v - min_v;
+
+    mouse_cap & 1 ? (
+      mouse_state == 0 && is_hover ? (
+        mouse_state = 1; 
+        drag_id = id;
+        drag_start_y = mouse_y;
+        drag_start_val = val;
+      );
+      drag_id == id ? (
+        sens = (mouse_cap & 4) ? 1000 : 200; 
+        new_val = drag_start_val - (mouse_y - drag_start_y) * (range / sens);
+        step > 0 ? new_val = floor(new_val / step + 0.5) * step;
+        val = max(min_v, min(max_v, new_val));
+      );
+    ) : (
+      drag_id == id ? (drag_id = 0; mouse_state = 0;);
+      mouse_cap & 2 && is_hover ? val = (min_v + max_v) / 2;
+    );
+
+    is_hover && mouse_wheel != 0 ? (
+      val += (mouse_wheel > 0 ? step : -step);
+      step > 0 ? val = floor(val / step + 0.5) * step;
+      val = max(min_v, min(max_v, val));
+      mouse_wheel = 0;
+    );
+
+    val;
+  );
+
+  function draw_h_slider(x, y, w, h, val, min_v, max_v, title, val_str, fr, fg, fb, or, og, ob, tr, tg, tb)
+  local(fill_w, r, right_w)
+  (
+    r = 5; 
+    gfx_r=0.15; gfx_g=0.15; gfx_b=0.15; gfx_a=1.0;
+    fill_roundrect(x, y, w, h, r);
+    
+    fill_w = (val - min_v) / (max_v - min_v) * w; 
+    fill_w > 0 ? (
+      gfx_r=fr; gfx_g=fg; gfx_b=fb; gfx_a=1.0; 
+      fill_w = max(fill_w, r); 
+      
+      gfx_circle(x+r, y+r, r-1, 1);
+      gfx_circle(x+r, y+h-r, r-1, 1);
+      gfx_rect(x+1, y+r, r-1, h-r*2);
+      
+      fill_w - r > 0 ? gfx_rect(x+r, y+1, min(fill_w - r, w - r*2), h-2);
+      
+      fill_w > w - r ? (
+        right_w = fill_w - (w - r);
+        fill_w >= w - 1 ? (
+          gfx_circle(x+w-r, y+r, r-1, 1);
+          gfx_circle(x+w-r, y+h-r, r-1, 1);
+          gfx_rect(x+w-r, y+r, r-1, h-r*2);
+        ) : (
+          gfx_rect(x+w-r, y+1, right_w, h-2);
+        );
+      );
+    );
+    
+    gfx_r=or; gfx_g=og; gfx_b=ob; gfx_a=1.0; 
+    gfx_roundrect(x, y, w, h, r, 1);
+    gfx_roundrect(x+1, y+1, w-2, h-2, max(1, r-1), 1); 
+    
+    gfx_setfont(1, "Arial", 14, 'b');
+    gfx_r=tr; gfx_g=tg; gfx_b=tb; gfx_a=0.9; 
+    sprintf(#full_txt, "%s: %s", title, val_str);
+    gfx_measurestr(#full_txt, tw, th);
+    gfx_x = x + w/2 - tw/2; gfx_y = y + h/2 - th/2;
+    gfx_drawstr(#full_txt);
+  );
+
+  function process_v_fader(id, x, y, w, h, val, min_v, max_v, step, cap_h)
+  local(is_hover, range, new_val, usable_h, ratio, cap_y, target_y)
+  (
+    is_hover = is_in_rect(x, y, w, h);
+    range = max_v - min_v;
+    usable_h = h - cap_h;
+
+    mouse_cap & 1 ? (
+      mouse_state == 0 && is_hover ? (
+        mouse_state = 1; 
+        drag_id = id;
+        drag_start_y = mouse_y;
+        drag_start_val = val;
+        
+        cap_y = y + h - cap_h/2 - ((val - min_v) / range) * usable_h;
+        abs(mouse_y - cap_y) <= cap_h/2 + 2 ? (
+          drag_offset = mouse_y - cap_y; 
+        ) : (
+          drag_offset = 0; 
+        );
+      );
+      drag_id == id ? (
+        (mouse_cap & 4) ? (
+          new_val = drag_start_val - (mouse_y - drag_start_y) * (range / 1000);
+        ) : (
+          target_y = mouse_y - drag_offset;
+          ratio = 1.0 - (target_y - (y + cap_h/2)) / usable_h;
+          new_val = min_v + ratio * range;
+        );
+        
+        step > 0 ? new_val = floor(new_val / step + 0.5) * step;
+        val = max(min_v, min(max_v, new_val));
+      );
+    ) : (
+      drag_id == id ? (drag_id = 0; mouse_state = 0; drag_offset = 0;);
+      mouse_cap & 2 && is_hover ? val = (min_v + max_v) / 2;
+    );
+
+    is_hover && mouse_wheel != 0 ? (
+      val += (mouse_wheel > 0 ? step : -step);
+      step > 0 ? val = floor(val / step + 0.5) * step;
+      val = max(min_v, min(max_v, val));
+      mouse_wheel = 0; 
+    );
+
+    val;
+  );
+
+  function draw_v_fader(x, y, w, h, val, min_v, max_v, title, val_str, fr, fg, fb, cap_h)
+  local(usable_h, cap_y, track_w, track_x, tr_r, fill_h, fill_y, cap_r)
+  (
+    usable_h = h - cap_h;
+    
+    track_w = 12; // Slimmer track
+    track_x = x + w/2 - track_w/2;
+    tr_r = track_w / 2;
+    
+    // Background Track (Rounded)
+    gfx_r=0.12; gfx_g=0.12; gfx_b=0.12; gfx_a=1.0;
+    fill_roundrect(track_x, y + cap_h/2, track_w, usable_h, tr_r);
+    
+    // Inner track shadow
+    gfx_r=0.0; gfx_g=0.0; gfx_b=0.0; gfx_a=0.5;
+    fill_roundrect(track_x+1, y + cap_h/2 + 1, track_w-2, usable_h-2, tr_r-1);
+
+    fill_h = ((val - min_v) / (max_v - min_v)) * usable_h;
+    fill_y = y + h - cap_h/2 - fill_h;
+    
+    // Draw Fill (Perfectly matched to track)
+    fill_h > 0 ? (
+       gfx_r=fr; gfx_g=fg; gfx_b=fb; gfx_a=0.85;
+       fill_roundrect(track_x+1, fill_y, track_w-2, fill_h, tr_r-1);
+    );
+
+    // Calculate Cap Position
+    cap_y = y + h - cap_h/2 - fill_h;
+    cap_r = 3; // Sleeker, squarer cap corners
+    
+    // Draw Cap (Modern horizontal bar)
+    gfx_r=0.15; gfx_g=0.25; gfx_b=0.25; gfx_a=1.0;
+    fill_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r);
+    
+    gfx_r=0.35; gfx_g=0.45; gfx_b=0.45; gfx_a=1.0;
+    gfx_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r, 1);
+    
+    // Cap Grip Line
+    gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.6;
+    gfx_line(x + 6, cap_y, x + w - 6, cap_y);
+
+    gfx_setfont(2, "Arial", 15, 'b');
+    gfx_r=0.55; gfx_g=0.55; gfx_b=0.55; gfx_a=1.0; 
+    gfx_measurestr(title, tw, th);
+    gfx_x = x + w/2 - tw/2; gfx_y = y - 18;
+    gfx_drawstr(title);
+    
+    gfx_r=0.7; gfx_g=0.7; gfx_b=0.7; gfx_a=1.0; 
+    gfx_measurestr(val_str, tw, th);
+    gfx_x = x + w/2 - tw/2; gfx_y = y + h + 4;
+    gfx_drawstr(val_str);
+  );
+
+@slider
+  recalc_dsp();
+
+@sample
+  ch = 0;
+  overdbv = 0;
+  in_abs_peak = 0;
+  
+  loop(num_ch,
+    in_abs_peak = max(in_abs_peak, abs(spl(ch))); 
+    overdbv = max(overdbv, abs(spl(ch) * makeup)); 
+    ch += 1;
+  );
+
+  ui_in_peak = max(ui_in_peak, in_abs_peak); 
+
+  overdb = 2.08136898 * log(max(overdbv, 0.000001)) * log2db - ceildb; 
+
+  overdb > rundb ? (                                  
+    rundb = overdb + atcoef * (rundb - overdb);       
+  ) : (                                               
+    rundb = overdb + relcoef * (rundb - overdb);
+  );
+  overdb = max(0,rundb);
+  
+  gr = exp(-overdb * db2log); 
+
+  ch = 0;
+  out_abs = 0;
+  sq_sum = 0;
+  
+  loop(num_ch,
+    spl(ch) *= makeup;
+    spl(ch) *= gr;
+    spl(ch) = min(ceiling, abs(spl(ch))) * sign(spl(ch));
+    
+    ch_val = abs(spl(ch));
+    out_abs = max(out_abs, ch_val); 
+    
+    meter_env[ch] = ch_val > meter_env[ch] ? ch_val : ch_val + meter_falloff * (meter_env[ch] - ch_val);
+    
+    peak_hold_timer[ch] -= 1;
+    peak_hold_timer[ch] < 0 ? out_peak_hold[ch] *= 0.98; 
+    ch_val >= out_peak_hold[ch] ? (
+        out_peak_hold[ch] = ch_val;
+        peak_hold_timer[ch] = srate * 1.0; 
+    );
+    
+    sq_sum += spl(ch) * spl(ch);
+    ch += 1;
+  );
+
+  sq = sq_sum / max(num_ch, 1);
+  rms_mom = sq + rms_mom_coeff * (rms_mom - sq);
+  rms_st = sq + rms_st_coeff * (rms_st - sq);
+
+  play_state == 1 ? (
+    last_play_state != 1 ? (lufs_int_sum = 0; lufs_int_cnt = 0;);
+    lufs_int_sum += sq; 
+    lufs_int_cnt += 1;
+  );
+  last_play_state = play_state;
+
+  ui_peak = max(ui_peak, out_abs);
+  ui_gr = max(ui_gr, overdb); 
+
+  cur_gr_amp = (overdbv > 0.000001 && overdbv > out_abs) ? (out_abs / overdbv) : 1.0;
+  ui_gr_amp = min(ui_gr_amp, cur_gr_amp); 
+
+  smpl_cnt += 1;
+  smpl_cnt >= update_samples ? (
+      wave_buf[write_pos] = ui_peak;
+      gr_buf[write_pos] = ui_gr;
+      in_wave_buf[write_pos] = ui_in_peak; 
+      diff_buf[write_pos] = ui_gr_amp;
+      
+      write_pos += 1;
+      write_pos >= MAX_POINTS ? write_pos = 0;
+      smpl_cnt = 0;
+      
+      ui_peak = 0;
+      ui_gr = 0;
+      ui_in_peak = 0;
+      ui_gr_amp = 1.0; 
+  );
+
+@gfx 800 350
+  top_h = 55; 
+  wave_h = gfx_h - top_h;
+  meter_w = 70; 
+  
+  fader_zone = 70; 
+
+  // === 1. ВЕРХНЯ ПАНЕЛЬ ===
+  gfx_r=0.08; gfx_g=0.08; gfx_b=0.08; gfx_a=1.0;
+  gfx_rect(0, 0, gfx_w, top_h);
+  
+  gfx_r=0.25; gfx_g=0.25; gfx_b=0.25;
+  gfx_line(0, top_h, gfx_w, top_h); 
+
+  slider_changed = 0;
+
+  trq_fr=0.075; trq_fg=0.237; trq_fb=0.225; trq_or=0.125; trq_og=0.375; trq_ob=0.350; trq_tr=0.350; trq_tg=0.750; trq_tb=0.700; 
+  blu_fr=0.150; blu_fg=0.300; blu_fb=0.550; blu_or=0.250; blu_og=0.450; blu_ob=0.800; blu_tr=0.450; blu_tg=0.650; blu_tb=0.950; 
+  gry_fr=0.250; gry_fg=0.250; gry_fb=0.250; gry_or=0.400; gry_og=0.400; gry_ob=0.400; gry_tr=0.800; gry_tg=0.800; gry_tb=0.800; 
+  pur_fr=0.350; pur_fg=0.150; pur_fb=0.550; pur_or=0.550; pur_og=0.350; pur_ob=0.750; pur_tr=0.750; pur_tg=0.550; pur_tb=0.950;
+
+  // --- FLAT MADNESS CLIPPER Текст ---
+  gfx_setfont(3, "Helvetica Neue", 30, 'rb');
+  gfx_r=0.45; gfx_g=0.45; gfx_b=0.45; gfx_a=1.0;
+  gfx_measurestr("FMClipper", title_w, title_h);
+  gfx_x = 15;
+  gfx_y = top_h/2 - title_h/2;
+  gfx_drawstr("FM Clipper");
+
+  // --- Елементи керування (Справа на верхній панелі) ---
+  num_horiz_sl = 2.5;
+  sl_w = 120;
+  gap = 14;
+  btn_w = 50;
+  sl_h = 23;
+  sl_y = (top_h - sl_h) / 2 - 1;
+  
+  right_start = gfx_w - meter_w - btn_w - (sl_w + gap) * num_horiz_sl - 15;
+
+  new_sl3 = process_h_slider(3, right_start, sl_y, sl_w, sl_h, slider3, 1, 1200, 1);
+  new_sl3 != slider3 ? (slider3 = new_sl3; slider_changed = 1; slider_automate(3););
+  sprintf(#str_rel, "%d ms", slider3);
+  draw_h_slider(right_start, sl_y, sl_w, sl_h, slider3, 1, 1200, "Release", #str_rel, blu_fr, blu_fg, blu_fb, blu_or, blu_og, blu_ob, blu_tr, blu_tg, blu_tb);
+
+  new_sl4 = process_h_slider(4, right_start + (sl_w + gap)*1, sl_y, sl_w, sl_h, slider4, 1.0, 10.0, 0.1);
+  new_sl4 != slider4 ? (slider4 = new_sl4; slider_changed = 1; slider_automate(4););
+  sprintf(#str_time, "%.1f s", slider4);
+  draw_h_slider(right_start + (sl_w + gap)*1, sl_y, sl_w, sl_h, slider4, 1.0, 10.0, "Time", #str_time, gry_fr, gry_fg, gry_fb, gry_or, gry_og, gry_ob, gry_tr, gry_tg, gry_tb);
+
+  new_sl5 = process_h_slider(5, right_start + (sl_w + gap)*2, sl_y, sl_w, sl_h, slider5, 0, 100, 1);
+  new_sl5 != slider5 ? (slider5 = new_sl5; slider_changed = 1; slider_automate(5););
+  sprintf(#str_smth, "%d %%", slider5);
+  draw_h_slider(right_start + (sl_w + gap)*2, sl_y, sl_w, sl_h, slider5, 0, 100, "Smooth", #str_smth, pur_fr, pur_fg, pur_fb, pur_or, pur_og, pur_ob, pur_tr, pur_tg, pur_tb);
+
+  grid_btn_x = right_start + (sl_w + gap)*3;
+  show_grid = process_button(6, grid_btn_x, sl_y, btn_w, sl_h, show_grid);
+  draw_button(grid_btn_x, sl_y, btn_w, sl_h, show_grid, "GRID");
+
+
+  // === 2. ЗОНА ВЕЙВФОРМИ ТА ФЕЙДЕРІВ ===
+  
+  wave_x = 0;
+  ceil_x = gfx_w - meter_w - fader_zone;
+  wave_draw_w = ceil_x - wave_x;
+  
+  gfx_r=0.05; gfx_g=0.05; gfx_b=0.05; gfx_a=0.5;
+  gfx_rect(wave_x, top_h, wave_draw_w, wave_h);
+
+  fader_w = 32; 
+  cap_h = 16; 
+  fader_pad_y = 35;
+  fader_h = wave_h - fader_pad_y*2;
+  
+  // === ВЕЙВФОРМА ===
+  display_points = max(floor(MAX_POINTS * (slider4 / MAX_TIME)), 2);
+  px_step = wave_draw_w / (display_points - 1);
+  
+  start_idx = write_pos - display_points;
+  while(start_idx < 0) ( start_idx += MAX_POINTS; );
+  
+  sm_factor = slider5 / 100.0;
+  sm_coeff = 1.0 - (sm_factor * 0.95);
+  
+  // --- ШАР 1: Оброблена хвиля (Нижній шар, Сіра) ---
+  gfx_r=0.45; gfx_g=0.45; gfx_b=0.45; gfx_a=0.5;
+  val_smooth = wave_buf[start_idx];
+  i = 0;
+  loop(display_points,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_val = wave_buf[idx];
+      cur_val > val_smooth ? (val_smooth = cur_val) : (val_smooth = val_smooth + sm_coeff * (cur_val - val_smooth));
+      y = top_h + wave_h - min(val_smooth * wave_h, wave_h);
+      gfx_line(wave_x + i * px_step, top_h + wave_h, wave_x + i * px_step, y);
+      i += 1;
+  );
+  
+  gfx_r=0.8; gfx_g=0.8; gfx_b=0.8; gfx_a=1.0;
+  val_smooth = wave_buf[start_idx];
+  gfx_x = wave_x; gfx_y = top_h + wave_h - min(val_smooth * wave_h, wave_h);
+  i = 1;
+  loop(display_points - 1,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_val = wave_buf[idx];
+      cur_val > val_smooth ? (val_smooth = cur_val) : (val_smooth = val_smooth + sm_coeff * (cur_val - val_smooth));
+      y = top_h + wave_h - min(val_smooth * wave_h, wave_h);
+      gfx_lineto(wave_x + i * px_step, y, 1);
+      i += 1;
+  );
+  
+  // --- ШАР 2: ОРИГІНАЛЬНА (НЕОБРОБЛЕНА) ХВИЛЯ (Середній шар, Синя) ---
+  gfx_r=0.25; gfx_g=0.35; gfx_b=0.45; gfx_a=0.15;
+  in_smooth = in_wave_buf[start_idx];
+  i = 0;
+  loop(display_points,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_val = in_wave_buf[idx];
+      cur_val > in_smooth ? (in_smooth = cur_val) : (in_smooth = in_smooth + sm_coeff * (cur_val - in_smooth));
+      y = top_h + wave_h - min(in_smooth * wave_h, wave_h);
+      gfx_line(wave_x + i * px_step, top_h + wave_h, wave_x + i * px_step, y);
+      i += 1;
+  );
+  
+  gfx_r=0.5; gfx_g=0.7; gfx_b=0.9; gfx_a=0.9;
+  in_smooth = in_wave_buf[start_idx];
+  gfx_x = wave_x; gfx_y = top_h + wave_h - min(in_smooth * wave_h, wave_h);
+  i = 1;
+  loop(display_points - 1,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_val = in_wave_buf[idx];
+      cur_val > in_smooth ? (in_smooth = cur_val) : (in_smooth = in_smooth + sm_coeff * (cur_val - in_smooth));
+      y = top_h + wave_h - min(in_smooth * wave_h, wave_h);
+      gfx_lineto(wave_x + i * px_step, y, 1);
+      i += 1;
+  );
+  
+  // --- ШАР 3: Gain Reduction (Тіло, Напівпрозоре 50%) ---
+  gfx_r=0.9; gfx_g=0.1; gfx_b=0.1; gfx_a=0.15; 
+  gr_smooth = diff_buf[start_idx];
+  i = 0;
+  loop(display_points,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_gr = diff_buf[idx];
+      cur_gr < gr_smooth ? (gr_smooth = cur_gr) : (gr_smooth = gr_smooth + sm_coeff * (cur_gr - gr_smooth));
+      
+      gr_smooth < 0.999 ? (
+          diff_px = (1.0 - gr_smooth) * wave_h;
+          gfx_line(wave_x + i * px_step, top_h, wave_x + i * px_step, top_h + diff_px);
+      );
+      i += 1;
+  );
+  
+  // --- ШАР 4: Gain Reduction - BOLD Outline (Жирний контур, Непрозорий) ---
+  gfx_r=1.0; gfx_g=0.2; gfx_b=0.2; gfx_a=1.0; 
+  gr_smooth = diff_buf[start_idx];
+  i = 0;
+  is_drawing = 0;
+  loop(display_points,
+      idx = (start_idx + i) % MAX_POINTS;
+      cur_gr = diff_buf[idx];
+      cur_gr < gr_smooth ? (gr_smooth = cur_gr) : (gr_smooth = gr_smooth + sm_coeff * (cur_gr - gr_smooth));
+      
+      gr_smooth < 0.999 ? (
+          diff_px = (1.0 - gr_smooth) * wave_h;
+          is_drawing == 0 ? (
+              last_x = wave_x + i * px_step; last_y = top_h + diff_px;
+              is_drawing = 1;
+          ) : (
+              cur_x = wave_x + i * px_step; cur_y = top_h + diff_px;
+              gfx_line(last_x, last_y, cur_x, cur_y, 1);
+              gfx_line(last_x, last_y+1, cur_x, cur_y+1, 1);
+              last_x = cur_x; last_y = cur_y;
+          );
+      ) : (
+          is_drawing = 0;
+      );
+      i += 1;
+  );
+  
+
+  // --- ВЕРТИКАЛЬНИЙ ФЕЙДЕР THRESHOLD (Ліворуч) ---
+  gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.9; 
+  gfx_rect(0, top_h, fader_zone+15, wave_h);
+  
+  thresh_x = (fader_zone - fader_w) / 2;
+  
+  new_sl1 = process_v_fader(1, thresh_x, top_h + fader_pad_y, fader_w, fader_h, slider1, -30.0, 0.0, 0.1, cap_h);
+  new_sl1 != slider1 ? (slider1 = new_sl1; slider_changed = 1; slider_automate(1););
+  sprintf(#str_thr, "%.1f", slider1);
+  draw_v_fader(thresh_x, top_h + fader_pad_y, fader_w, fader_h, slider1, -30.0, 0.0, "Thresh", #str_thr, trq_fr, trq_fg, trq_fb, cap_h);
+
+  // --- ВЕРТИКАЛЬНИЙ ФЕЙДЕР CEILING (Праворуч біля метрів) ---
+  gfx_r=0.2; gfx_g=0.2; gfx_b=0.2; gfx_a=0.3; 
+  gfx_rect(ceil_x, top_h-1, fader_zone, wave_h);
+  
+  ceil_slider_x = ceil_x + (fader_zone - fader_w) / 2;
+  
+  new_sl2 = process_v_fader(2, ceil_slider_x, top_h + fader_pad_y, fader_w, fader_h, slider2, -20.0, 0.0, 0.1, cap_h);
+  new_sl2 != slider2 ? (slider2 = new_sl2; slider_changed = 1; slider_automate(2););
+  sprintf(#str_ceil, "%.1f", slider2);
+  draw_v_fader(ceil_slider_x, top_h + fader_pad_y, fader_w, fader_h, slider2, -20.0, 0.0, "Ceil", #str_ceil, trq_fr, trq_fg, trq_fb, cap_h);
+
+  slider_changed ? recalc_dsp();
+
+  
+  // --- Малювання сітки (dB Grid) ПОВЕРХ УСЬОГО ---
+  show_grid ? (
+    gfx_setfont(2, "Arial", 14);
+    
+    i = 0;
+    loop(num_grid,
+      db_val = grid_v[i];
+      amp_val = exp(db_val * db2log); 
+      y_line = top_h + wave_h - (amp_val * wave_h);
+      
+      gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=0.2; 
+      gfx_line(wave_x+85, y_line, wave_x + wave_draw_w, y_line); 
+      
+      gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=0.5;
+      sprintf(#db_str, "%d", db_val);
+      gfx_x = wave_x+65 ; gfx_y = y_line ;
+      gfx_drawstr(#db_str);
+      
+      i += 1;
+    );
+  );
+
+
+  // === 3. ПАНЕЛЬ МЕТРІВ ===
+  gfx_r=0.08; gfx_g=0.08; gfx_b=0.08; gfx_a=0.85; 
+  gfx_rect(gfx_w - meter_w, top_h, meter_w, wave_h);
+  
+  gfx_r=0.25; gfx_g=0.25; gfx_b=0.25; gfx_a=1.0;
+  gfx_line(gfx_w - meter_w, top_h, gfx_w - meter_w, gfx_h);
+
+  bar_x = gfx_w - meter_w + 15;
+  bar_w = 42; 
+  bar_h = wave_h - 90; 
+  bar_y = top_h;       
+
+  gfx_r=0.04; gfx_g=0.04; gfx_b=0.04; gfx_a=1.0;
+  gfx_rect(bar_x, bar_y, bar_w, bar_h);
+
+  ch_spacing = num_ch > 1 ? 1 : 0;
+  ch_w = max(1, floor((bar_w - (num_ch - 1) * ch_spacing) / num_ch));
+  
+  real_bar_w = ch_w * num_ch + ch_spacing * (num_ch - 1);
+  start_x = bar_x + floor((bar_w - real_bar_w) / 2);
+
+  ch = 0;
+  loop(num_ch,
+    m_db = 20 * log10(max(meter_env[ch], 0.000001));
+    m_db = min(0, max(-60, m_db));
+    fill_h = ((m_db + 60) / 60) * bar_h;
+    
+    cx = start_x + ch * (ch_w + ch_spacing);
+    
+    gfx_r=min(trq_fr*2.5, 1.0); gfx_g=min(trq_fg*2.5, 1.0); gfx_b=min(trq_fb*2.5, 1.0); gfx_a=0.9;
+    gfx_rect(cx, bar_y + bar_h - fill_h, ch_w, fill_h);
+
+    p_db = 20 * log10(max(out_peak_hold[ch], 0.000001));
+    p_db = min(0, max(-60, p_db));
+    p_y = bar_y + bar_h - ((p_db + 60) / 60) * bar_h;
+    
+    gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=0.9;
+    gfx_line(cx, p_y, cx + ch_w - 1, p_y);
+    gfx_line(cx, p_y+1, cx + ch_w - 1, p_y+1); 
+    
+    ch += 1;
+  );
+
+  // === LUFS СЕКЦІЯ ===
+  btn_y = bar_y + bar_h + 15;
+  btn_w = meter_w - 20;
+  btn_x = gfx_w - meter_w + 10;
+  lufs_mode = process_multistate(10, btn_x, btn_y, btn_w, 18, lufs_mode, 2);
+  
+  gfx_r=0.15; gfx_g=0.25; gfx_b=0.25; gfx_a=0.6;
+  gfx_roundrect(btn_x, btn_y, btn_w+2, 18, 3, 1);
+  gfx_r=0.25; gfx_g=0.35; gfx_b=0.35; gfx_a=1.0;
+  gfx_roundrect(btn_x, btn_y, btn_w+2, 20, 5, 0);
+
+  lufs_str = lufs_mode == 0 ? "MOMENT" : (lufs_mode == 1 ? "SHORT" : "INT");
+  gfx_setfont(2, "Arial", 12, 'b');
+  gfx_measurestr(lufs_str, tw, th);
+  gfx_x = btn_x + (btn_w - tw+3)/2;
+  gfx_y = btn_y + (22 - th)/2 - 1; 
+  gfx_r=0.9; gfx_g=0.9; gfx_b=0.9; gfx_a=0.9;
+  gfx_drawstr(lufs_str);
+
+  val = lufs_mode == 0 ? rms_mom : (lufs_mode == 1 ? rms_st : (lufs_int_cnt>0 ? lufs_int_sum/lufs_int_cnt : 0));
+  val_db = 10 * log10(max(val, 0.000001)) + 3.0; 
+  val_db <= -60 ? sprintf(#lufs_val, "-inf") : sprintf(#lufs_val, "%.1f", val_db);
+  
+  gfx_setfont(1, "Arial", 15, 'b');
+  gfx_measurestr(#lufs_val, tw, th);
+  gfx_x = gfx_w - meter_w + (meter_w - tw)/2;
+  gfx_y = btn_y + 25;
+  gfx_r=0.9; gfx_g=0.9; gfx_b=0.9; gfx_a=1.0;
+  gfx_drawstr(#lufs_val);
+  
+  gfx_setfont(2, "Arial", 14, 'b');
+  gfx_measurestr("LUFS", tw, th);
+  gfx_x = gfx_w - meter_w + (meter_w - tw)/2;
+  gfx_y = btn_y + 45;
+  gfx_r=0.5; gfx_g=0.5; gfx_b=0.5; gfx_a=1.0;
+  gfx_drawstr("LUFS");

@@ -1,0 +1,564 @@
+desc: Flat Madness Panorama
+version: 1.0
+author: gapalil
+changelog: init
+license: MIT
+about: Complex stereo haas-based effect with adjustable pan position-dependent time, lowpass filter and reverb
+website: https://forum.cockos.com/showthread.php?t=247086
+
+options: no_meter
+
+slider1:0<-100,100,0.1>-Pan (%)
+slider2:-10<-100,0,0.1>-Min Gain (dB)
+slider3:20<-0,200,0.1>-Max Delay (ms)
+slider4:20000<-500,20000,1>-Max Cutoff (Hz)
+slider5:0<-0,1,1>-Enable Reverb
+slider6:0.5<-0,5,0.01>-Min Decay (s)
+slider7:2.5<-0,5,0.01>-Max Decay (s)
+slider8:0<-0,100,1>-Min Wet (%)
+slider9:50<-0,100,1>-Max Wet (%)
+slider10:0<-0,500,1>-Reverb HPF (Hz)
+slider11:20000<-5000,20000,1>-Reverb LPF (Hz)
+slider12:0<0,4,1{0dB,-2.5dB,-3.0dB,-4.5dB,-6.0dB}>-Pan Law Mode
+
+@init
+// Base Buffer allocations
+delay_buf_L = 0;
+delay_buf_R = 100000;
+MAX_DELAY_SAMPLES = ceil(srate * 0.2) + 10;
+delay_pos = 0;
+
+// Reverb memory allocations and sizes
+fs_ratio = srate / 44100;
+c1_sz = floor(1557 * fs_ratio); c1_buf = 200000;
+c2_sz = floor(1617 * fs_ratio); c2_buf = 210000;
+c3_sz = floor(1491 * fs_ratio); c3_buf = 220000;
+c4_sz = floor(1422 * fs_ratio); c4_buf = 230000;
+a1_sz = floor(225 * fs_ratio);  a1_buf = 240000;
+a2_sz = floor(341 * fs_ratio);  a2_buf = 250000;
+
+c1_st = 300000; c2_st = 300001; c3_st = 300002; c4_st = 300003;
+a1_st = 300004; a2_st = 300005;
+
+// Main Filter States
+x1_L = 0; x2_L = 0; y1_L = 0; y2_L = 0;
+x1_R = 0; x2_R = 0; y1_R = 0; y2_R = 0;
+
+// Reverb HPF Filter States
+hx1_L = 0; hx2_L = 0; hy1_L = 0; hy2_L = 0;
+hx1_R = 0; hx2_R = 0; hy1_R = 0; hy2_R = 0;
+
+// Reverb LPF Filter States
+lx1_L = 0; lx2_L = 0; ly1_L = 0; ly2_L = 0;
+lx1_R = 0; lx2_R = 0; ly1_R = 0; ly2_R = 0;
+
+// Graphics Scope Buffers
+gfx_in_L = 400000; gfx_in_R = 401000;
+gfx_out_L = 402000; gfx_out_R = 403000;
+SCOPE_SIZE = 512;
+gfx_ptr = 0;
+
+// UI Memory (Timers for double click)
+click_mem = 500000; 
+last_mouse_cap = 0;
+
+// Initialize interpolation state
+pan_current = slider1 / 100.0;
+max_del_current = slider3;
+min_gain_current = slider2;
+
+I_init = abs(pan_current);
+wet_current = slider8 + (slider9 - slider8) * I_init;
+
+freq_init = 20000 * ((slider4 / 20000) ^ I_init);
+w0_init = 2 * 3.14159265 * freq_init / srate;
+cos_w0_init = cos(w0_init); alpha_init = sin(w0_init) / (2 * 0.7071);
+a0_init = 1 + alpha_init;
+b1 = (1 - cos_w0_init) / a0_init; b0 = b1 * 0.5; b2 = b0;
+a1 = (-2 * cos_w0_init) / a0_init; a2 = (1 - alpha_init) / a0_init;
+
+last_sign_pan = sign(pan_current);
+
+// Pan Law Initialization
+pl_idx_init = slider12;
+pl_idx_init < 0.5 ? pl_db_init = 0.0 :
+pl_idx_init < 1.5 ? pl_db_init = -2.5 :
+pl_idx_init < 2.5 ? pl_db_init = -3.0 :
+pl_idx_init < 3.5 ? pl_db_init = -4.5 :
+                    pl_db_init = -6.0;
+pl_gain_center_current = 10 ^ (pl_db_init / 20.0);
+
+
+function comb_process(buf, size, fb, in, state_ptr) local(pos, out) (
+    pos = state_ptr[0]; out = buf[pos]; buf[pos] = in + out * fb;
+    pos += 1; pos >= size ? pos = 0; state_ptr[0] = pos; out;
+);
+
+function allpass_process(buf, size, fb, in, state_ptr) local(pos, out) (
+    pos = state_ptr[0]; out = buf[pos] - in * fb; buf[pos] = in + out * fb;
+    pos += 1; pos >= size ? pos = 0; state_ptr[0] = pos; out;
+);
+
+function do_reverb(dry_in, rev_in, wet_pct) local(out, wet) (
+    out =  comb_process(c1_buf, c1_sz, r_fb1, rev_in, c1_st);
+    out += comb_process(c2_buf, c2_sz, r_fb2, rev_in, c2_st);
+    out += comb_process(c3_buf, c3_sz, r_fb3, rev_in, c3_st);
+    out += comb_process(c4_buf, c4_sz, r_fb4, rev_in, c4_st);
+    out *= 0.25;
+    out = allpass_process(a1_buf, a1_sz, 0.5, out, a1_st);
+    out = allpass_process(a2_buf, a2_sz, 0.5, out, a2_st);
+    wet = wet_pct / 100.0;
+    (dry_in * (1-wet)) + (out * wet);
+);
+
+
+@block
+pan_target = slider1 / 100.0;
+pan_step = (pan_target - pan_current) / samplesblock;
+
+max_del_target = slider3;
+max_del_step = (max_del_target - max_del_current) / samplesblock;
+
+min_gain_target = slider2;
+min_gain_step = (min_gain_target - min_gain_current) / samplesblock;
+
+I_target = abs(pan_target);
+freq_target = 20000 * ((slider4 / 20000) ^ I_target);
+w0_t = 2 * 3.14159265 * freq_target / srate; cos_w0_t = cos(w0_t); alpha_t = sin(w0_t) / (2 * 0.7071);
+a0_t = 1 + alpha_t;
+b1_t = (1 - cos_w0_t) / a0_t; b0_t = b1_t * 0.5; b2_t = b0_t;
+a1_t = (-2 * cos_w0_t) / a0_t; a2_t = (1 - alpha_t) / a0_t;
+
+b0_step = (b0_t - b0) / samplesblock;
+b1_step = (b1_t - b1) / samplesblock;
+b2_step = (b2_t - b2) / samplesblock;
+a1_step = (a1_t - a1) / samplesblock;
+a2_step = (a2_t - a2) / samplesblock;
+
+decay_s = slider6 + (slider7 - slider6) * I_target;
+wet_target = slider8 + (slider9 - slider8) * I_target;
+wet_step = (wet_target - wet_current) / samplesblock;
+
+decay_s <= 0.01 ? ( r_fb1=0; r_fb2=0; r_fb3=0; r_fb4=0; ) : (
+    r_fb1 = exp(-3.0 * (c1_sz / srate) / decay_s);
+    r_fb2 = exp(-3.0 * (c2_sz / srate) / decay_s);
+    r_fb3 = exp(-3.0 * (c3_sz / srate) / decay_s);
+    r_fb4 = exp(-3.0 * (c4_sz / srate) / decay_s);
+);
+
+// Fixed Reverb HPF Setup
+hpf_freq = slider10;
+hpf_freq > 10 ? (
+    w0_h = 2 * 3.14159265 * hpf_freq / srate;
+    cos_w0_h = cos(w0_h); alpha_h = sin(w0_h) / (2 * 0.7071);
+    a0_h = 1 + alpha_h;
+    b0_h = (1 + cos_w0_h) / 2 / a0_h;
+    b1_h = -(1 + cos_w0_h) / a0_h;
+    b2_h = b0_h;
+    a1_h = -2 * cos_w0_h / a0_h;
+    a2_h = (1 - alpha_h) / a0_h;
+);
+
+// Fixed Reverb LPF Setup
+lpf_freq = slider11;
+lpf_freq < 19990 ? (
+    w0_l = 2 * 3.14159265 * lpf_freq / srate;
+    cos_w0_l = cos(w0_l); alpha_l = sin(w0_l) / (2 * 0.7071);
+    a0_l = 1 + alpha_l;
+    b1_l = (1 - cos_w0_l) / a0_l;
+    b0_l = b1_l * 0.5;
+    b2_l = b0_l;
+    a1_l = (-2 * cos_w0_l) / a0_l;
+    a2_l = (1 - alpha_l) / a0_l;
+);
+
+// Pan Law Calculation
+pl_idx = slider12;
+pl_idx < 0.5 ? pl_db = 0.0 :
+pl_idx < 1.5 ? pl_db = -2.5 :
+pl_idx < 2.5 ? pl_db = -3.0 :
+pl_idx < 3.5 ? pl_db = -4.5 :
+               pl_db = -6.0;
+
+pl_gain_center_target = 10 ^ (pl_db / 20.0);
+pl_gain_center_step = (pl_gain_center_target - pl_gain_center_current) / samplesblock;
+
+
+sign_pan = sign(pan_target);
+sign_pan != last_sign_pan ? (
+    memset(c1_buf, 0, c1_sz); memset(c2_buf, 0, c2_sz);
+    memset(c3_buf, 0, c3_sz); memset(c4_buf, 0, c4_sz);
+    memset(a1_buf, 0, a1_sz); memset(a2_buf, 0, a2_sz);
+    
+    hx1_L = 0; hx2_L = 0; hy1_L = 0; hy2_L = 0;
+    hx1_R = 0; hx2_R = 0; hy1_R = 0; hy2_R = 0;
+    lx1_L = 0; lx2_L = 0; ly1_L = 0; ly2_L = 0;
+    lx1_R = 0; lx2_R = 0; ly1_R = 0; ly2_R = 0;
+    
+    last_sign_pan = sign_pan;
+);
+
+
+@sample
+pan_current += pan_step;
+max_del_current += max_del_step;
+min_gain_current += min_gain_step;
+wet_current += wet_step;
+pl_gain_center_current += pl_gain_center_step;
+
+b0 += b0_step; b1 += b1_step; b2 += b2_step;
+a1 += a1_step; a2 += a2_step;
+
+I_current = abs(pan_current);
+target_gain = min_gain_current <= -99.9 ? 0.0 : 10 ^ ((min_gain_current * I_current) / 20.0);
+
+exact_delay_samples = (max_del_current * I_current * srate) / 1000.0;
+
+inL = spl0; inR = spl1;
+delay_buf_L[delay_pos] = inL; delay_buf_R[delay_pos] = inR;
+
+read_pos = delay_pos - exact_delay_samples;
+read_pos < 0 ? read_pos += MAX_DELAY_SAMPLES;
+read_pos_i = floor(read_pos); frac = read_pos - read_pos_i;
+read_pos_i2 = read_pos_i + 1; read_pos_i2 >= MAX_DELAY_SAMPLES ? read_pos_i2 = 0;
+
+pan_current < 0 ? ( 
+    // Pan Left -> Delay Right Channel
+    y1_del = delay_buf_R[read_pos_i]; y2_del = delay_buf_R[read_pos_i2];
+    del_out = y1_del + frac * (y2_del - y1_del);
+    filt_out = b0*del_out + b1*x1_R + b2*x2_R - a1*y1_R - a2*y2_R;
+    x2_R = x1_R; x1_R = del_out; y2_R = y1_R; y1_R = filt_out;
+    opp_out = filt_out * target_gain;
+    
+    slider10 > 10 ? (
+        hpf_out = b0_h*opp_out + b1_h*hx1_R + b2_h*hx2_R - a1_h*hy1_R - a2_h*hy2_R;
+        hx2_R = hx1_R; hx1_R = opp_out; hy2_R = hy1_R; hy1_R = hpf_out;
+    ) : ( hpf_out = opp_out; );
+
+    slider11 < 19990 ? (
+        rev_in = b0_l*hpf_out + b1_l*lx1_R + b2_l*lx2_R - a1_l*ly1_R - a2_l*ly2_R;
+        lx2_R = lx1_R; lx1_R = hpf_out; ly2_R = ly1_R; ly1_R = rev_in;
+    ) : ( rev_in = hpf_out; );
+    
+    slider5 == 1 ? opp_out = do_reverb(opp_out, rev_in, wet_current);
+    outR = opp_out; outL = inL;
+) : ( 
+    // Pan Right -> Delay Left Channel
+    y1_del = delay_buf_L[read_pos_i]; y2_del = delay_buf_L[read_pos_i2];
+    del_out = y1_del + frac * (y2_del - y1_del);
+    filt_out = b0*del_out + b1*x1_L + b2*x2_L - a1*y1_L - a2*y2_L;
+    x2_L = x1_L; x1_L = del_out; y2_L = y1_L; y1_L = filt_out;
+    opp_out = filt_out * target_gain;
+    
+    slider10 > 10 ? (
+        hpf_out = b0_h*opp_out + b1_h*hx1_L + b2_h*hx2_L - a1_h*hy1_L - a2_h*hy2_L;
+        hx2_L = hx1_L; hx1_L = opp_out; hy2_L = hy1_L; hy1_L = hpf_out;
+    ) : ( hpf_out = opp_out; );
+
+    slider11 < 19990 ? (
+        rev_in = b0_l*hpf_out + b1_l*lx1_L + b2_l*lx2_L - a1_l*ly1_L - a2_l*ly2_L;
+        lx2_L = lx1_L; lx1_L = hpf_out; ly2_L = ly1_L; ly1_L = rev_in;
+    ) : ( rev_in = hpf_out; );
+    
+    slider5 == 1 ? opp_out = do_reverb(opp_out, rev_in, wet_current);
+    outL = opp_out; outR = inR;
+);
+
+// Apply Pan Law Compensating Gain
+master_scale = pl_gain_center_current + (1.0 - pl_gain_center_current) * I_current;
+outL *= master_scale;
+outR *= master_scale;
+
+spl0 = outL; spl1 = outR;
+delay_pos += 1; delay_pos >= MAX_DELAY_SAMPLES ? delay_pos = 0;
+
+gfx_in_L[gfx_ptr] = inL; gfx_in_R[gfx_ptr] = inR;
+gfx_out_L[gfx_ptr] = outL; gfx_out_R[gfx_ptr] = outR;
+gfx_ptr += 1; gfx_ptr >= SCOPE_SIZE ? gfx_ptr = 0;
+
+
+@gfx 900 700
+base_w = 900; base_h = 700;
+scale = min(gfx_w/base_w, gfx_h/base_h);
+offs_x = (gfx_w - base_w*scale)/2;
+offs_y = (gfx_h - base_h*scale)/2;
+
+m_x = (mouse_x - offs_x) / scale;
+m_y = (mouse_y - offs_y) / scale;
+
+mouse_trigger = (mouse_cap == 1 && last_mouse_cap == 0);
+last_mouse_cap = mouse_cap;
+mouse_cap == 0 ? drag_id = 0;
+
+gfx_dest = 1; 
+gfx_setimgdim(1, base_w, base_h);
+gfx_r=0.08; gfx_g=0.08; gfx_b=0.086; gfx_a=1;
+gfx_rect(0,0,base_w,base_h);
+
+function draw_knob(id, x, y, r, val, vmin, vmax, def, title, unit, is_pink, is_bipolar)
+local(hover, time_now, ang_min, ang_max, ang_val, ang_zero, a1, a2, txt_w, txt_h) (
+    
+    hover = (m_x > x-r && m_x < x+r && m_y > y-r && m_y < y+r);
+
+    hover && mouse_trigger && drag_id == 0 ? (
+        time_now = time_precise();
+        (time_now - click_mem[id]) < 0.25 ? (
+            val = def;
+            drag_id = -1; 
+        ) : (
+            drag_id = id; drag_y = m_y; drag_val = val;
+            click_mem[id] = time_now;
+        );
+    );
+
+    (drag_id == id && mouse_cap == 1) ? (
+        val = drag_val + (drag_y - m_y) * (vmax - vmin) / 200;
+        val = max(vmin, min(vmax, val));
+    );
+    
+    hover && (mouse_cap & 4) ? val = def;
+
+    ang_min = -2.356; ang_max = 2.356; 
+    ang_val = ang_min + (val - vmin) / (vmax - vmin) * (ang_max - ang_min);
+    ang_zero = is_bipolar ? (ang_min + (0 - vmin) / (vmax - vmin) * (ang_max - ang_min)) : ang_min;
+    
+    a1 = min(ang_zero, ang_val);
+    a2 = max(ang_zero, ang_val);
+
+    gfx_r=0.15; gfx_g=0.15; gfx_b=0.18; gfx_a=1;
+    gfx_arc(x,y,r, ang_min, ang_max, 1); gfx_arc(x,y,r-1, ang_min, ang_max, 1);
+    gfx_r=0.05; gfx_g=0.05; gfx_b=0.06; gfx_circle(x, y, r-4, 1); 
+
+    is_pink ? (gfx_r=1; gfx_g=0.2; gfx_b=0.7;) : (gfx_r=0; gfx_g=0.8; gfx_b=1;);
+    gfx_a = 0.05; gfx_arc(x,y,r+10, a1, a2, 1); gfx_arc(x,y,r-12, a1, a2, 1);
+    gfx_a = 0.15; gfx_arc(x,y,r+6, a1, a2, 1);  gfx_arc(x,y,r-8, a1, a2, 1);
+    gfx_a = 0.40; gfx_arc(x,y,r+2, a1, a2, 1);  gfx_arc(x,y,r-4, a1, a2, 1);
+    gfx_a = 1.00; gfx_arc(x,y,r, a1, a2, 1);    gfx_arc(x,y,r-1, a1, a2, 1); gfx_arc(x,y,r-2, a1, a2, 1);
+    
+    gfx_a = 1.0; gfx_line(x, y, x + sin(ang_val)*(r), y - cos(ang_val)*(r));
+    gfx_a = 1.0; gfx_line(x, y, x + sin(ang_val)*(r-2), y - cos(ang_val)*(r-2));
+
+    gfx_setfont(1, "Arial", 16);
+    gfx_r=0.6; gfx_g=0.6; gfx_b=0.65;
+    gfx_measurestr(title, txt_w, txt_h);
+    gfx_x = x - txt_w/2; gfx_y = y + r + 10;
+    gfx_drawstr(title);
+    
+    gfx_r=1; gfx_g=1; gfx_b=1;
+    gfx_x = x-20; gfx_y = y + r + 27;
+    title == "PAN" ? (
+        val < -0.1 ? ( gfx_printf("%.1f L", abs(val)); ) :
+        val > 0.1 ? ( gfx_printf("%.1f R", val); ) : ( gfx_x = x - 25; gfx_drawstr("CENTER"); );
+    ) : (
+        gfx_printf("%.1f", val); gfx_drawstr(unit);
+    );
+    val;
+);
+
+// Custom Radio Button styled as a Neon Dot/Knob
+function draw_radio_knob(id, x, y, r, val, target_val, title)
+local(hover, is_active, txt_w, txt_h) (
+    hover = (m_x > x-r && m_x < x+r && m_y > y-r && m_y < y+r);
+    hover && mouse_trigger ? val = target_val;
+
+    is_active = (val == target_val);
+
+    gfx_r=0.15; gfx_g=0.15; gfx_b=0.18; gfx_a=1;
+    gfx_circle(x, y, r, 0); gfx_circle(x, y, r-1, 0);
+    gfx_r=0.05; gfx_g=0.05; gfx_b=0.06; gfx_circle(x, y, r-2, 1);
+
+    is_active ? (
+        gfx_r=0; gfx_g=0.8; gfx_b=1; // Cyan Glow
+        gfx_a = 0.05; gfx_circle(x, y, r+8, 1);
+        gfx_a = 0.15; gfx_circle(x, y, r+4, 1);
+        gfx_a = 0.40; gfx_circle(x, y, r+1, 1);
+        gfx_a = 1.00; gfx_circle(x, y, r, 0); gfx_circle(x, y, r-1, 0);
+        gfx_a = 0.80; gfx_circle(x, y, r-5, 1); // Inner Dot
+    ) : (
+        gfx_a = 0.3; gfx_r=0.3; gfx_g=0.3; gfx_b=0.35;
+        gfx_circle(x, y, r-5, 1);
+    );
+
+    gfx_setfont(1, "Arial", 14);
+    is_active ? (gfx_r=1; gfx_g=1; gfx_b=1;) : (gfx_r=0.5; gfx_g=0.5; gfx_b=0.55;);
+    gfx_measurestr(title, txt_w, txt_h);
+    gfx_x = x - txt_w/2; gfx_y = y + r + 10;
+    gfx_drawstr(title);
+
+    val;
+);
+
+function draw_slider(id, x, y, w, h, val, vmin, vmax, def, title, unit, is_pink, is_disabled) 
+local(hover, time_now, val_px) (
+    
+    hover = (m_x > x && m_x < x+w && m_y > y-10 && m_y < y+h+10);
+
+    !is_disabled ? (
+        hover && mouse_trigger && drag_id == 0 ? (
+            time_now = time_precise();
+            (time_now - click_mem[id]) < 0.25 ? (
+                val = def;
+                drag_id = -1;
+            ) : (
+                drag_id = id;
+                click_mem[id] = time_now;
+            );
+        );
+
+        (drag_id == id && mouse_cap == 1) ? (
+            val = vmin + (m_x - x) / w * (vmax - vmin); val = max(vmin, min(vmax, val));
+        );
+        hover && (mouse_cap & 4) ? val = def;
+    );
+
+    val_px = (val - vmin) / (vmax - vmin) * w;
+
+    gfx_r=0.15; gfx_g=0.15; gfx_b=0.18; gfx_a=1;
+    gfx_rect(x, y + h/2 - 2, w, 4);
+
+    is_disabled ? ( gfx_r=0.3; gfx_g=0.3; gfx_b=0.35; ) : 
+    is_pink ? (gfx_r=1; gfx_g=0.2; gfx_b=0.7;) : (gfx_r=0; gfx_g=0.8; gfx_b=1;);
+    
+    is_disabled ? gfx_a = 0.3 : gfx_a = 0.15; 
+    gfx_rect(x, y + h/2 - 5, val_px, 10); 
+    is_disabled ? gfx_a = 0.6 : gfx_a = 0.50; 
+    gfx_rect(x, y + h/2 - 3, val_px, 6);
+    gfx_a = 1.0; gfx_rect(x, y + h/2 - 1, val_px, 2);
+    gfx_circle(x + val_px, y + h/2, 6, 1);
+
+    gfx_setfont(1, "Arial", 16);
+    is_disabled ? (gfx_r=0.4; gfx_g=0.4; gfx_b=0.45;) : (gfx_r=0.6; gfx_g=0.6; gfx_b=0.65;);
+    gfx_x = x; gfx_y = y - 18; gfx_drawstr(title);
+    
+    is_disabled ? (gfx_r=0.5; gfx_g=0.5; gfx_b=0.55;) : (gfx_r=1; gfx_g=1; gfx_b=1;);
+    gfx_x = x + w - 40; gfx_y = y - 18;
+    gfx_printf("%.1f", val); gfx_drawstr(unit);
+    val;
+);
+
+function draw_check(id, x, y, size, val, title) (
+    (m_x > x && m_x < x+size+200 && m_y > y && m_y < y+size && mouse_trigger && drag_id == 0) ? (
+        drag_id = id; val = 1 - val;
+    );
+    gfx_r=0.15; gfx_g=0.15; gfx_b=0.18; gfx_a=1;
+    gfx_rect(x, y, size, size);
+
+    val == 1 ? (
+        gfx_r=0; gfx_g=0.8; gfx_b=1; gfx_a=0.9;
+        gfx_rect(x+3, y+3, size-6, size-6);
+        gfx_a=0.4; gfx_rect(x+1, y+1, size-2, size-2); 
+    );
+
+    gfx_setfont(1, "Arial", 16);
+    gfx_r=0.8; gfx_g=0.8; gfx_b=0.85; gfx_a=1;
+    gfx_x = x + size + 12; gfx_y = y + (size/2) - 5;
+    gfx_drawstr(title);
+    val;
+);
+
+function draw_goniometer_layer(bL, bR, r_col, g_col, b_col, cx, cy, rad) local(i, s, m, x, y, lx, ly, mag) (
+    gfx_r = r_col; gfx_g = g_col; gfx_b = b_col;
+    gfx_a = 0.02;
+    i = 0;
+    loop(SCOPE_SIZE,
+        s = (bR[i] - bL[i]) * 0.7071; m = (bR[i] + bL[i]) * 0.7071;
+        mag = sqrt(s*s + m*m); mag > 1.0 ? ( s /= mag; m /= mag; ); 
+        x = cx + s * rad; y = cy - m * rad;
+        gfx_line(cx, cy, x, y);
+        i += 1;
+    );
+    
+    gfx_a = 0.6;
+    i = 0; 
+    s = (bR[0] - bL[0]) * 0.7071; m = (bR[0] + bL[0]) * 0.7071;
+    mag = sqrt(s*s + m*m); mag > 1.0 ? ( s /= mag; m /= mag; ); 
+    lx = cx + s * rad; ly = cy - m * rad;
+    
+    loop(SCOPE_SIZE,
+        s = (bR[i] - bL[i]) * 0.7071; m = (bR[i] + bL[i]) * 0.7071;
+        mag = sqrt(s*s + m*m); mag > 1.0 ? ( s /= mag; m /= mag; ); 
+        x = cx + s * rad; y = cy - m * rad;
+        gfx_line(lx, ly, x, y);
+        gfx_line(lx+1, ly, x+1, y);
+        lx = x; ly = y;
+        i += 1;
+    );
+);
+
+
+// --- Left Panel ---
+slider1 = draw_knob(1, 230, 130, 60, slider1, -100, 100, 0, "PAN", "%", 1, 1);
+slider2 = draw_knob(2,  80, 280, 40, slider2, -100, 0, -10, "MIN GAIN", "dB", 0, 0);
+slider3 = draw_knob(3, 230, 280, 40, slider3, 0, 200, 20, "MAX DELAY", "ms", 0, 0);
+slider4 = draw_knob(4, 380, 280, 40, slider4, 500, 20000, 20000, "MAX CUT", "Hz", 0, 0);
+
+gfx_r=0.2; gfx_g=0.2; gfx_b=0.25; gfx_a=0.5;
+gfx_line(30, 365, 430, 365);
+gfx_line(460, 40, 460, 660); // Extended Vertical Separator
+
+slider5 = draw_check(5, 40, 385, 18, slider5, "OPPOSITE CHANNEL REVERB");
+
+// Reverb Control Matrix
+disabled = (slider5 == 0 || abs(slider1) < 0.05) ? 1 : 0;
+slider10 = draw_slider(10,  40, 440, 160, 20, slider10, 0, 500, 0, "REVERB HPF", "Hz", 0, disabled);
+slider11 = draw_slider(11, 240, 440, 160, 20, slider11, 5000, 20000, 20000, "REVERB LPF", "Hz", 0, disabled);
+slider6  = draw_slider(6,   40, 495, 160, 20, slider6, 0, 5, 0, "MIN DECAY", "s", 1, disabled);
+slider7  = draw_slider(7,  240, 495, 160, 20, slider7, 0, 5, 0.5, "MAX DECAY", "s", 1, disabled);
+slider8  = draw_slider(8,   40, 550, 160, 20, slider8, 0, 100, 0, "MIN WET", "%", 0, disabled);
+slider9  = draw_slider(9,  240, 550, 160, 20, slider9, 0, 100, 50, "MAX WET", "%", 0, disabled);
+
+// --- Pan Law Section ---
+gfx_r=0.2; gfx_g=0.2; gfx_b=0.25; gfx_a=0.5;
+gfx_line(30, 595, 430, 595);
+
+gfx_setfont(1, "Arial", 14);
+gfx_r=0.6; gfx_g=0.6; gfx_b=0.65; gfx_a=1.0;
+gfx_x = 40; gfx_y = 615; 
+gfx_drawstr("PAN LAW MODE");
+
+slider12 = draw_radio_knob(12,  90, 655, 14, slider12, 0, "0dB");
+slider12 = draw_radio_knob(13, 160, 655, 14, slider12, 1, "-2.5dB");
+slider12 = draw_radio_knob(14, 230, 655, 14, slider12, 2, "-3dB");
+slider12 = draw_radio_knob(15, 300, 655, 14, slider12, 3, "-4.5dB");
+slider12 = draw_radio_knob(16, 370, 655, 14, slider12, 4, "-6dB");
+
+
+// --- Right Panel ---
+cx = 680; cy = 350; r = 210;
+
+gfx_r=0.2; gfx_g=0.2; gfx_b=0.25; gfx_a=0.8;
+gfx_arc(cx, cy, r, 0, 6.28318, 1);
+gfx_arc(cx, cy, r*0.66, 0, 6.28318, 1);
+gfx_arc(cx, cy, r*0.33, 0, 6.28318, 1);
+
+gfx_line(cx - r, cy, cx + r, cy); 
+gfx_line(cx, cy - r, cx, cy + r); 
+gfx_line(cx - r*0.707, cy + r*0.707, cx + r*0.707, cy - r*0.707); 
+gfx_line(cx - r*0.707, cy - r*0.707, cx + r*0.707, cy + r*0.707); 
+
+gfx_setfont(1, "Arial", 16);
+gfx_r=0.3; gfx_g=0.3; gfx_b=0.35; gfx_a=0.8;
+gfx_x = cx - r*0.707 - 15; gfx_y = cy - r*0.707 - 15; gfx_drawstr("L");
+gfx_x = cx + r*0.707 + 5;  gfx_y = cy - r*0.707 - 15; gfx_drawstr("R");
+gfx_x = cx - 5; gfx_y = cy - r - 20; gfx_drawstr("M");
+gfx_x = cx - r - 25; gfx_y = cy - 5; gfx_drawstr("-S");
+gfx_x = cx + r + 5; gfx_y = cy - 5; gfx_drawstr("+S");
+
+draw_goniometer_layer(gfx_in_L, gfx_in_R, 0.2, 0.8, 1.0, cx, cy, r);
+draw_goniometer_layer(gfx_out_L, gfx_out_R, 1.0, 0.4, 0.8, cx, cy, r);
+
+
+// --- Final Screen Rendering ---
+gfx_dest = -1; 
+gfx_r=0.08; gfx_g=0.08; gfx_b=0.086; gfx_a=1;
+gfx_rect(0,0,gfx_w,gfx_h); 
+gfx_x=offs_x; gfx_y=offs_y; gfx_a=1;
+
+// Render scaled virtual buffer to screen
+gfx_blit(1, scale, 0);
+
+// --- Title (Absolute Position, ignores scale/resize) ---
+gfx_setfont(2, "Helvetica", 30, 'b'); 
+gfx_r = 100/255; gfx_g = 100/255; gfx_b = 100/255; gfx_a = 1.0;
+gfx_x = 10; gfx_y = 5; 
+gfx_drawstr("FM Panorama");

@@ -1,7 +1,13 @@
 @description Flat Madness Dark
-@version 5.2.2
+@version 5.2.3
 @changelog
-   * fixed issue with wrong fonts in 150% layouts
+   * darkened track backgrounds in dark theme
+   * changed media item color scheme for dark themes
+   * fixed MCP folder saturation bug
+   * fixed issues with TCP divider 
+   * added feature to adjust TCP child track gap
+   * re-designed envelope sliders and faders
+   * added a few features i forget about
 @provides Flat Madness Dark.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness

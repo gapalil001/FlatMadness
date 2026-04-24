@@ -1,10 +1,9 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.1.2
+-- @version 5.2.3.0
 -- @changelog
---   * Fixed MCP Panel Background
---   * Fixed TCP Folder Saturation
+--   * Support theme version 5.2.3
 -- @provides
 --   [main] theme/*.lua
 --   [nomain] img/*.png
@@ -418,10 +417,12 @@ adj.params = {
 		values = { 0, 1 }
 	},
 	saturnfolder = {
-		id = 32,
+		id = { 32, 66, 98 },
 		name = 'Folder Saturation',
 		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
+		is_reverse = true,
 		width = 205,
 		height = 57,
 	},
@@ -463,14 +464,15 @@ adj.params = {
 		type = adj.config.param_types.Range,
 		value_type = adj.config.value_types.ThemeLayout,
 		is_percentage = true,
+		is_reverse = true,
 		width = 205, height = 57,
 	},
 	dividercolor = {
 		id = 37,
-		name = 'track divider intensity',
+		name = ' track divider',
 		type = adj.config.param_types.Range,
 		is_percentage = true,
-		width = 205,
+		width = 132,
 		height = 65,
 	},
 	sendlist = {
@@ -501,10 +503,10 @@ adj.params = {
 	},
 	fxheight = {
 		id = { 41, 73, 105 },
-		name = 'FX LIST SLOT HEIGHT',
+		name = '  FX slot height',
 		type = adj.config.param_types.Range,
 		value_type = adj.config.value_types.ThemeLayout,
-		width = 205, height = 65,
+		width = 132, height = 65,
 	},
 	volumeadj = {
 		id = { 46, 78, 110 },
@@ -570,6 +572,14 @@ adj.params = {
 		width = 80,
 		height = 22,
 		default_palette = { 0xFF0000FF, 0x00FF00FF, 0x0000FFFF, 0xFFFF00FF, 0xFF00FFFF, 0xFFFFFFFF, 0x444444FF, 0x000000FF }
+	},
+		tcp_folderindent = {
+		id = 116,
+		name = ' Folderident',
+		type = adj.config.param_types.Range,
+		is_percentage = false,
+		width = 132,
+		height = 65,
 	},
 }
 
@@ -1468,9 +1478,10 @@ function adj.ShowWindow()
 				ImGui.EndTable(ctx)
 			end
 
-			if ImGui.BeginTable(ctx, "sep_tcp_4", 2) then
+			if ImGui.BeginTable(ctx, "sep_tcp_4", 3) then
 				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.dividercolor)
 				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.fxheight)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.tcp_folderindent)
 				ImGui.EndTable(ctx)
 			end
 
