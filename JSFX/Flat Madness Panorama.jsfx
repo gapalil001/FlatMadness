@@ -1,10 +1,11 @@
 desc: Flat Madness Panorama
-version: 1.0
+version: 1.1
 author: gapalil
-changelog: init
 license: MIT
 about: Complex stereo haas-based effect with adjustable pan position-dependent time, lowpass filter and reverb
-website: https://forum.cockos.com/showthread.php?t=247086
+website: https://forum.cockos.com/showthread.php?p=2938045
+changelog:
+   added ghost knobs that displaying current values for dynamic parameters
 
 options: no_meter
 
@@ -13,10 +14,10 @@ slider2:-10<-100,0,0.1>-Min Gain (dB)
 slider3:20<-0,200,0.1>-Max Delay (ms)
 slider4:20000<-500,20000,1>-Max Cutoff (Hz)
 slider5:0<-0,1,1>-Enable Reverb
-slider6:0.5<-0,5,0.01>-Min Decay (s)
-slider7:2.5<-0,5,0.01>-Max Decay (s)
+slider6:0<-0,5,0.01>-Min Decay (s)
+slider7:0.5<-0,5,0.01>-Max Decay (s)
 slider8:0<-0,100,1>-Min Wet (%)
-slider9:50<-0,100,1>-Max Wet (%)
+slider9:30<-0,100,1>-Max Wet (%)
 slider10:0<-0,500,1>-Reverb HPF (Hz)
 slider11:20000<-5000,20000,1>-Reverb LPF (Hz)
 slider12:0<0,4,1{0dB,-2.5dB,-3.0dB,-4.5dB,-6.0dB}>-Pan Law Mode
@@ -223,7 +224,6 @@ read_pos_i = floor(read_pos); frac = read_pos - read_pos_i;
 read_pos_i2 = read_pos_i + 1; read_pos_i2 >= MAX_DELAY_SAMPLES ? read_pos_i2 = 0;
 
 pan_current < 0 ? ( 
-    // Pan Left -> Delay Right Channel
     y1_del = delay_buf_R[read_pos_i]; y2_del = delay_buf_R[read_pos_i2];
     del_out = y1_del + frac * (y2_del - y1_del);
     filt_out = b0*del_out + b1*x1_R + b2*x2_R - a1*y1_R - a2*y2_R;
@@ -243,7 +243,6 @@ pan_current < 0 ? (
     slider5 == 1 ? opp_out = do_reverb(opp_out, rev_in, wet_current);
     outR = opp_out; outL = inL;
 ) : ( 
-    // Pan Right -> Delay Left Channel
     y1_del = delay_buf_L[read_pos_i]; y2_del = delay_buf_L[read_pos_i2];
     del_out = y1_del + frac * (y2_del - y1_del);
     filt_out = b0*del_out + b1*x1_L + b2*x2_L - a1*y1_L - a2*y2_L;
@@ -264,7 +263,6 @@ pan_current < 0 ? (
     outL = opp_out; outR = inR;
 );
 
-// Apply Pan Law Compensating Gain
 master_scale = pl_gain_center_current + (1.0 - pl_gain_center_current) * I_current;
 outL *= master_scale;
 outR *= master_scale;
@@ -295,8 +293,8 @@ gfx_setimgdim(1, base_w, base_h);
 gfx_r=0.08; gfx_g=0.08; gfx_b=0.086; gfx_a=1;
 gfx_rect(0,0,base_w,base_h);
 
-function draw_knob(id, x, y, r, val, vmin, vmax, def, title, unit, is_pink, is_bipolar)
-local(hover, time_now, ang_min, ang_max, ang_val, ang_zero, a1, a2, txt_w, txt_h) (
+function draw_knob(id, x, y, r, val, vmin, vmax, def, title, unit, is_pink, is_bipolar, show_actual, actual_val)
+local(hover, time_now, ang_min, ang_max, ang_val, ang_zero, a1, a2, txt_w, txt_h, actual_val_c, ang_actual, a1_act, a2_act, vw, vh) (
     
     hover = (m_x > x-r && m_x < x+r && m_y > y-r && m_y < y+r);
 
@@ -329,6 +327,7 @@ local(hover, time_now, ang_min, ang_max, ang_val, ang_zero, a1, a2, txt_w, txt_h
     gfx_arc(x,y,r, ang_min, ang_max, 1); gfx_arc(x,y,r-1, ang_min, ang_max, 1);
     gfx_r=0.05; gfx_g=0.05; gfx_b=0.06; gfx_circle(x, y, r-4, 1); 
 
+    // Main Control Colors
     is_pink ? (gfx_r=1; gfx_g=0.2; gfx_b=0.7;) : (gfx_r=0; gfx_g=0.8; gfx_b=1;);
     gfx_a = 0.05; gfx_arc(x,y,r+10, a1, a2, 1); gfx_arc(x,y,r-12, a1, a2, 1);
     gfx_a = 0.15; gfx_arc(x,y,r+6, a1, a2, 1);  gfx_arc(x,y,r-8, a1, a2, 1);
@@ -338,24 +337,49 @@ local(hover, time_now, ang_min, ang_max, ang_val, ang_zero, a1, a2, txt_w, txt_h
     gfx_a = 1.0; gfx_line(x, y, x + sin(ang_val)*(r), y - cos(ang_val)*(r));
     gfx_a = 1.0; gfx_line(x, y, x + sin(ang_val)*(r-2), y - cos(ang_val)*(r-2));
 
+    // Full UI Ghost Overlay for Derived Parameter (Ultra Transparent)
+    show_actual ? (
+        actual_val_c = max(vmin, min(vmax, actual_val));
+        ang_actual = ang_min + (actual_val_c - vmin) / (vmax - vmin) * (ang_max - ang_min);
+        a1_act = min(ang_zero, ang_actual);
+        a2_act = max(ang_zero, ang_actual);
+
+        gfx_r=1; gfx_g=1; gfx_b=1; 
+        
+        // Ghost Arcs (Reduced Opacity)
+        gfx_a = 0.02; gfx_arc(x,y,r+6, a1_act, a2_act, 1); gfx_arc(x,y,r-8, a1_act, a2_act, 1);
+        gfx_a = 0.05; gfx_arc(x,y,r+2, a1_act, a2_act, 1); gfx_arc(x,y,r-4, a1_act, a2_act, 1);
+        gfx_a = 0.15; gfx_arc(x,y,r, a1_act, a2_act, 1); gfx_arc(x,y,r-1, a1_act, a2_act, 1); gfx_arc(x,y,r-2, a1_act, a2_act, 1);
+        
+        // Ghost Pointer
+        gfx_a = 0.15; gfx_line(x, y, x + sin(ang_actual)*(r), y - cos(ang_actual)*(r));
+        gfx_a = 0.25; gfx_line(x, y, x + sin(ang_actual)*(r-2), y - cos(ang_actual)*(r-2));
+    );
+
+    // FIX: Reset Alpha to 1.0 so labels are never greyed out unintentionally
+    gfx_a = 1.0; 
+
     gfx_setfont(1, "Arial", 16);
     gfx_r=0.6; gfx_g=0.6; gfx_b=0.65;
     gfx_measurestr(title, txt_w, txt_h);
     gfx_x = x - txt_w/2; gfx_y = y + r + 10;
     gfx_drawstr(title);
     
+    // Exact Centering logic for values using string measurement
     gfx_r=1; gfx_g=1; gfx_b=1;
-    gfx_x = x-20; gfx_y = y + r + 27;
     title == "PAN" ? (
-        val < -0.1 ? ( gfx_printf("%.1f L", abs(val)); ) :
-        val > 0.1 ? ( gfx_printf("%.1f R", val); ) : ( gfx_x = x - 25; gfx_drawstr("CENTER"); );
+        val < -0.1 ? sprintf(#vs, "%.1f L", abs(val)) :
+        val > 0.1 ? sprintf(#vs, "%.1f R", val) : sprintf(#vs, "CENTER");
     ) : (
-        gfx_printf("%.1f", val); gfx_drawstr(unit);
+        sprintf(#vs, "%.1f%s", val, unit);
     );
+    gfx_measurestr(#vs, vw, vh);
+    gfx_x = x - vw/2; gfx_y = y + r + 27;
+    gfx_drawstr(#vs);
+    
     val;
 );
 
-// Custom Radio Button styled as a Neon Dot/Knob
 function draw_radio_knob(id, x, y, r, val, target_val, title)
 local(hover, is_active, txt_w, txt_h) (
     hover = (m_x > x-r && m_x < x+r && m_y > y-r && m_y < y+r);
@@ -368,12 +392,12 @@ local(hover, is_active, txt_w, txt_h) (
     gfx_r=0.05; gfx_g=0.05; gfx_b=0.06; gfx_circle(x, y, r-2, 1);
 
     is_active ? (
-        gfx_r=0; gfx_g=0.8; gfx_b=1; // Cyan Glow
+        gfx_r=0; gfx_g=0.8; gfx_b=1; 
         gfx_a = 0.05; gfx_circle(x, y, r+8, 1);
         gfx_a = 0.15; gfx_circle(x, y, r+4, 1);
         gfx_a = 0.40; gfx_circle(x, y, r+1, 1);
         gfx_a = 1.00; gfx_circle(x, y, r, 0); gfx_circle(x, y, r-1, 0);
-        gfx_a = 0.80; gfx_circle(x, y, r-5, 1); // Inner Dot
+        gfx_a = 0.80; gfx_circle(x, y, r-5, 1); 
     ) : (
         gfx_a = 0.3; gfx_r=0.3; gfx_g=0.3; gfx_b=0.35;
         gfx_circle(x, y, r-5, 1);
@@ -388,8 +412,8 @@ local(hover, is_active, txt_w, txt_h) (
     val;
 );
 
-function draw_slider(id, x, y, w, h, val, vmin, vmax, def, title, unit, is_pink, is_disabled) 
-local(hover, time_now, val_px) (
+function draw_slider(id, x, y, w, h, val, vmin, vmax, def, title, unit, is_pink, is_disabled, show_actual, actual_val) 
+local(hover, time_now, val_px, actual_px, actual_val_c, vw, vh) (
     
     hover = (m_x > x && m_x < x+w && m_y > y-10 && m_y < y+h+10);
 
@@ -419,20 +443,40 @@ local(hover, time_now, val_px) (
     is_disabled ? ( gfx_r=0.3; gfx_g=0.3; gfx_b=0.35; ) : 
     is_pink ? (gfx_r=1; gfx_g=0.2; gfx_b=0.7;) : (gfx_r=0; gfx_g=0.8; gfx_b=1;);
     
-    is_disabled ? gfx_a = 0.3 : gfx_a = 0.15; 
-    gfx_rect(x, y + h/2 - 5, val_px, 10); 
-    is_disabled ? gfx_a = 0.6 : gfx_a = 0.50; 
-    gfx_rect(x, y + h/2 - 3, val_px, 6);
+    gfx_a = is_disabled ? 0.3 : 0.15; gfx_rect(x, y + h/2 - 5, val_px, 10); 
+    gfx_a = is_disabled ? 0.6 : 0.50; gfx_rect(x, y + h/2 - 3, val_px, 6);
     gfx_a = 1.0; gfx_rect(x, y + h/2 - 1, val_px, 2);
     gfx_circle(x + val_px, y + h/2, 6, 1);
+
+    // Full UI Ghost Overlay for Derived Parameter
+    !is_disabled && show_actual ? (
+        actual_val_c = max(vmin, min(vmax, actual_val));
+        actual_px = (actual_val_c - vmin) / (vmax - vmin) * w;
+        
+        gfx_r=1; gfx_g=1; gfx_b=1;
+        
+        gfx_a = 0.05; gfx_rect(x, y + h/2 - 5, actual_px, 10);
+        gfx_a = 0.10; gfx_rect(x, y + h/2 - 3, actual_px, 6);
+        gfx_a = 0.20; gfx_rect(x, y + h/2 - 1, actual_px, 2);
+        
+        gfx_a = 0.3;  gfx_circle(x + actual_px, y + h/2, 6, 0); 
+        gfx_a = 0.15; gfx_circle(x + actual_px, y + h/2, 5, 0);
+    );
+
+    // FIX: Reset Alpha to 1.0
+    gfx_a = 1.0; 
 
     gfx_setfont(1, "Arial", 16);
     is_disabled ? (gfx_r=0.4; gfx_g=0.4; gfx_b=0.45;) : (gfx_r=0.6; gfx_g=0.6; gfx_b=0.65;);
     gfx_x = x; gfx_y = y - 18; gfx_drawstr(title);
     
+    // Dynamic Right-Alignment for Slider Values
     is_disabled ? (gfx_r=0.5; gfx_g=0.5; gfx_b=0.55;) : (gfx_r=1; gfx_g=1; gfx_b=1;);
-    gfx_x = x + w - 40; gfx_y = y - 18;
-    gfx_printf("%.1f", val); gfx_drawstr(unit);
+    sprintf(#vs, "%.1f%s", val, unit);
+    gfx_measurestr(#vs, vw, vh);
+    gfx_x = x + w - vw; gfx_y = y - 18;
+    gfx_drawstr(#vs);
+    
     val;
 );
 
@@ -487,25 +531,53 @@ function draw_goniometer_layer(bL, bR, r_col, g_col, b_col, cx, cy, rad) local(i
 
 
 // --- Left Panel ---
-slider1 = draw_knob(1, 230, 130, 60, slider1, -100, 100, 0, "PAN", "%", 1, 1);
-slider2 = draw_knob(2,  80, 280, 40, slider2, -100, 0, -10, "MIN GAIN", "dB", 0, 0);
-slider3 = draw_knob(3, 230, 280, 40, slider3, 0, 200, 20, "MAX DELAY", "ms", 0, 0);
-slider4 = draw_knob(4, 380, 280, 40, slider4, 500, 20000, 20000, "MAX CUT", "Hz", 0, 0);
+
+// Render Pan first so other elements can react instantly to dragging
+slider1 = draw_knob(1, 230, 130, 60, slider1, -100, 100, 0, "PAN", "%", 1, 1, 0, 0);
+
+// Capture immediate displacement for real-time UI ghost markers
+I_disp = abs(slider1 / 100.0);
+
+// Calculate derived parameter targets
+actual_gain = slider2 * I_disp;
+actual_del  = slider3 * I_disp;
+actual_cut  = 20000 * ((slider4 / 20000) ^ I_disp);
+decay_act   = slider6 + (slider7 - slider6) * I_disp;
+wet_act     = slider8 + (slider9 - slider8) * I_disp;
+
+// --- Derived Values HUD ---
+gfx_setfont(1, "Arial", 14);
+gfx_r=0.4; gfx_g=0.4; gfx_b=0.45; gfx_a=1.0; 
+
+sprintf(#inf_g, "Gain %.1f dB", actual_gain);
+gfx_x = 355; gfx_y = 100; gfx_drawstr(#inf_g);
+
+sprintf(#inf_d, "Delay %.1f ms", actual_del);
+gfx_x = 355; gfx_y = 125; gfx_drawstr(#inf_d);
+
+sprintf(#inf_c, "Cut %.1f Hz", actual_cut);
+gfx_x = 355; gfx_y = 150; gfx_drawstr(#inf_c);
+
+
+// Render dynamic knobs (Gain, Delay, Cutoff) with Ghosts enabled
+slider2 = draw_knob(2,  80, 280, 40, slider2, -100, 0, -10, "MIN GAIN", "dB", 0, 0, 1, actual_gain);
+slider3 = draw_knob(3, 230, 280, 40, slider3, 0, 200, 20, "MAX DELAY", "ms", 0, 0, 1, actual_del);
+slider4 = draw_knob(4, 380, 280, 40, slider4, 500, 20000, 20000, "MAX CUT", "Hz", 0, 0, 1, actual_cut);
 
 gfx_r=0.2; gfx_g=0.2; gfx_b=0.25; gfx_a=0.5;
 gfx_line(30, 365, 430, 365);
-gfx_line(460, 40, 460, 660); // Extended Vertical Separator
+gfx_line(460, 40, 460, 660); 
 
-slider5 = draw_check(5, 40, 385, 18, slider5, "OPPOSITE CHANNEL REVERB");
+slider5 = draw_check(5, 40, 385, 18, slider5, "ENABLE SPACE REVERB (HAAS CHANNEL ONLY)");
 
-// Reverb Control Matrix
-disabled = (slider5 == 0 || abs(slider1) < 0.05) ? 1 : 0;
-slider10 = draw_slider(10,  40, 440, 160, 20, slider10, 0, 500, 0, "REVERB HPF", "Hz", 0, disabled);
-slider11 = draw_slider(11, 240, 440, 160, 20, slider11, 5000, 20000, 20000, "REVERB LPF", "Hz", 0, disabled);
-slider6  = draw_slider(6,   40, 495, 160, 20, slider6, 0, 5, 0, "MIN DECAY", "s", 1, disabled);
-slider7  = draw_slider(7,  240, 495, 160, 20, slider7, 0, 5, 0.5, "MAX DECAY", "s", 1, disabled);
-slider8  = draw_slider(8,   40, 550, 160, 20, slider8, 0, 100, 0, "MIN WET", "%", 0, disabled);
-slider9  = draw_slider(9,  240, 550, 160, 20, slider9, 0, 100, 50, "MAX WET", "%", 0, disabled);
+// Reverb Control Matrix (Reverb stays fully active graphically unless unchecked)
+disabled = (slider5 == 0) ? 1 : 0;
+slider10 = draw_slider(10,  40, 440, 160, 20, slider10, 0, 500, 0, "REVERB HPF", "Hz", 0, disabled, 0, 0);
+slider11 = draw_slider(11, 240, 440, 160, 20, slider11, 5000, 20000, 20000, "REVERB LPF", "Hz", 0, disabled, 0, 0);
+slider6  = draw_slider(6,   40, 495, 160, 20, slider6, 0, 5, 0, "MIN DECAY", "s", 1, disabled, 1, decay_act);
+slider7  = draw_slider(7,  240, 495, 160, 20, slider7, 0, 5, 0.5, "MAX DECAY", "s", 1, disabled, 1, decay_act);
+slider8  = draw_slider(8,   40, 550, 160, 20, slider8, 0, 100, 0, "MIN WET", "%", 0, disabled, 1, wet_act);
+slider9  = draw_slider(9,  240, 550, 160, 20, slider9, 0, 100, 30, "MAX WET", "%", 0, disabled, 1, wet_act);
 
 // --- Pan Law Section ---
 gfx_r=0.2; gfx_g=0.2; gfx_b=0.25; gfx_a=0.5;

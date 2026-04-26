@@ -1,11 +1,14 @@
 desc: Flat Madness Clipper
-version: 1.0
+version: 1.1
 author: gapalil
-changelog: init
 license: MIT
 about: Classic clipper with precision graphical metering and release adjustment
-website: https://forum.cockos.com/showthread.php?t=247086
+website: https://forum.cockos.com/showthread.php?p=2938045
+changelog: 
+  vertical faders now looks more pleasure
 
+//tags: dynamics limiter
+//author: gapalil001
 options:no_meter
 
 slider1:0.0<-30.0,0.0,0.1>-Threshold
@@ -108,7 +111,7 @@ out_pin:right output
     gfx_circle(x+r, y+h-r, r, 1);
     gfx_circle(x+w-r, y+h-r, r, 1);
     gfx_rect(x+r, y, w-r*2, h);
-    gfx_rect(x, y+r, w, h-r*2);
+    gfx_rect(x, y+r, w+1, h-r*2);
   );
 
   function process_button(id, x, y, w, h, state)
@@ -137,14 +140,14 @@ out_pin:right output
 
   function draw_button(x, y, w, h, state, title)
   (
-    state ? (gfx_r=0.075; gfx_g=0.237; gfx_b=0.225; gfx_a=0.8;) 
+    state ? (gfx_r=0.075; gfx_g=0.237; gfx_b=0.225; gfx_a=1.0;) 
           : (gfx_r=0.15; gfx_g=0.15; gfx_b=0.15; gfx_a=1.0;); 
     
     gfx_roundrect(x, y, w, h, 3, 1);
     gfx_r=0.125; gfx_g=0.375; gfx_b=0.350; gfx_a=1.0; 
     gfx_roundrect(x, y, w, h, 3, 0); 
     
-    state ? (gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=0.9;) 
+    state ? (gfx_r=1.0; gfx_g=1.0; gfx_b=1.0; gfx_a=1.0;) 
           : (gfx_r=0.7; gfx_g=0.7; gfx_b=0.7; gfx_a=1.0;);
     
     gfx_setfont(2, "Arial", 11, 'b');
@@ -278,7 +281,7 @@ out_pin:right output
   );
 
   function draw_v_fader(x, y, w, h, val, min_v, max_v, title, val_str, fr, fg, fb, cap_h)
-  local(usable_h, cap_y, track_w, track_x, tr_r, fill_h, fill_y, cap_r)
+  local(usable_h, cap_y, track_w, track_x, tr_r, fill_h, f_x, f_w, f_r, f_bottom, drawn_h, drawn_y, cap_r, track_y, track_bottom, inner_h)
   (
     usable_h = h - cap_h;
     
@@ -286,33 +289,45 @@ out_pin:right output
     track_x = x + w/2 - track_w/2;
     tr_r = track_w / 2;
     
-    // Background Track (Rounded)
-    gfx_r=0.12; gfx_g=0.12; gfx_b=0.12; gfx_a=1.0;
-    fill_roundrect(track_x, y + cap_h/2, track_w, usable_h, tr_r);
-    
-    // Inner track shadow
-    gfx_r=0.0; gfx_g=0.0; gfx_b=0.0; gfx_a=0.5;
-    fill_roundrect(track_x+1, y + cap_h/2 + 1, track_w-2, usable_h-2, tr_r-1);
+    track_y = y + cap_h/2;
+    track_bottom = track_y + usable_h;
 
-    fill_h = ((val - min_v) / (max_v - min_v)) * usable_h;
-    fill_y = y + h - cap_h/2 - fill_h;
+    // Background Track (Rounded)
+    gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=1.0;
+    fill_roundrect(track_x, track_y, track_w, usable_h, tr_r);
     
-    // Draw Fill (Perfectly matched to track)
+    // Inner track shadow (Perfectly centered, 1px inset)
+    gfx_r=0.05; gfx_g=0.05; gfx_b=0.05; gfx_a=1.0;
+    fill_roundrect(track_x+1, track_y+1, track_w-2, usable_h, tr_r-1);
+
+    inner_h = usable_h - 2;
+    fill_h = ((val - min_v) / (max_v - min_v)) * inner_h;
+    
+    // Draw Fill (Perfectly matched to track bounds, anchored to bottom)
     fill_h > 0 ? (
-       gfx_r=fr; gfx_g=fg; gfx_b=fb; gfx_a=0.85;
-       fill_roundrect(track_x+1, fill_y, track_w-2, fill_h, tr_r-1);
+       gfx_r=0.2; gfx_g=0.2; gfx_b=0.2; gfx_a=1.0;
+       
+       f_x = track_x + 1;
+       f_w = track_w - 2;
+       f_r = tr_r - 1;
+       f_bottom = track_bottom - 1;
+
+       drawn_h = max(fill_h, f_r*2); // Keep height at least a perfect circle
+       drawn_y = f_bottom - drawn_h; // Push UP from the bottom to prevent bleeding out
+       
+       fill_roundrect(f_x, drawn_y, f_w, drawn_h, f_r);
     );
 
     // Calculate Cap Position
-    cap_y = y + h - cap_h/2 - fill_h;
+    cap_y = track_bottom - ((val - min_v) / (max_v - min_v)) * usable_h;
     cap_r = 3; // Sleeker, squarer cap corners
     
     // Draw Cap (Modern horizontal bar)
-    gfx_r=0.15; gfx_g=0.25; gfx_b=0.25; gfx_a=1.0;
-    fill_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r);
+    gfx_r=0.25; gfx_g=0.25; gfx_b=0.25; gfx_a=1.0;
+    fill_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r+2);
     
-    gfx_r=0.35; gfx_g=0.45; gfx_b=0.45; gfx_a=1.0;
-    gfx_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r, 1);
+    gfx_r=0.45; gfx_g=0.45; gfx_b=0.45; gfx_a=1.0;
+    gfx_roundrect(x, cap_y - cap_h/2, w, cap_h, cap_r+2, 1);
     
     // Cap Grip Line
     gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.6;
@@ -596,7 +611,7 @@ out_pin:right output
   
 
   // --- ВЕРТИКАЛЬНИЙ ФЕЙДЕР THRESHOLD (Ліворуч) ---
-  gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.9; 
+  gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.8; 
   gfx_rect(0, top_h, fader_zone+15, wave_h);
   
   thresh_x = (fader_zone - fader_w) / 2;
@@ -607,7 +622,7 @@ out_pin:right output
   draw_v_fader(thresh_x, top_h + fader_pad_y, fader_w, fader_h, slider1, -30.0, 0.0, "Thresh", #str_thr, trq_fr, trq_fg, trq_fb, cap_h);
 
   // --- ВЕРТИКАЛЬНИЙ ФЕЙДЕР CEILING (Праворуч біля метрів) ---
-  gfx_r=0.2; gfx_g=0.2; gfx_b=0.2; gfx_a=0.3; 
+  gfx_r=0.1; gfx_g=0.1; gfx_b=0.1; gfx_a=0.8; 
   gfx_rect(ceil_x, top_h-1, fader_zone, wave_h);
   
   ceil_slider_x = ceil_x + (fader_zone - fader_w) / 2;
