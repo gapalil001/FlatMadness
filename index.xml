@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<index version="1" name="Flat Madness Theme" commit="db6941c91f5e98084de3f51233a0241211fd1992">
+<index version="1" name="Flat Madness Theme" commit="953165a4d120b5de4ab872e85e2a308019a9a0e6">
   <category name="ColorThemes">
     <reapack name="Flat Madness Bright CI.theme" type="theme" desc="Flat Madness Bright CI">
       <metadata>
@@ -698,11 +698,15 @@
 {\pard \ql \f0 \sa180 \li0 \fi0 Classic clipper with precision graphical metering and release adjustment\par}
 }
 ]]></description>
-        <link rel="website">https://forum.cockos.com/showthread.php?t=247086</link>
+        <link rel="website">https://forum.cockos.com/showthread.php?p=2938045</link>
       </metadata>
       <version name="1.0" author="gapalil" time="2026-04-24T19:24:21Z">
         <changelog><![CDATA[init]]></changelog>
         <source>https://github.com/gapalil001/FlatMadness/raw/db6941c91f5e98084de3f51233a0241211fd1992/JSFX/Flat%20Madness%20Clipper.jsfx</source>
+      </version>
+      <version name="1.1" author="gapalil" time="2026-04-26T12:10:52Z">
+        <changelog><![CDATA[vertical faders now looks more pleasure]]></changelog>
+        <source>https://github.com/gapalil001/FlatMadness/raw/953165a4d120b5de4ab872e85e2a308019a9a0e6/JSFX/Flat%20Madness%20Clipper.jsfx</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Mid-Side Mixer.jsfx" type="effect" desc="Flat Madness Mid-Side Mixer">
@@ -730,11 +734,15 @@
 {\pard \ql \f0 \sa180 \li0 \fi0 3-band oscilloscope with lufs meter\par}
 }
 ]]></description>
-        <link rel="website">https://forum.cockos.com/showthread.php?t=247086</link>
+        <link rel="website">https://forum.cockos.com/showthread.php?p=2938045</link>
       </metadata>
       <version name="1.0" author="gapalil" time="2026-04-24T19:24:21Z">
         <changelog><![CDATA[init]]></changelog>
         <source>https://github.com/gapalil001/FlatMadness/raw/db6941c91f5e98084de3f51233a0241211fd1992/JSFX/Flat%20Madness%20Oscilloscope.jsfx</source>
+      </version>
+      <version name="1.1" author="gapalil" time="2026-04-26T12:10:52Z">
+        <changelog><![CDATA[improved freezing behavior]]></changelog>
+        <source>https://github.com/gapalil001/FlatMadness/raw/953165a4d120b5de4ab872e85e2a308019a9a0e6/JSFX/Flat%20Madness%20Oscilloscope.jsfx</source>
       </version>
     </reapack>
     <reapack name="Flat Madness Panorama.jsfx" type="effect" desc="Flat Madness Panorama">
@@ -746,11 +754,15 @@
 {\pard \ql \f0 \sa180 \li0 \fi0 Complex stereo haas-based effect with adjustable pan position-dependent time, lowpass filter and reverb\par}
 }
 ]]></description>
-        <link rel="website">https://forum.cockos.com/showthread.php?t=247086</link>
+        <link rel="website">https://forum.cockos.com/showthread.php?p=2938045</link>
       </metadata>
       <version name="1.0" author="gapalil" time="2026-04-24T19:24:21Z">
         <changelog><![CDATA[init]]></changelog>
         <source>https://github.com/gapalil001/FlatMadness/raw/db6941c91f5e98084de3f51233a0241211fd1992/JSFX/Flat%20Madness%20Panorama.jsfx</source>
+      </version>
+      <version name="1.1" author="gapalil" time="2026-04-26T12:10:52Z">
+        <changelog><![CDATA[added ghost knobs that displaying current values for dynamic parameters]]></changelog>
+        <source>https://github.com/gapalil001/FlatMadness/raw/953165a4d120b5de4ab872e85e2a308019a9a0e6/JSFX/Flat%20Madness%20Panorama.jsfx</source>
       </version>
     </reapack>
   </category>
