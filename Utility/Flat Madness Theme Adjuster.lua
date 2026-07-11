@@ -1,9 +1,9 @@
 -- @description Flat Madness Theme Adjuster
 -- @author Ed Kashinsky
 -- @about Theme adjuster for Flat Madness theme
--- @version 5.2.3.0
+-- @version 5.3.0.0
 -- @changelog
---   * Support theme version 5.2.3
+--   * Support theme version 5.3.0
 -- @provides
 --   [main] theme/*.lua
 --   [nomain] img/*.png
@@ -515,6 +515,21 @@ adj.params = {
 		value_type = adj.config.value_types.ThemeLayout,
 		width = 420, height = 41,
 		values = { 0, 1 }
+	},
+	vollabelc = {
+		id = { 117, 118, 119 },
+		name = 'Volume label opacity',
+		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
+		is_percentage = true,
+		width = 205, height = 65,
+	},
+	vollabelb = {
+		id = { 120, 121, 122 },
+		name = 'Volume label color',
+		type = adj.config.param_types.Range,
+		value_type = adj.config.value_types.ThemeLayout,
+		width = 205, height = 65,
 	},
 	tcp_layout = {
 		name = 'TCP Pan/Width mode',
@@ -1461,7 +1476,12 @@ function adj.ShowWindow()
 			adj.ShowParameter(adj.params.fxsidead)
 			ImGui.Spacing(ctx)
 			adj.ShowParameter(adj.params.tcp_layout)
-			ImGui.Spacing(ctx)
+
+			if ImGui.BeginTable(ctx, "sep_tcp_3", 2) then
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.vollabelc)
+				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.vollabelb)
+				ImGui.EndTable(ctx)
+			end
 
 			if ImGui.BeginTable(ctx, "sep_tcp_2", 2) then
 				ImGui.TableNextColumn(ctx); adj.ShowParameter(adj.params.embed_position)

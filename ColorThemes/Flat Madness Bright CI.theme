@@ -1,13 +1,9 @@
 @description Flat Madness Bright CI
-@version 5.2.3
+@version 5.3.0
 @changelog
-   * darkened track backgrounds in dark theme
-   * changed media item color scheme for dark themes
-   * fixed MCP folder saturation bug
-   * fixed issues with TCP divider 
-   * added feature to adjust TCP child track gap
-   * re-designed envelope sliders and faders
-   * added a few features i forget about
+   * fixed issues with tcp and mcp
+   * cleaned up layout leakage to avoid displaying unnecessary layouts in the lists
+   * added option to change tcp volume label brightness and opacity
 @provides Flat Madness Bright CI.ReaperThemeZip
 @author Dmytro Hapochka
 @donation https://buymeacoffee.com/flatmadness
